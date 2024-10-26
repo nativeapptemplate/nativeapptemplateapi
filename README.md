@@ -1,24 +1,52 @@
-# README
+# NativeAppTemplate API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Welcome! To get started, clone the repository.
 
-Things you may want to cover:
+## Requirements
 
-* Ruby version
+You'll need the following installed to run the template successfully:
 
-* System dependencies
+* Ruby 3.3.5+
+* Node.js v20.17+
+* PostgreSQL 16+
+* Libvips or Imagemagick - `brew install vips imagemagick`
+* [Overmind](https://github.com/DarthSim/overmind) or Foreman - `brew install tmux overmind` or `gem install foreman` - helps run all your processes in development
 
-* Configuration
+If you use Homebrew, dependencies are listed in `Brewfile` so you can install them using:
 
-* Database creation
+```bash
+brew bundle install --no-upgrade
+```
 
-* Database initialization
+Then you can start the database servers:
 
-* How to run the test suite
+```bash
+brew services start postgresql
+brew services start redis
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Initial Setup
 
-* Deployment instructions
+First, edit `config/database.yml` and change the database credentials for your server.
 
-* ...
+Run `bin/setup` to install Ruby and JavaScript dependencies and setup your database.
+
+```bash
+bin/setup
+```
+
+## Running NativeAppTemplate API
+
+Replace the IP address `192.168.1.21` with your local machine’s IP address in `Procfile.dev` and `config/environments/development.rb`.
+
+To run your application, you'll use the `bin/dev` command:
+
+```bash
+bin/dev
+```
+
+This starts up Overmind (or Foreman) running the processes defined in `Procfile.dev`. We've configured this to run the Rails server, CSS bundling, JS bundling and run the Sidekiq out of the box.
+
+## Contributing
+
+If you have an improvement you'd like to share, create a fork of the repository and send us a pull request.
