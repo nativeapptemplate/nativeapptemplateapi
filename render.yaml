@@ -1,7 +1,7 @@
 # Example Render configuration. You will need to adjust this for the different services you run.
-# previews:
-#   generation: manual
-#   expireAfterDays: 3
+previews:
+  generation: manual
+  expireAfterDays: 3
 services:
   - type: web
     repo: https://github.com/nativeapptemplate/nativeapptemplateapi
