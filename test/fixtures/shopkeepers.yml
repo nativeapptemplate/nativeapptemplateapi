@@ -1,0 +1,21 @@
+one:
+  email: one@example.com
+  uid: one@example.com
+  name: Shopkeeper One
+  encrypted_password: <%= Devise::Encryptor.digest(Shopkeeper, 'password') %>
+  confirmed_privacy_version: 1.0.0
+  confirmed_terms_version: 1.0.0
+  time_zone: Tokyo
+  current_platform: ios
+  confirmed_at: <%= Time.current %>
+
+two:
+  email: two@example.com
+  uid: two@example.com
+  name: Shopkeeper Two
+  encrypted_password: <%= Devise::Encryptor.digest(Shopkeeper, 'password') %>
+  confirmed_privacy_version: 1.0.0
+  confirmed_terms_version: 1.0.0
+  time_zone: Tokyo
+  current_platform: ios
+  confirmed_at: <%= Time.current %>

@@ -1,0 +1,27 @@
+{
+  "name": "nativeapptemplateapi-app",
+  "private": true,
+  "dependencies": {
+    "@hotwired/stimulus": "^3.0.1",
+    "@hotwired/turbo-rails": "^8.0.3",
+    "@rails/actioncable": "^7.2.0",
+    "@rails/actiontext": "^7.2.0",
+    "@rails/activestorage": "^7.2.0",
+    "@rails/request.js": "^0.0.11",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/typography": "^0.5.0",
+    "autoprefixer": "^10.4.18",
+    "chokidar": "^4.0.0",
+    "esbuild": "^0.23.0",
+    "esbuild-rails": "^1.0.3",
+    "postcss": "^8.4.33",
+    "postcss-import": "^16.0.1",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-stimulus-components": "^6.0.0"
+  },
+  "scripts": {
+    "build:css": "tailwindcss --postcss --minify -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css",
+    "build": "node esbuild.config.mjs"
+  }
+}

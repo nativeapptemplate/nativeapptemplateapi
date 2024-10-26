@@ -1,0 +1,2 @@
+class ShopkeeperMailer < ApplicationMailer
+end

@@ -1,0 +1,24 @@
+<h1 style="font-weight:400;line-height:1.25;">
+  <%= t(".header_html", inviter: @invited_by.name, account: @account.name) %>
+</h1>
+
+<p style="margin-bottom:2rem;">
+  <%= t(".you_can_accept_or_decline") %>
+  <br>
+  <%= t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
+</p>
+
+<p><%= t(".instructions").capitalize %>:</p>
+<p>1. <%= t(".open_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %></p>
+<p>2. <%= t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %></p>
+<p>3. <%= t(".select_organization_tab") %></p>
+<p>4. <%= t(".tap_join_button") %></p>
+<p>5. <%= t(".enter_your_invitation_code") %></p>
+<p>6. <%= t(".if_you_accepted_invitation_switch_to_organization") %></p>
+
+<h2 style="font-weight:400;letter-spacing:2px;">
+  <strong><%= @accounts_invitation.token %></strong>
+</h2>
+
+<p><%= link_to ConfigSettings.mobile_app.name_ios, ConfigSettings.mobile_app.app_store_url, target: :_blank %></p>
+<p><%= link_to ConfigSettings.mobile_app.name_android, ConfigSettings.mobile_app.play_store_url, target: :_blank %></p>

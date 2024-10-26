@@ -1,0 +1,3 @@
+web: bin/rails server -p $PORT -b 192.168.1.21
+css: yarn build:css --watch
+js: yarn build --reload

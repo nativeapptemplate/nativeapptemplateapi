@@ -1,0 +1,36 @@
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <%= image_tag "/icon.svg?color=sky&shade=600", class: "mx-auto h-10 w-auto", alt: ConfigSettings.business.name %>
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"><%= t("change_your_password") %></h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <%= form_with(url: shopkeeper_password_path, local: true, html: { method: :patch, format: :html, class: "space-y-6" }, data: { turbo: false }) do |f| %>
+      <%= f.hidden_field :reset_password_token, value: params[:reset_password_token] %>
+      <div>
+        <div class="flex items-center justify-between">
+          <%= f.label :password, t("new_password"), class: "block text-sm font-medium leading-6 text-gray-900" %>
+        </div>
+        <div class="mt-2">
+          <%= f.password_field :password, autofocus: true, autocomplete: "new-password", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6", placeholder: "password" %>
+        </div>
+        <div class="text-sm">
+          <p class="mt-3 text-sm text-gray-600">(<%= @minimum_password_length %> characters minimum)</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between">
+          <%= f.label :password_confirmation, t("confirm_new_password"), class: "block text-sm font-medium leading-6 text-gray-900" %>
+        </div>
+        <div class="mt-2">
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-sky-600 sm:text-sm sm:leading-6", placeholder: "password" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.submit t("change_my_password"), class: "flex w-full justify-center rounded-md bg-sky-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-sky-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600" %>
+      </div>
+    <% end %>
+  </div>
+</div>
