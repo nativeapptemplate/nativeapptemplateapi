@@ -1,6 +1,7 @@
 # NativeAppTemplate API
 
-Welcome! To get started, clone the repository.
+This is a Rails API app for NativeAppTemplate-iOS/Android.
+To get started, clone the repository.
 
 ## Requirements
 
@@ -29,15 +30,15 @@ brew services start redis
 
 First, edit `config/database.yml` and change the database credentials for your server.
 
-Run `bin/setup` to install Ruby and JavaScript dependencies and setup your database.
+Run `bin/setup` to install Ruby and JavaScript dependencies and setup your database and seed initial data to the database.
 
 ```bash
 bin/setup
 ```
 
-## Running NativeAppTemplate API
+## Running NativeAppTemplate API on localhost
 
-Replace the IP address `192.168.1.21` with your local machine’s IP address in `Procfile.dev` and `config/environments/development.rb`.
+Replace the IP address `192.168.1.21` with your localhost IP address in `Procfile.dev` and `config/environments/development.rb`.
 
 To run your application, you'll use the `bin/dev` command:
 
