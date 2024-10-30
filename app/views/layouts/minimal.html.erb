@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html class="h-full antialiased" lang="<%= I18n.locale %>">
+  <head>
+    <title>
+      <% if content_for?(:title) %>
+        <%= yield :title %> |
+      <% end %>
+      <%= ConfigSettings.site.name %>
+    </title>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= viewport_meta_tag %>
+
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+    <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+
+    <%# Be sure to add your own custom favicons %>
+    <%= render "shared/favicons" %>
+
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+
+    <%= yield :head %>
+  </head>
+
+  <body class="h-full font-sans antialiased font-normal leading-normal bg-gray-50">
+    <div class="main flex flex-col">
+      <%= render partial: "shared/flash" %>
+
+      <div class="px-3 lg:px-0 h-full">
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>

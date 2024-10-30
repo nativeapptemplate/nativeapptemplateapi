@@ -1,0 +1,35 @@
+site:
+  name: NativeAppTemplate
+  domain: nativeapptemplate.com
+  url: https://nativeapptemplate.com
+
+business:
+  name: NativeAppTemplate
+
+email:
+  support: support@nativeapptemplate.com
+  support_with_name: NativeAppTemplate <support@nativeapptemplate.com>
+  default_from: noreply@nativeapptemplate.com
+  default_from_with_name: NativeAppTemplate <noreply@nativeapptemplate.com>
+
+app:
+  domain: api.nativeapptemplate.com
+
+mobile_app:
+  name: NativeAppTemplate
+  name_ios: NativeAppTemplate for iPhone
+  name_android: NativeAppTemplate for Android
+  app_store_url: https://apps.apple.com/app/nativeapptemplate/idxxxxxxxxxx
+  play_store_url: https://play.google.com/store/apps/details?id=com.yourdomain.nativeapptemplate
+
+minimum_password_length: 8
+
+shop:
+  limit_count: 99
+  default_name: "Sample Shop"
+
+account:
+  limit_count: 99
+
+accounts_shopkeeper:
+  limit_count: 99

@@ -1,0 +1,18 @@
+<%= strip_tags t(".header_html", inviter: @invited_by.name, account: @account.name) %>
+
+<%= t(".you_can_accept_or_decline") %>
+
+<%= strip_tags t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
+
+<%= t(".instructions").capitalize %>:
+1. <%= strip_tags t(".open_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
+2. <%= strip_tags t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %>
+3. <%= t(".select_organization_tab") %>
+4. <%= t(".tap_join_button") %>
+5. <%= t(".enter_your_invitation_code") %>
+6. <%= t(".if_you_accepted_invitation_switch_to_organization") %>
+
+<%= @accounts_invitation.token %>
+
+<%= ConfigSettings.mobile_app.name_ios %>: <%= ConfigSettings.mobile_app.app_store_url %>
+<%= ConfigSettings.mobile_app.name_android %>: <%= ConfigSettings.mobile_app.play_store_url %>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin</title>
+  </head>
+  <body>
+    <div>
+      <div>
+        <div>
+          <h2>Admin</h2>
+          <% if session[:admin_user_id] %>
+            <%= button_to "Sign out", destroy_admin_session_path, method: :delete %>
+          <% else %>
+            <%= form_with(url: admin_session_path) do |f| %>
+              <div class="form-group">
+                <%= f.label :email %>
+                <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: true %>
+              </div>
+
+              <div class="form-group">
+                <%= f.label :password %>
+                <%= f.password_field :password, autocomplete: "current-password", placeholder: true %>
+              </div>
+
+              <div class="form-group">
+                <%= f.submit "Sign in" %>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# The following keys must be escaped otherwise they will not be retrieved by
+# the default I18n backend:
+#
+# true, false, on, off, yes, no
+#
+# Instead, surround them with single quotes.
+#
+# en:
+#   'true': 'foo'
+#
+# To learn more, please read the Rails Internationalization guide
+# available at https://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "hello"
+  welcome: "welcome"
+  forgot_your_password: "Forgot your password?"
+  send_me_reset_password_instructions: "Send me reset password instructions"
+  change_my_password: "Change my password"
+  change_your_password: "Change your password"
+  confirm_new_password: "Confirm new password"
+  new_password: "New password"
+  something_went_wrong: "Something went wrong"
+  unauthorized: "You are not authorized to perform this action."
+  default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
+
+  api:
+    shopkeeper:
+      accounts:
+        owner_required: "Only account owner is allowed to do that."
+        admin_required: "Only account admins are allowed to do that."
+        personal:
+          cannot_delete: "You cannot delete your personal account."
+      accounts_invitations:
+        not_found: "Whoops, we weren't able to find this invitation. Check with your organization admin for a new invitation."
+      accounts_shopkeepers:
+        require_non_personal_account: "Require non personal organization."
+
+  shopkeeper:
+    notification_mailer:
+      invited:
+        subject: "%{inviter} invited you to %{account}"
+        header_html: "%{inviter} has invited you to collaborate on <strong>%{account}</strong>."
+        you_can_accept_or_decline: "You can accept or decline this invitation."
+        enter_your_invitation_code_in_the_mobile_app_html: "Enter your invitation code in the mobile app <strong>%{mobile_app}</strong> below."
+        instructions: "instructions"
+        open_mobile_app_html: "Open <strong>%{mobile_app}</strong>."
+        create_account_or_sign_in_with_html: "Create account or sign in with <strong>%{email}</strong>."
+        select_organization_tab: "Select Organizations tab."
+        tap_join_button: "Tap Join button."
+        enter_your_invitation_code: "Enter your invitation code below."
+        if_you_accepted_invitation_switch_to_organization: "If you accepted the invitation, switch to the organization(Organizations > [Organization] > Switch)."
+      reset_password_instructions:
+        subject: "Reset password instructions"
+        request_reset_link_msg: "Someone has requested a link to change your password. You can do this through the link below."
+        password_change_link: "Change my password"
+        ignore_mail_msg: "If you didn't request this, please ignore this email."
+        no_changes_msg: "Your password won't change until you access the link above and create a new one."
+      confirmation_instructions:
+        subject: "Confirm mail address instructions"
+        confirm_link_msg: "You can confirm your account email through the link below:"
+        confirm_account_link: "Confirm my account"
+
+  devise_token_auth:
+    sessions:
+      not_confirmed: "A confirmation email was sent to your account at '%{email}'. You must follow the instructions in the email before your account can be activated."
+      bad_credentials: "Invalid email or password. Please try again."
+      user_not_found: "User was not found or was not signed in."
+    passwords:
+      missing_email: "You must provide an email address."
+      missing_redirect_url: "Missing redirect URL."
+      not_allowed_redirect_url: "Redirect to '%{redirect_url}' not allowed."
+      sended: "An email has been sent to '%{email}' containing instructions for resetting your password."
+      sended_paranoid: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+      user_not_found: "Unable to find user with email '%{email}'."
+      missing_passwords: "You must fill out the fields labeled 'Password' and 'Password confirmation'."
+      successfully_updated: "Your password has been successfully updated."
+    confirmations:
+      successfully_confirmed: "Your mail address has been successfully confirmed."
+
+  layouts:
+    mailer:
+      copyright_html: "&copy; %{year} %{business_name} All rights reserved."
+
+  activerecord:
+    attributes:
+      accounts_shopkeeper:
+        shopkeeper: "User"
+        shopkeeper_id: "User"
+
+    errors:
+      models:
+        account:
+          attributes:
+            organizations:
+              limit_count: "can be created up to %{limit_count}."
+        accounts_invitation:
+          attributes:
+            email:
+              invited: "has already been invited"
+        accounts_shopkeeper:
+          attributes:
+            admin:
+              cannot_be_removed: "role cannot be removed for the account owner"
+        shopkeeper:
+          attributes:
+            # spam protection
+            current_platform:
+              format: "%{message}"
+              blank: "Your input data is wrong."         
+
+  errors:
+    messages:
+      validate_sign_up_params: "Please submit proper sign up data in request body."
+      validate_account_update_params: "Please submit proper account update data in request body."
+      limit_count_account: "You can create up to %{limit_count} organizations."
+      limit_count_shop: "You can create up to %{limit_count} shops across all organizations."
+      limit_count_accounts_shopkeeper: "Organization members can be created up to %{limit_count}. Please contact the organization admin user or owner."
