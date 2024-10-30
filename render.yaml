@@ -67,7 +67,7 @@ databases:
     previewPlan: basic-256mb
     region: singapore # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
-    diskSizeGB: 1
+    diskSizeGB: 5
     # databaseName: nativeapptemplateapi
     # user: nativeapptemplateapi
     # ipAllowList: [] # only allow internal connections
