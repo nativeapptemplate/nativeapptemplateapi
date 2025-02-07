@@ -97,4 +97,3 @@ group :test do
   gem "selenium-webdriver", ">= 4.20.1"
   gem "webmock"
 end
-
