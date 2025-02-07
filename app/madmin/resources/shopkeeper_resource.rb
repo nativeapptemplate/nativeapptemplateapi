@@ -16,6 +16,7 @@ class ShopkeeperResource < Madmin::Resource
   attribute :nickname
   attribute :image
   attribute :email
+  attribute :tokens, form: false
   attribute :sign_in_count, form: false
   attribute :current_sign_in_at
   attribute :last_sign_in_at
@@ -42,17 +43,19 @@ class ShopkeeperResource < Madmin::Resource
   attribute :shops
   attribute :created_shops
 
-  # Uncomment this to customize the display name of records in the admin area.
-  # def self.display_name(record)
-  #   record.name
+  # Add scopes to easily filter records
+  # scope :published
+
+  # Add actions to the resource's show page
+  # member_action do |record|
+  #   link_to "Do Something", some_path
   # end
 
-  # Uncomment this to customize the default sort column and direction.
-  # def self.default_sort_column
-  #   "created_at"
-  # end
+  # Customize the display name of records in the admin area.
+  # def self.display_name(record) = record.name
+
+  # Customize the default sort column and direction.
+  # def self.default_sort_column = "created_at"
   #
-  # def self.default_sort_direction
-  #   "desc"
-  # end
+  # def self.default_sort_direction = "desc"
 end

@@ -1,23 +1,23 @@
 # Below are the routes for madmin
 namespace :madmin do
+  resources :privacy_versions
+  resources :roles
+  resources :permissions
   resources :roles_permissions
   resources :shops
   resources :terms_versions
-  resources :permissions
+  resources :accounts
   namespace :active_storage do
     resources :attachments
   end
-  resources :privacy_versions
-  resources :roles
-  resources :admin_users
   namespace :active_storage do
     resources :blobs
   end
-  resources :app_versions
+  resources :shopkeepers
   resources :accounts_invitations
   resources :accounts_shopkeepers
-  resources :accounts
-  resources :shopkeepers
+  resources :admin_users
+  resources :app_versions
   namespace :active_storage do
     resources :variant_records
   end
