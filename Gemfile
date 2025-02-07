@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "7.1.4.2"
+gem "rails", "7.1.5.1"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails", ">= 3.4.1"
@@ -61,6 +61,8 @@ gem "valid_email2"
 gem "cssbundling-rails", "~> 1.4.0"
 gem "jsbundling-rails", "~> 1.3.0"
 gem "rack-attack"
+# Fix LoadError: cannot load such file -- csv
+gem "csv", "~> 3.3"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
