@@ -16,7 +16,6 @@ class ShopkeeperResource < Madmin::Resource
   attribute :nickname
   attribute :image
   attribute :email
-  attribute :tokens
   attribute :sign_in_count, form: false
   attribute :current_sign_in_at
   attribute :last_sign_in_at
