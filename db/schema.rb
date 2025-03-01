@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_11_044602) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_01_010909) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -95,6 +95,28 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_044602) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["platform", "version"], name: "index_app_versions_on_platform_and_version", unique: true
+  end
+
+  create_table "item_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "account_id", null: false
+    t.uuid "shop_id", null: false
+    t.uuid "created_by_id"
+    t.uuid "completed_by_id"
+    t.string "queue_number", null: false
+    t.integer "state", default: 1, null: false
+    t.datetime "customer_read_at", precision: nil
+    t.datetime "completed_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "scan_state", default: 1, null: false
+    t.boolean "already_completed", default: false, null: false
+    t.index ["account_id"], name: "index_item_tags_on_account_id"
+    t.index ["completed_by_id"], name: "index_item_tags_on_completed_by_id"
+    t.index ["created_by_id"], name: "index_item_tags_on_created_by_id"
+    t.index ["queue_number"], name: "index_item_tags_on_queue_number"
+    t.index ["shop_id", "queue_number"], name: "index_item_tags_on_shop_id_and_queue_number", unique: true
+    t.index ["shop_id"], name: "index_item_tags_on_shop_id"
+    t.index ["state"], name: "index_item_tags_on_state"
   end
 
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -201,6 +223,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_11_044602) do
   add_foreign_key "accounts_shopkeepers", "shopkeepers"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "item_tags", "accounts"
+  add_foreign_key "item_tags", "shopkeepers", column: "completed_by_id"
+  add_foreign_key "item_tags", "shopkeepers", column: "created_by_id"
+  add_foreign_key "item_tags", "shops"
   add_foreign_key "roles_permissions", "permissions"
   add_foreign_key "roles_permissions", "roles"
   add_foreign_key "shops", "accounts"

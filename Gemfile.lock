@@ -446,6 +446,7 @@ DEPENDENCIES
   mailbin
   nokogiri (>= 1.12.5)
   overcommit
+  pagy (~> 9.0)
   pg
   propshaft (~> 1.0)
   puma (~> 6.0)

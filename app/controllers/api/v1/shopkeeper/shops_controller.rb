@@ -1,5 +1,5 @@
 class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
-  before_action :set_shop, only: %i[show update destroy]
+  before_action :set_shop, only: %i[show update destroy reset]
 
   def index
     authorize Shop
@@ -50,6 +50,16 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
     authorize @shop
 
     @shop.destroy
+    render json: {status: 200}, status: :ok
+  end
+
+  def reset
+    authorize @shop
+
+    ApplicationRecord.transaction do
+      @shop.reset!
+    end
+
     render json: {status: 200}, status: :ok
   end
 

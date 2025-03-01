@@ -53,6 +53,8 @@ en:
         not_found: "Whoops, we weren't able to find this invitation. Check with your organization admin for a new invitation."
       accounts_shopkeepers:
         require_non_personal_account: "Require non personal organization."
+      item_tags:
+        not_found: "Whoops, we weren't able to find this number tag. You may need to switch to another organization. Go Organizations tab."
 
   shopkeeper:
     notification_mailer:
@@ -134,3 +136,4 @@ en:
       limit_count_account: "You can create up to %{limit_count} organizations."
       limit_count_shop: "You can create up to %{limit_count} shops across all organizations."
       limit_count_accounts_shopkeeper: "Organization members can be created up to %{limit_count}. Please contact the organization admin user or owner."
+      limit_count_item_tag: "You can create up to %{limit_count} number tags."
