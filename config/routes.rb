@@ -15,10 +15,22 @@ Rails.application.routes.draw do
 
   scope controller: :static do
     get :index
+    get :scan
+    get :scan_customer
   end
 
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"
+
+  namespace :display do
+    resources :shops, only: %i[show] do
+      resources :item_tags, only: [] do
+        collection do
+          get :completings
+        end
+      end
+    end
+  end
 
   mount_devise_token_auth_for "Shopkeeper",
     at: "shopkeeper_auth",
@@ -50,7 +62,18 @@ Rails.application.routes.draw do
           resource :password, only: %i[update]
         end
 
-        resources :shops
+        resources :shops, shallow: true do
+          member do
+            delete :reset
+          end
+
+          resources :item_tags do
+            member do
+              patch :reset
+              patch :complete
+            end
+          end
+        end
 
         resources :accounts do
           resources :accounts_shopkeepers, only: %i[index show update destroy], path: :members

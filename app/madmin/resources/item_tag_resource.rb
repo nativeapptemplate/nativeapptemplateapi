@@ -1,16 +1,20 @@
-class ShopResource < Madmin::Resource
+class ItemTagResource < Madmin::Resource
   # Attributes
   attribute :id, form: false
-  attribute :name
-  attribute :time_zone
+  attribute :queue_number
+  attribute :state
+  attribute :customer_read_at
+  attribute :completed_at
   attribute :created_at, form: false
   attribute :updated_at, form: false
-  attribute :description
+  attribute :scan_state
+  attribute :already_completed
 
   # Associations
   attribute :account
+  attribute :shop
   attribute :created_by
-  attribute :item_tags
+  attribute :completed_by
 
   # Add scopes to easily filter records
   # scope :published

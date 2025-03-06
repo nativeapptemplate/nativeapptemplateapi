@@ -19,7 +19,7 @@ FileUtils.chdir APP_ROOT do
 
   # Install system dependencies if Homebrew is installed
   if command_available?("brew")
-    system('brew bundle check --file=./Brewfile --no-lock --no-upgrade') || system!('brew bundle --file=./Brewfile --no-upgrade --no-lock')
+    system('brew bundle check --file=./Brewfile --no-upgrade') || system!('brew bundle --file=./Brewfile --no-upgrade')
   end
 
   puts "== Installing dependencies =="

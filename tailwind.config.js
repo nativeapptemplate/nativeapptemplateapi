@@ -24,19 +24,26 @@ module.exports = {
   theme: {
     // Extend (add to) the default theme in the `extend` key
     extend: {
+      screens: {
+        '3xl': '1792px',
+        '4xl': '2048px',
+        '5xl': '2304px',
+        '6xl': '2560px',
+        '7xl': '2816px',
+        '8xl': '3072px',
+        '9xl': '3328px',
+        '10xl': '3584px',
+        '11xl': '3840px',
+      },
       // Create your own at: https://javisperez.github.io/tailwindcolorshades
       colors: {
         primary: colors.blue,
-        secondary: colors.gray,
+        secondary: colors.emerald,
         tertiary: colors.gray,
         danger: colors.red,
-        success: colors.green,
-        info: colors.blue,
-        warning: colors.yellow,
-        accent: colors.orange,
-        light: colors.gray,
-        dark: colors.gray,
-        disabled: colors.gray,
+        gray: colors.neutral,
+        "code-400": "#fefcf9",
+        "code-600": "#3c455b",
       },
       fontFamily: {
         sans: ['Inter', ...defaultTheme.fontFamily.sans],

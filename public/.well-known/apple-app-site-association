@@ -1,0 +1,27 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "NNYDL5U3V3.com.nativeapptemplate.NativeAppTemplate.ios",
+          "NNYDL5U3V3.com.nativeapptemplate.NativeAppTemplateFree.ios"
+        ],
+        "components": [
+          {
+            "#": "no_universal_links",
+            "exclude": true,
+            "comment": "Matches any URL with a fragment that equals no_universal_links and instructs the system not to open it as a universal link."
+          },
+          {
+            "/": "/scan/*",
+            "?": {
+              "item_tag_id": "????????-????-????-????-????????????",
+              "type": "server"
+            },
+            "comment": "Matches any URL with a path that starts with /scan/ and that has a query item with name 'item_tag_id' and a value of exactly 36 characters."
+          }
+        ]
+      }
+    ]
+  }
+}
