@@ -104,6 +104,8 @@ en:
 
   activerecord:
     attributes:
+      item_tag:
+        queue_number: "Tag Number"
       accounts_shopkeeper:
         shopkeeper: "User"
         shopkeeper_id: "User"
@@ -128,6 +130,11 @@ en:
             current_platform:
               format: "%{message}"
               blank: "Your input data is wrong."         
+        item_tag:
+          attributes:
+            queue_number:
+              format_error: "must be a 2-5 alphanumeric characters."
+              uniqueness_error: "has already been registered."
 
   errors:
     messages:
