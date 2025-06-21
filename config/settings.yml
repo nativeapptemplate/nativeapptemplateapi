@@ -17,7 +17,7 @@ app:
 
 mobile_app:
   name: NativeAppTemplate
-  name_ios: NativeAppTemplate for iPhone
+  name_ios: NativeAppTemplate for iOS
   name_android: NativeAppTemplate for Android
   app_store_url: https://apps.apple.com/app/nativeapptemplate/idxxxxxxxxxx
   play_store_url: https://play.google.com/store/apps/details?id=com.yourdomain.nativeapptemplate
