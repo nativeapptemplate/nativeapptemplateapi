@@ -48,3 +48,6 @@ yarn-debug.log*
 .DS_Store
 .idea
 *~
+
+# Claude
+.claude/
