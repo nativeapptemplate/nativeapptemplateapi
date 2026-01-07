@@ -74,10 +74,19 @@ bin/rails dbconsole           # Database console
 - Monitor at `/madmin/sidekiq` in development
 
 ### Testing Strategy
-- Minitest for all tests (models, controllers, integration)
+- Minitest for all tests (models, controllers, integration, policies)
 - WebMock for stubbing external HTTP requests
-- Parallel test execution supported
-- API integration tests for all endpoints
+- Parallel test execution supported (10 workers by default)
+- Comprehensive test coverage across all layers:
+  - **Model tests**: test/models/ - Validations, associations, callbacks, state machines
+  - **Policy tests**: test/policies/ - Authorization rules for all user roles
+  - **Controller tests**: test/controllers/ - API endpoints, authentication, authorization
+  - **Integration tests**: test/integration/ - End-to-end user flows
+- Test helpers:
+  - `json_response` for parsing JSON API responses
+  - `create_new_auth_token` for generating auth headers (Devise Token Auth)
+  - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
+- Run tests: `bin/rails test` (205 tests, 402 assertions)
 
 ### Development Server Configuration
 - Server binds to specific IP: `192.168.1.21:3000` (not localhost)
@@ -103,9 +112,17 @@ bin/rails dbconsole           # Database console
 ### Creating New API Endpoints
 1. Add route in `config/routes.rb` under appropriate namespace
 2. Create controller inheriting from `Api::V1::BaseController`
-3. Add Pundit policy in `app/policies/`
+3. Add Pundit policy in `app/policies/` with authorization rules
 4. Create serializer in `app/serializers/`
-5. Write integration tests in `test/integration/`
+5. Write controller tests in `test/controllers/` testing all actions and edge cases
+
+### Writing Tests
+- **Model tests**: Test validations, associations, callbacks, scopes, and business logic
+- **Policy tests**: Test authorization for all roles (admin, managers, members, guest)
+- **Controller tests**: Test CRUD operations, authentication requirements, authorization checks
+- Use `ActsAsTenant.with_tenant(@account)` when testing multi-tenant models
+- Fixtures are loaded automatically from test/fixtures/*.yml
+- Test data seeds loaded from db/fixtures/test/*.rb in setup hook
 
 ### Working with Multi-tenancy
 - All models should include `acts_as_tenant :account`
