@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "7.1.5.1"
+gem "rails", "~> 7.2.3"
 
 gem "propshaft", "~> 1.0"
 
@@ -77,6 +77,9 @@ group :development, :test do
   gem "erb_lint", require: false
 
   gem "mailbin"
+
+  # Constrain minitest to 5.x for Rails 7.2 compatibility
+  gem "minitest", "~> 5.0"
 
   # Optional debugging tools
   # gem "byebug", platforms: [:mri, :mingw, :x64_mingw]

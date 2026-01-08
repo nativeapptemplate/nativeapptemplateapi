@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
-require "minitest/mock"
 require "webmock/minitest"
 
 # Uncomment to view full stack trace in tests
