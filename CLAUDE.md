@@ -107,6 +107,39 @@ bin/rails dbconsole           # Database console
 - Web server: `bin/render-start.sh`
 - Background workers: `bin/render-start-sidekiq.sh`
 
+## Code Quality Checks Before Committing
+
+**IMPORTANT**: Always run these checks and fix all errors before committing code:
+
+### 1. Lint Errors (RuboCop)
+```bash
+bin/rubocop
+```
+- Fix all RuboCop offenses before committing
+- Run `bin/rubocop -a` to auto-correct safe offenses
+- Review and manually fix remaining issues
+
+### 2. Security Scan (Brakeman)
+```bash
+bin/brakeman
+```
+- Fix all security vulnerabilities before committing
+- Review warnings and address potential security issues
+- Never commit code with security vulnerabilities
+
+### 3. Run Tests
+```bash
+bin/rails test
+```
+- Ensure all tests pass before committing
+- Add tests for new features or bug fixes
+
+### Pre-Commit Checklist
+- [ ] `bin/rubocop` - No lint errors
+- [ ] `bin/brakeman` - No security issues
+- [ ] `bin/rails test` - All tests passing
+- [ ] Code reviewed for quality and security
+
 ## Common Development Tasks
 
 ### Creating New API Endpoints
