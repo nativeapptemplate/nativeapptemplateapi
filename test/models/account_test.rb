@@ -66,7 +66,7 @@ class AccountTest < ActiveSupport::TestCase
 
   test "admin? returns true when shopkeeper is admin" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
+    AccountsShopkeeper.create!(
       account: account,
       shopkeeper: @shopkeeper,
       admin: true
@@ -97,7 +97,7 @@ class AccountTest < ActiveSupport::TestCase
 
   test "should destroy associated accounts_invitations" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    invitation = AccountsInvitation.create!(
+    AccountsInvitation.create!(
       account: account,
       name: "Test User",
       email: "test@example.com",
@@ -111,7 +111,7 @@ class AccountTest < ActiveSupport::TestCase
 
   test "should destroy associated accounts_shopkeepers" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
+    AccountsShopkeeper.create!(
       account: account,
       shopkeeper: @shopkeeper,
       admin: true
