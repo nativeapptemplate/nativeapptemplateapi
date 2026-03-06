@@ -57,8 +57,8 @@ gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
 gem "madmin", github: "excid3/madmin"
 gem "valid_email2"
-gem "cssbundling-rails", "~> 1.4.0"
-gem "jsbundling-rails", "~> 1.3.0"
+gem "importmap-rails"
+gem "tailwindcss-rails", "~> 3.0"
 gem "rack-attack"
 # Fix LoadError: cannot load such file -- csv
 gem "csv", "~> 3.3"

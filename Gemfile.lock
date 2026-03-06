@@ -137,8 +137,6 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    cssbundling-rails (1.4.3)
-      railties (>= 6.0.0)
     csv (3.3.5)
     date (3.5.1)
     debug (1.11.1)
@@ -201,8 +199,6 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    jsbundling-rails (1.3.1)
-      railties (>= 6.0.0)
     json (2.19.0)
     json-schema (6.2.0)
       addressable (~> 2.8)
@@ -425,6 +421,15 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.2.0)
+    tailwindcss-rails (3.3.2)
+      railties (>= 7.0.0)
+      tailwindcss-ruby (~> 3.0)
+    tailwindcss-ruby (3.4.19)
+    tailwindcss-ruby (3.4.19-aarch64-linux)
+    tailwindcss-ruby (3.4.19-arm-linux)
+    tailwindcss-ruby (3.4.19-arm64-darwin)
+    tailwindcss-ruby (3.4.19-x86_64-darwin)
+    tailwindcss-ruby (3.4.19-x86_64-linux)
     thor (1.5.0)
     timeout (0.6.0)
     tsort (0.2.0)
@@ -479,15 +484,14 @@ DEPENDENCIES
   bundler-audit
   capybara (>= 3.39)
   config
-  cssbundling-rails (~> 1.4.0)
   csv (~> 3.3)
   debug
   devise_token_auth (~> 1.2, >= 1.2.2)
   erb_lint
   image_processing (~> 1.12)
+  importmap-rails
   inline_svg (~> 1.6)
   jbuilder (~> 2.12)
-  jsbundling-rails (~> 1.3.0)
   jsonapi-serializer
   madmin!
   mailbin
@@ -510,6 +514,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   stimulus-rails (~> 1.0, >= 1.0.2)
+  tailwindcss-rails (~> 3.0)
   turbo-rails (~> 2.0.3)
   tzinfo-data
   valid_email2

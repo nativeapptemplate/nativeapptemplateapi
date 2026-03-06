@@ -19,46 +19,24 @@ services:
         sync: false
       - key: WEB_CONCURRENCY
         value: 1
+      - key: SOLID_QUEUE_IN_PUMA
+        value: true
       - key: DATABASE_URL
         fromDatabase:
           name: nativeapptemplateapi
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          type: redis
-          name: redis
-          property: connectionString
-      - fromGroup: nativeapptemplateapi-env
-
-  - type: redis
-    name: redis
-    plan: starter # optional (defaults to starter)
-    previewPlan: starter
-    region: singapore # the region must be consistent across all services for the internal keys to be read
-    ipAllowList: [] # only allow internal connections
-    maxmemoryPolicy: noeviction # optional (defaults to allkeys-lru)
-
-  - type: worker
-    name: sidekiq-worker
-    plan: starter # no free option for bg workers
-    previews:
-      plan: starter
-    env: ruby
-    region: singapore # the region must be consistent across all services for the internal keys to be read
-    buildCommand: "./bin/render-build-worker.sh --skip-migrations"
-    startCommand: "./bin/render-start-sidekiq.sh"
-    envVars:
-      - key: DATABASE_URL
+      - key: CACHE_DATABASE_URL
         fromDatabase:
-          name: nativeapptemplateapi
+          name: nativeapptemplateapi-cache
           property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: redis
-          type: redis
+      - key: QUEUE_DATABASE_URL
+        fromDatabase:
+          name: nativeapptemplateapi-queue
           property: connectionString
-      - key: RAILS_MASTER_KEY
-        sync: false
+      - key: CABLE_DATABASE_URL
+        fromDatabase:
+          name: nativeapptemplateapi-cable
+          property: connectionString
       - fromGroup: nativeapptemplateapi-env
 
 databases:
@@ -68,7 +46,21 @@ databases:
     region: singapore # the region must be consistent across all services for the internal keys to be read
     ipAllowList: [] # only allow internal connections
     diskSizeGB: 5
-    # databaseName: nativeapptemplateapi
-    # user: nativeapptemplateapi
-    # ipAllowList: [] # only allow internal connections
 
+  - name: nativeapptemplateapi-cache
+    plan: basic-256mb
+    previewPlan: basic-256mb
+    region: singapore
+    ipAllowList: []
+
+  - name: nativeapptemplateapi-queue
+    plan: basic-256mb
+    previewPlan: basic-256mb
+    region: singapore
+    ipAllowList: []
+
+  - name: nativeapptemplateapi-cable
+    plan: basic-256mb
+    previewPlan: basic-256mb
+    region: singapore
+    ipAllowList: []
