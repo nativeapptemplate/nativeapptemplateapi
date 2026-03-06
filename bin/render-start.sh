@@ -3,6 +3,8 @@
 # exit on error
 set -o errexit
 
+export SOLID_QUEUE_IN_PUMA=${SOLID_QUEUE_IN_PUMA:-true}
+
 if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
   echo "IS_PULL_REQUEST is set. Setting staging environment variables and starting server."
   export RAILS_ENV=staging

@@ -2,9 +2,6 @@
 brew "postgresql@16"
 brew "libpq"
 
-# Redis - For ActionCable support (and Sidekiq, caching, etc)
-brew "redis"
-
 # Overmind (requires tmux)
 brew "tmux"
 brew "overmind"
