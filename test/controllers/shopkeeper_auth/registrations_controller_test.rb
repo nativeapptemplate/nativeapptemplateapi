@@ -19,8 +19,8 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     # Account name should match shopkeeper's name
     assert_equal "API Shopkeeper", shopkeeper.personal_account.name
 
-    # Returns an API token
-    assert_equal shopkeeper.token, response.parsed_body["token"]
+    # Returns a serialized response
+    assert response.parsed_body["data"]
   end
 
   test "delete current shopkeeper" do

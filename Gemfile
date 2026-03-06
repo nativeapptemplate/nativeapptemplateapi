@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem "rails", "~> 8.0.0"
+gem "rails", "~> 8.1"
 
 gem "propshaft", "~> 1.0"
 
@@ -12,7 +12,7 @@ gem "propshaft", "~> 1.0"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 6.0"
+gem "puma", "~> 7.0"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
 gem "turbo-rails", "~> 2.0.3"
@@ -78,8 +78,8 @@ group :development, :test do
 
   gem "mailbin"
 
-  # Constrain minitest to 5.x for Rails 7.2 compatibility
-  gem "minitest", "~> 5.0"
+  # minitest 6.x extracted mock to a separate gem
+  gem "minitest-mock"
 
   # Optional debugging tools
   # gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
