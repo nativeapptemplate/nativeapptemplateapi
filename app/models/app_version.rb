@@ -1,6 +1,6 @@
 class AppVersion < ApplicationRecord
-  enum current_type: {uncurrent: 1, current: 2}
-  enum forced_update_type: {unforced_update: 1, forced_update: 2}
+  enum :current_type, {uncurrent: 1, current: 2}
+  enum :forced_update_type, {unforced_update: 1, forced_update: 2}
 
   def self.current_version(platform:)
     AppVersion

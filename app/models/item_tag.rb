@@ -7,8 +7,8 @@ class ItemTag < ApplicationRecord
   belongs_to :created_by, class_name: "Shopkeeper", optional: true
   belongs_to :completed_by, class_name: "Shopkeeper", optional: true
 
-  enum state: {idled: 1, completed: 2}
-  enum scan_state: {unscanned: 1, scanned: 2}
+  enum :state, {idled: 1, completed: 2}
+  enum :scan_state, {unscanned: 1, scanned: 2}
 
   scope :sorted, -> { order(queue_number: :asc) }
   scope :sorted_recent_first_order, -> { order(completed_at: :desc) }

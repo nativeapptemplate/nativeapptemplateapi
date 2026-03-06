@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module Nativeapptemplateapi
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
+    config.load_defaults 8.0
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -39,23 +39,6 @@ module Nativeapptemplateapi
 
     # Use default language as fallback if translation is missing
     config.i18n.fallbacks = true
-
-    # Prevent sassc-rails from setting sass as the compressor
-    # Libsass is deprecated and doesn't support modern CSS syntax used by TailwindCSS
-    config.assets.css_compressor = nil
-
-    # Rails 7 defaults to libvips as the variant processor
-    # libvips is up to 10x faster and consumes 1/10th the memory of imagemagick
-    # If you need to use imagemagick, uncomment this to switch
-    # config.active_storage.variant_processor = :mini_magick
-
-    # Support older SHA1 digests for ActiveStorage so ActionText attachments don't break
-    config.after_initialize do |app|
-      app.message_verifier("ActiveStorage").rotate(digest: "SHA1")
-    end
-
-    # Support older SHA1 digests for ActiveRecord::Encryption
-    config.active_record.encryption.support_sha1_for_non_deterministic_encryption = true
 
     config.active_model.i18n_customize_full_message = true
 
