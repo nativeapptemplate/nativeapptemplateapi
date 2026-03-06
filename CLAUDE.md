@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Rails 7.1.5.1 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints.
+This is a Rails 7.2 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints. Ruby 4.0.1, PostgreSQL, Redis, Sidekiq.
 
 ## Development Commands
 
@@ -28,7 +28,7 @@ bin/rails test test/path/to/test.rb:42  # Run specific test line
 ### Linting & Security
 ```bash
 bin/rubocop                     # Ruby code linting
-bundle exec erblint --lint-all  # ERB template linting
+bundle exec erb_lint --lint-all # ERB template linting
 bin/brakeman                    # Security vulnerability scanning
 ```
 
