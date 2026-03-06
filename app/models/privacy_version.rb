@@ -1,5 +1,5 @@
 class PrivacyVersion < ApplicationRecord
-  enum current_type: {uncurrent: 1, current: 2}
+  enum :current_type, {uncurrent: 1, current: 2}
 
   def self.current_version
     PrivacyVersion
