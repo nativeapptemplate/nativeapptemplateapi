@@ -90,7 +90,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # https://www.cjav.dev/articles/setting-up-pr-previews-for-rails-on-render-com
-  service_name = ENV.fetch("RENDER_SERVICE_NAME", "sidekiq-worker-pr-101-704c")
+  service_name = ENV.fetch("RENDER_SERVICE_NAME", "nativeapptemplateapi-pr-101")
   staging_host = ENV["RENDER_EXTERNAL_HOSTNAME"]
   if staging_host.blank?
     staging_host = "nativeapptemplateapi-#{service_name.match(/pr-\d+/)}.onrender.com"
