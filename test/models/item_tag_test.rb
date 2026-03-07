@@ -159,10 +159,9 @@ class ItemTagTest < ActiveSupport::TestCase
 
       assert item_tag.scanned?
 
-      old_time = item_tag.customer_read_at
       item_tag.scan_tag!
 
-      assert_equal old_time, item_tag.customer_read_at
+      assert_nil item_tag.customer_read_at
     end
   end
 

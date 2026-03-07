@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Rails 8.0 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints. Ruby 4.0.1, PostgreSQL, Redis, Sidekiq.
+This is a Rails 8.1 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints. Ruby 4.0.1, PostgreSQL, Solid Queue/Cable/Cache.
 
 ## Development Commands
 
@@ -15,7 +15,7 @@ bin/setup  # Installs all dependencies, prepares database, builds assets
 
 ### Running the Application
 ```bash
-bin/dev  # Starts Rails server, CSS watcher, JS bundler, and Sidekiq workers
+bin/dev  # Starts Rails server, CSS watcher, JS bundler
 ```
 
 ### Testing
@@ -30,6 +30,12 @@ bin/rails test test/path/to/test.rb:42  # Run specific test line
 bin/rubocop                     # Ruby code linting
 bundle exec erb_lint --lint-all # ERB template linting
 bin/brakeman                    # Security vulnerability scanning
+bin/bundler-audit               # Audit gems for known security defects
+```
+
+### Local CI
+```bash
+bin/ci  # Runs setup, rubocop, bundler-audit, brakeman, tests, and seeds
 ```
 
 ### Database Operations
@@ -69,9 +75,10 @@ bin/rails dbconsole           # Database console
 - State machines implemented with AASM gem
 
 ### Background Processing
-- Sidekiq for background jobs with Redis backend
-- Queue priorities: critical (10), mailers (5), default (2), low (1)
-- Monitor at `/madmin/sidekiq` in development
+- Solid Queue for background jobs (database-backed, no Redis needed)
+- Solid Cable for Action Cable (database-backed)
+- Solid Cache for caching in production/staging
+- Monitor jobs at `/madmin/jobs` (Mission Control)
 
 ### Testing Strategy
 - Minitest for all tests (models, controllers, integration, policies)
@@ -92,7 +99,7 @@ bin/rails dbconsole           # Database console
 - Server binds to specific IP: `192.168.1.21:3000` (not localhost)
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
-- Hot reload for CSS/JS changes via yarn watchers
+- Tailwind CSS compiled by tailwindcss-rails gem
 
 ### Important Conventions
 - Use `seed-fu` for database seeding (not standard Rails seeds)
@@ -105,7 +112,7 @@ bin/rails dbconsole           # Database console
 - Configured for Render.com deployment
 - Build script: `bin/render-build.sh`
 - Web server: `bin/render-start.sh`
-- Background workers: `bin/render-start-sidekiq.sh`
+- Solid Queue runs in Puma via `SOLID_QUEUE_IN_PUMA=true`
 
 ## Code Quality Checks Before Committing
 

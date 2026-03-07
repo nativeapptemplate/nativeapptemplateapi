@@ -2,8 +2,7 @@ Rails.application.routes.draw do
   draw :madmin
 
   require "admin_constraint"
-  require "sidekiq/web"
-  mount Sidekiq::Web => "/madmin/sidekiq", "constraints" => AdminConstraint.new
+  mount MissionControl::Jobs::Engine, at: "/madmin/jobs", constraints: AdminConstraint.new
 
   if Rails.env.local?
     mount Mailbin::Engine, at: "/mailbin"

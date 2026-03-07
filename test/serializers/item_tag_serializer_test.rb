@@ -22,8 +22,8 @@ class ItemTagSerializerTest < ActiveSupport::TestCase
       assert_equal @item_tag.queue_number, attributes[:queue_number]
       assert_equal @item_tag.state, attributes[:state]
       assert_equal @item_tag.scan_state, attributes[:scan_state]
-      assert_equal @item_tag.customer_read_at, attributes[:customer_read_at]
-      assert_equal @item_tag.completed_at, attributes[:completed_at]
+      assert_nil attributes[:customer_read_at]
+      assert_nil attributes[:completed_at]
       assert_equal @item_tag.already_completed, attributes[:already_completed]
     end
   end

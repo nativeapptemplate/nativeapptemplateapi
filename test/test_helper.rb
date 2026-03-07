@@ -6,11 +6,6 @@ require "webmock/minitest"
 # Uncomment to view full stack trace in tests
 # Rails.backtrace_cleaner.remove_silencers!
 
-if defined?(Sidekiq)
-  require "sidekiq/testing"
-  Sidekiq.logger.level = Logger::WARN
-end
-
 if defined?(SolidQueue)
   SolidQueue.logger.level = Logger::WARN
 end

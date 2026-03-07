@@ -58,9 +58,12 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :sidekiq
-  # config.active_job.queue_name_prefix = "nativeapptemplateapi_production"
+  # Use SolidQueue for Active Job (database-backed)
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = {database: {writing: :queue}}
+
+  # Use SolidCache for caching
+  config.cache_store = :solid_cache_store
 
   config.action_mailer.perform_caching = false
 

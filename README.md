@@ -46,7 +46,7 @@ To run your application, you'll use the `bin/dev` command:
 bin/dev
 ```
 
-This starts up Overmind (or Foreman) running the processes defined in `Procfile.dev`. We've configured this to run the Rails server, CSS bundling, JS bundling and run the Sidekiq out of the box.
+This starts up Overmind (or Foreman) running the processes defined in `Procfile.dev`. We've configured this to run the Rails server out of the box.
 
 ## Contributing
 

@@ -58,9 +58,12 @@ Rails.application.configure do
   # Don't log any deprecations.
   config.active_support.report_deprecations = false
 
-  # Use a real queuing backend for Active Job (and separate queues per environment).
-  config.active_job.queue_adapter = :sidekiq
-  # config.active_job.queue_name_prefix = "nativeapptemplateapi_production"
+  # Use SolidQueue for Active Job (database-backed)
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = {database: {writing: :queue}}
+
+  # Use SolidCache for caching
+  config.cache_store = :solid_cache_store
 
   config.action_mailer.perform_caching = false
 
@@ -87,7 +90,7 @@ Rails.application.configure do
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 
   # https://www.cjav.dev/articles/setting-up-pr-previews-for-rails-on-render-com
-  service_name = ENV.fetch("RENDER_SERVICE_NAME", "sidekiq-worker-pr-101-704c")
+  service_name = ENV.fetch("RENDER_SERVICE_NAME", "nativeapptemplateapi-pr-101")
   staging_host = ENV["RENDER_EXTERNAL_HOSTNAME"]
   if staging_host.blank?
     staging_host = "nativeapptemplateapi-#{service_name.match(/pr-\d+/)}.onrender.com"
