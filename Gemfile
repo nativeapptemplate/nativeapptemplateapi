@@ -60,6 +60,7 @@ gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 3.0"
 gem "rack-attack"
+gem "resend"
 # Fix LoadError: cannot load such file -- csv
 gem "csv", "~> 3.3"
 
