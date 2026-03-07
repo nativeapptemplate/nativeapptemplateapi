@@ -99,7 +99,7 @@ bin/rails dbconsole           # Database console
 - Server binds to specific IP: `192.168.1.21:3000` (not localhost)
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
-- Hot reload for CSS/JS changes via yarn watchers
+- Tailwind CSS compiled by tailwindcss-rails gem
 
 ### Important Conventions
 - Use `seed-fu` for database seeding (not standard Rails seeds)
