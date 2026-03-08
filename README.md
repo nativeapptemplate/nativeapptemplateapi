@@ -23,7 +23,6 @@ Then you can start the database servers:
 
 ```bash
 brew services start postgresql
-brew services start redis
 ```
 
 ## Initial Setup
