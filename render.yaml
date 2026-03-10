@@ -6,7 +6,7 @@ services:
   - type: web
     repo: https://github.com/nativeapptemplate/nativeapptemplateapi
     name: nativeapptemplateapi
-    plan: starter
+    plan: standard
     previews:
       plan: starter
     env: ruby
