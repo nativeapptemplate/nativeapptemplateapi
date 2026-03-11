@@ -1,5 +1,6 @@
 class AccountsInvitation < ApplicationRecord
   ROLES = AccountsShopkeeper::ROLES
+  EXPIRES_IN = ConfigSettings.accounts_invitation.expires_in_hours.hours
 
   include Rolified
 
@@ -11,12 +12,24 @@ class AccountsInvitation < ApplicationRecord
 
   before_create :set_token
 
+  scope :active, -> { where(created_at: EXPIRES_IN.ago..) }
+  scope :expired, -> { where(created_at: ...EXPIRES_IN.ago) }
+
+  def expired?
+    created_at < EXPIRES_IN.ago
+  end
+
   def save_and_send_invite
     save && send_invite
   end
 
   def send_invite
     Shopkeeper::NotificationMailer.with(accounts_invitation: self).invited.deliver_later
+  end
+
+  def resend_invite
+    touch(:created_at)
+    send_invite
   end
 
   def accept!(shopkeeper)

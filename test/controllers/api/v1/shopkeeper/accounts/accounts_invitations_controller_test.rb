@@ -158,11 +158,16 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     assert_response :unauthorized
   end
 
-  test "resend sends invitation email again" do
-    post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
-      headers: @shopkeeper.create_new_auth_token
+  test "resend sends invitation email again and touches created_at" do
+    original_created_at = @invitation.created_at
 
-    assert_response :success
+    travel_to(1.hour.from_now) do
+      post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
+        headers: @shopkeeper.create_new_auth_token
+
+      assert_response :success
+      assert @invitation.reload.created_at > original_created_at
+    end
   end
 
   test "resend requires admin role" do

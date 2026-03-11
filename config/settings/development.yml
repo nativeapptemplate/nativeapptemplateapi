@@ -1,0 +1,2 @@
+accounts_invitation:
+  expires_in_hours: 0.083 # ~5 minutes

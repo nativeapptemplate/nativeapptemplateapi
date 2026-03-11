@@ -69,6 +69,27 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
     assert_response :success
   end
 
+  test "show returns 410 gone for expired invitation" do
+    @invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
+
+    get api_v1_shopkeeper_accounts_invitation_url(@invitation.token),
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :gone
+    assert_equal I18n.t("api.shopkeeper.accounts_invitations.expired"), response.parsed_body["error_message"]
+  end
+
+  test "update returns 410 gone for expired invitation" do
+    @invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
+
+    other_shopkeeper = shopkeepers(:two)
+    patch api_v1_shopkeeper_accounts_invitation_url(@invitation.token),
+      headers: other_shopkeeper.create_new_auth_token
+
+    assert_response :gone
+    assert_equal I18n.t("api.shopkeeper.accounts_invitations.expired"), response.parsed_body["error_message"]
+  end
+
   test "requires authentication" do
     get api_v1_shopkeeper_accounts_invitation_url(@invitation.token)
 

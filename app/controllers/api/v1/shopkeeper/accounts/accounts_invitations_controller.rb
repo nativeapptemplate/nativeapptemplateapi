@@ -39,7 +39,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
   end
 
   def resend
-    @accounts_invitation.send_invite
+    @accounts_invitation.resend_invite
     render json: {status: 200}, status: :ok
   end
 

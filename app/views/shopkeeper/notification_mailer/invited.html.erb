@@ -22,3 +22,5 @@
 
 <p><%= link_to ConfigSettings.mobile_app.name_ios, ConfigSettings.mobile_app.app_store_url, target: :_blank %></p>
 <p><%= link_to ConfigSettings.mobile_app.name_android, ConfigSettings.mobile_app.play_store_url, target: :_blank %></p>
+
+<p><%= t(".expires_in", expires_in: ConfigSettings.accounts_invitation.expires_in_hours) %></p>

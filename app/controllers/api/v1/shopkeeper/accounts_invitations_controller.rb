@@ -3,12 +3,22 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
   skip_after_action :verify_authorized
 
   def show
+    if @accounts_invitation.expired?
+      render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
+      return
+    end
+
     options = {}
     options[:include] = [:account, :invited_by]
     render json: AccountsInvitationSerializer.new(@accounts_invitation, options).serializable_hash
   end
 
   def update
+    if @accounts_invitation.expired?
+      render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
+      return
+    end
+
     if @accounts_invitation.accept!(current_shopkeeper)
       render json: {status: 200}, status: :ok
     else

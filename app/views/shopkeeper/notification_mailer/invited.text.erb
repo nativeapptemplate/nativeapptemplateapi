@@ -16,3 +16,5 @@
 
 <%= ConfigSettings.mobile_app.name_ios %>: <%= ConfigSettings.mobile_app.app_store_url %>
 <%= ConfigSettings.mobile_app.name_android %>: <%= ConfigSettings.mobile_app.play_store_url %>
+
+<%= t(".expires_in", expires_in: ConfigSettings.accounts_invitation.expires_in_hours) %>
