@@ -2,7 +2,9 @@
 
 ## [Unreleased]
 
-- Update Rails from 7.1.5.1 to 7.2.3
+## 2026-03-10
+
+- Update Rails from 7.1.5.1 to 8.1
 - Update Brakeman from 7.0.2 to 7.1.2
 - Add brakeman.ignore for mass assignment false positive
 - Add comprehensive test coverage for models, policies, serializers, and controllers (205 tests)
