@@ -1,11 +1,23 @@
 require "test_helper"
 
 class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
-  # test "connects with cookies" do
-  #   cookies.signed[:user_id] = 42
-  #
-  #   connect
-  #
-  #   assert_equal connection.user_id, "42"
-  # end
+  test "anonymous connection succeeds with nil shopkeeper and account" do
+    connect
+
+    assert_nil connection.current_shopkeeper
+    assert_nil connection.current_account
+  end
+
+  test "authenticated connection identifies shopkeeper and account" do
+    shopkeeper = shopkeepers(:one)
+    account = shopkeeper.create_default_account
+    warden = Minitest::Mock.new
+    warden.expect(:user, shopkeeper, [:shopkeeper])
+
+    connect env: {"warden" => warden}
+
+    assert_equal shopkeeper, connection.current_shopkeeper
+    assert_equal account, connection.current_account
+    warden.verify
+  end
 end
