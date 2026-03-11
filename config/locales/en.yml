@@ -51,6 +51,7 @@ en:
           cannot_delete: "You cannot delete your personal account."
       accounts_invitations:
         not_found: "Whoops, we weren't able to find this invitation. Check with your organization admin for a new invitation."
+        expired: "This invitation has expired. Please ask the organization admin to resend the invitation."
       accounts_shopkeepers:
         require_non_personal_account: "Require non personal organization."
       item_tags:
@@ -70,6 +71,7 @@ en:
         tap_join_button: "Tap Join button."
         enter_your_invitation_code: "Enter your invitation code below."
         if_you_accepted_invitation_switch_to_organization: "If you accepted the invitation, switch to the organization(Organizations > [Organization] > Switch)."
+        expires_in: "This invitation will expire in %{expires_in} hours."
       reset_password_instructions:
         subject: "Reset password instructions"
         request_reset_link_msg: "Someone has requested a link to change your password. You can do this through the link below."

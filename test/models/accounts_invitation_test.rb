@@ -274,4 +274,69 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       invitation.send_invite
     end
   end
+
+  test "expired? returns false for recent invitation" do
+    invitation = AccountsInvitation.create!(
+      account: @account,
+      name: "Invited User",
+      email: "recent@example.com",
+      junior_member: true
+    )
+
+    assert_not invitation.expired?
+  end
+
+  test "expired? returns true for old invitation" do
+    invitation = AccountsInvitation.create!(
+      account: @account,
+      name: "Invited User",
+      email: "old@example.com",
+      junior_member: true
+    )
+
+    travel_to(AccountsInvitation::EXPIRES_IN.from_now + 1.minute) do
+      assert invitation.expired?
+    end
+  end
+
+  test "active scope returns non-expired invitations" do
+    active_invitation = AccountsInvitation.create!(
+      account: @account,
+      name: "Active User",
+      email: "active_scope@example.com",
+      junior_member: true
+    )
+
+    expired_invitation = AccountsInvitation.create!(
+      account: @account,
+      name: "Expired User",
+      email: "expired_scope@example.com",
+      junior_member: true
+    )
+    expired_invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
+
+    active_invitations = AccountsInvitation.active
+    assert_includes active_invitations, active_invitation
+    assert_not_includes active_invitations, expired_invitation
+  end
+
+  test "resend_invite touches created_at and sends invite" do
+    invitation = AccountsInvitation.create!(
+      account: @account,
+      name: "Invited User",
+      email: "resend@example.com",
+      invited_by: @shopkeeper,
+      junior_member: true
+    )
+
+    original_created_at = invitation.created_at
+
+    travel_to(1.hour.from_now) do
+      assert_nothing_raised do
+        invitation.resend_invite
+      end
+
+      assert invitation.created_at > original_created_at
+    end
+  end
 end

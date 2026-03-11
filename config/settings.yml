@@ -35,6 +35,9 @@ account:
 accounts_shopkeeper:
   limit_count: 99
 
+accounts_invitation:
+  expires_in_hours: 48
+
 item_tag:
   limit_count: 99
   default_count: 10
