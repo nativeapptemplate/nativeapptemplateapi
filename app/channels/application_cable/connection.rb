@@ -13,12 +13,13 @@ module ApplicationCable
       env["warden"]&.user(:shopkeeper)
     end
 
-    # Display pages are public — anonymous connections are allowed.
-    # Shopkeeper auth is header-based (devise_token_auth), so most
-    # WebSocket connections will be anonymous. If an authenticated-only
-    # channel is added in the future, reject in that channel's #subscribed.
+    # Extract the account UUID from the WebSocket upgrade request path,
+    # matching how AccountMiddleware sets the current account for HTTP
+    # requests. Display page URLs (display/shops/...) don't include an
+    # account UUID, so this returns nil for public connections.
     def find_account
-      current_shopkeeper&.accounts&.order(created_at: :asc)&.first
+      _, account_id, = request.path.split("/", 3)
+      Account.find_by(id: account_id) if AccountMiddleware::UUID_MATCHER.match?(account_id)
     end
   end
 end

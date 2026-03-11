@@ -14,10 +14,22 @@ class ApplicationCable::ConnectionTest < ActionCable::Connection::TestCase
     warden = Minitest::Mock.new
     warden.expect(:user, shopkeeper, [:shopkeeper])
 
-    connect env: {"warden" => warden}
+    connect "/#{account.id}/cable", env: {"warden" => warden}
 
     assert_equal shopkeeper, connection.current_shopkeeper
     assert_equal account, connection.current_account
+    warden.verify
+  end
+
+  test "connection without account UUID in path has nil account" do
+    shopkeeper = shopkeepers(:one)
+    warden = Minitest::Mock.new
+    warden.expect(:user, shopkeeper, [:shopkeeper])
+
+    connect "/cable", env: {"warden" => warden}
+
+    assert_equal shopkeeper, connection.current_shopkeeper
+    assert_nil connection.current_account
     warden.verify
   end
 end
