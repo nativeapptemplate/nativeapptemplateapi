@@ -18,7 +18,7 @@ class ShopkeeperAuth::PasswordsController < DeviseTokenAuth::PasswordsController
   end
 
   def render_not_found_error
-    render json: {code: 404, error_message: I18n.t("devise_token_auth.passwords.user_not_found", email: @email)}, status: :not_found
+    render json: {success: true, message: I18n.t("devise_token_auth.passwords.sended_paranoid")}, status: :ok
   end
 
   def render_create_error(errors)
@@ -48,13 +48,11 @@ class ShopkeeperAuth::PasswordsController < DeviseTokenAuth::PasswordsController
   end
 
   def render_update_error
-    error_messages = @resource.errors.full_messages.flatten.join("<br/>").html_safe
-
     redirect_to(
       edit_shopkeeper_auth_reset_password_path(
         reset_password_token: params[:reset_password_token]
       ),
-      alert: error_messages
+      alert: @resource.errors.full_messages.to_sentence
     )
   end
 end

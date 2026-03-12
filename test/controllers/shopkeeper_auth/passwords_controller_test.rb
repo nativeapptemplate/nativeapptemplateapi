@@ -35,7 +35,23 @@ class ShopkeeperAuth::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 401, JSON.parse(response.body)["code"]
   end
 
-  test "should return not found for non-existent email" do
+  test "should redirect with error when password update fails validation" do
+    token = @shopkeeper.send(:set_reset_password_token)
+
+    patch shopkeeper_password_url,
+      params: {
+        reset_password_token: token,
+        password: "short",
+        password_confirmation: "mismatch"
+      }
+
+    assert_response :redirect
+    assert_match "edit", response.location
+    follow_redirect!
+    assert_select ".bg-yellow-50"
+  end
+
+  test "should return generic success for non-existent email to prevent enumeration" do
     post shopkeeper_password_url,
       params: {
         email: "nonexistent@example.com",
@@ -43,7 +59,7 @@ class ShopkeeperAuth::PasswordsControllerTest < ActionDispatch::IntegrationTest
       },
       as: :json
 
-    assert_response :not_found
-    assert_equal 404, JSON.parse(response.body)["code"]
+    assert_response :ok
+    assert JSON.parse(response.body)["success"]
   end
 end
