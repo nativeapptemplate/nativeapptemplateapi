@@ -79,10 +79,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
+  # Render automatically sets RENDER_EXTERNAL_HOSTNAME to the service's hostname
+  # (e.g. nativeapptemplateapi.onrender.com). No manual configuration needed.
+  # APP_HOST is for the custom domain (set in Render env vars).
+  config.hosts = [
+    ENV["RENDER_EXTERNAL_HOSTNAME"],
+    ENV["APP_HOST"]
+  ].compact
   # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  config.host_authorization = {exclude: ->(request) { request.path == "/up" }}
 end

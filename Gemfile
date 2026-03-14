@@ -41,8 +41,6 @@ gem "image_processing", "~> 1.12"
 # Security update
 gem "nokogiri", ">= 1.12.5"
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-gem "rack-cors"
 gem "devise_token_auth", "~> 1.2", ">= 1.2.2"
 gem "jsonapi-serializer"
 gem "pundit"
