@@ -1,21 +1,25 @@
 class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Shopkeeper::BaseController
   before_action :set_account
-  before_action :require_account_admin, except: %i[index show]
   before_action :set_accounts_invitation, only: %i[show update destroy resend]
-  skip_after_action :verify_authorized
 
   def index
+    authorize AccountsInvitation
+
     @accounts_invitations = @account.accounts_invitations.order(name: :asc)
     render json: AccountsInvitationSerializer.new(@accounts_invitations).serializable_hash
   end
 
   def show
+    authorize @accounts_invitation
+
     options = {}
     options[:include] = [:account, :invited_by]
     render json: AccountsInvitationSerializer.new(@accounts_invitation, options).serializable_hash
   end
 
   def create
+    authorize AccountsInvitation
+
     accounts_invitation = @account.accounts_invitations.build(invitation_params_create)
 
     if accounts_invitation.save_and_send_invite
@@ -26,6 +30,8 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
   end
 
   def update
+    authorize @accounts_invitation
+
     if @accounts_invitation.update(invitation_params_update)
       render json: AccountsInvitationSerializer.new(@accounts_invitation).serializable_hash
     else
@@ -34,16 +40,24 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
   end
 
   def destroy
+    authorize @accounts_invitation
+
     @accounts_invitation.destroy
     render json: {status: 200}, status: :ok
   end
 
   def resend
+    authorize @accounts_invitation
+
     @accounts_invitation.resend_invite
     render json: {status: 200}, status: :ok
   end
 
   private
+
+  def pundit_user
+    @account.accounts_shopkeepers.find_by!(shopkeeper: current_shopkeeper)
+  end
 
   def set_account
     @account = current_shopkeeper.accounts.find(params[:account_id])
@@ -64,12 +78,5 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
     params
       .require(:accounts_invitation)
       .permit(:name, AccountsShopkeeper::ROLES)
-  end
-
-  def require_account_admin
-    accounts_shopkeeper = @account.accounts_shopkeepers.find_by(shopkeeper: current_shopkeeper)
-    return if accounts_shopkeeper&.admin?
-
-    render json: {code: 401, error_message: I18n.t("api.shopkeeper.accounts.admin_required")}, status: :unauthorized
   end
 end

@@ -2,11 +2,11 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   before_action :set_account
   before_action :require_non_personal_account!, only: %i[show update destroy]
   before_action :set_accounts_shopkeeper, only: %i[show update destroy]
-  before_action :require_account_admin, except: %i[index show]
   before_action :safeguard_account_owner_deletion!, only: %i[destroy]
-  skip_after_action :verify_authorized
 
   def index
+    authorize AccountsShopkeeper
+
     if @account.personal?
       render json: AccountsShopkeeperSerializer.new([]).serializable_hash and return
     end
@@ -19,6 +19,8 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   end
 
   def show
+    authorize @accounts_shopkeeper
+
     options = {}
     options[:include] = [:account, :shopkeeper]
 
@@ -26,6 +28,8 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   end
 
   def update
+    authorize @accounts_shopkeeper
+
     if @accounts_shopkeeper.update(accounts_shopkeeper_params)
       options = {}
       options[:include] = [:account, :shopkeeper]
@@ -37,11 +41,17 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   end
 
   def destroy
+    authorize @accounts_shopkeeper
+
     @accounts_shopkeeper.destroy
     render json: {status: 200}, status: :ok
   end
 
   private
+
+  def pundit_user
+    @account.accounts_shopkeepers.find_by!(shopkeeper: current_shopkeeper)
+  end
 
   def set_account
     @account = current_shopkeeper.accounts.find(params[:account_id])
@@ -67,12 +77,5 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
     return unless @accounts_shopkeeper.account_owner?
 
     render json: {code: 401, error_message: I18n.t("unauthorized")}, status: :unauthorized
-  end
-
-  def require_account_admin
-    accounts_shopkeeper = @account.accounts_shopkeepers.find_by(shopkeeper: current_shopkeeper)
-    return if accounts_shopkeeper&.admin?
-
-    render json: {code: 401, error_message: I18n.t("api.shopkeeper.accounts.admin_required")}, status: :unauthorized
   end
 end

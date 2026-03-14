@@ -1,8 +1,9 @@
 class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::BaseController
   before_action :set_accounts_invitation
-  skip_after_action :verify_authorized
 
   def show
+    authorize @accounts_invitation, :show_by_token?
+
     if @accounts_invitation.expired?
       render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
       return
@@ -14,6 +15,8 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
   end
 
   def update
+    authorize @accounts_invitation, :accept?
+
     if @accounts_invitation.expired?
       render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
       return
@@ -28,6 +31,8 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
   end
 
   def destroy
+    authorize @accounts_invitation, :reject?
+
     @accounts_invitation.reject!
     render json: {status: 200}, status: :ok
   end

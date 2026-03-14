@@ -8,7 +8,7 @@ services:
     name: nativeapptemplateapi
     plan: standard
     previews:
-      plan: starter
+      plan: standard
     env: ruby
     region: singapore # the region must be consistent across all services for the internal keys to be read
     buildCommand: "./bin/render-build.sh"
