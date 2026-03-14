@@ -90,6 +90,28 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
     assert_equal I18n.t("api.shopkeeper.accounts_invitations.expired"), response.parsed_body["error_message"]
   end
 
+  test "show is accessible by any authenticated shopkeeper" do
+    other_shopkeeper = shopkeepers(:two)
+    other_shopkeeper.create_default_account
+
+    get api_v1_shopkeeper_accounts_invitation_url(@invitation.token),
+      headers: other_shopkeeper.create_new_auth_token
+
+    assert_response :success
+  end
+
+  test "destroy is accessible by any authenticated shopkeeper" do
+    other_shopkeeper = shopkeepers(:two)
+    other_shopkeeper.create_default_account
+
+    assert_difference "AccountsInvitation.count", -1 do
+      delete api_v1_shopkeeper_accounts_invitation_url(@invitation.token),
+        headers: other_shopkeeper.create_new_auth_token
+    end
+
+    assert_response :success
+  end
+
   test "requires authentication" do
     get api_v1_shopkeeper_accounts_invitation_url(@invitation.token)
 

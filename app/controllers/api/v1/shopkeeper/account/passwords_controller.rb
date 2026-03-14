@@ -1,7 +1,7 @@
 class Api::V1::Shopkeeper::Account::PasswordsController < Api::V1::Shopkeeper::BaseController
-  skip_after_action :verify_authorized
-
   def update
+    authorize :password
+
     if current_shopkeeper.update_with_password(password_params)
       render json: {status: 200}, status: :ok
     else

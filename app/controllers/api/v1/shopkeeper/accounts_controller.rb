@@ -1,12 +1,11 @@
 class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseController
   before_action :set_account, only: %i[show update destroy]
-  before_action :require_account_admin, only: %i[update]
-  before_action :require_account_owner, only: %i[destroy]
   before_action :prevent_personal_account_deletion, only: %i[destroy]
-  skip_after_action :verify_authorized
 
   # GET /accounts
   def index
+    authorize Account
+
     accounts = current_shopkeeper.accounts.sorted
     options = {
       params: {current_shopkeeper: current_shopkeeper}
@@ -24,6 +23,8 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
 
   # GET /accounts/1
   def show
+    authorize @account
+
     options = {
       include: [:accounts_shopkeepers, :accounts_invitations],
       params: {current_shopkeeper: current_shopkeeper}
@@ -33,6 +34,8 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
 
   # POST /accounts
   def create
+    authorize Account
+
     account = Account.new(account_params.merge(owner: current_shopkeeper))
     account.accounts_shopkeepers.new(shopkeeper: current_shopkeeper, admin: true)
 
@@ -49,6 +52,8 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
 
   # PATCH/PUT /accounts/1
   def update
+    authorize @account
+
     if @account.update(account_params)
       options = {
         params: {current_shopkeeper: current_shopkeeper}
@@ -61,6 +66,8 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
 
   # DELETE /accounts/1
   def destroy
+    authorize @account
+
     ActsAsTenant.without_tenant do
       @account.destroy
     end
@@ -80,22 +87,17 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
     params.require(:account).permit(:name)
   end
 
+  def pundit_user
+    if @account
+      @account.accounts_shopkeepers.find_by!(shopkeeper: current_shopkeeper)
+    else
+      super
+    end
+  end
+
   def prevent_personal_account_deletion
     return unless @account.personal?
 
     render json: {code: 422, error_message: I18n.t("api.shopkeeper.accounts.personal.cannot_delete")}, status: :unprocessable_entity
-  end
-
-  def require_account_admin
-    accounts_shopkeeper = @account.accounts_shopkeepers.find_by(shopkeeper: current_shopkeeper)
-    return if accounts_shopkeeper&.admin?
-
-    render json: {code: 401, error_message: I18n.t("api.shopkeeper.accounts.admin_required")}, status: :unauthorized
-  end
-
-  def require_account_owner
-    return if @account.owner?(current_shopkeeper)
-
-    render json: {code: 401, error_message: I18n.t("api.shopkeeper.accounts.owner_required")}, status: :unauthorized
   end
 end
