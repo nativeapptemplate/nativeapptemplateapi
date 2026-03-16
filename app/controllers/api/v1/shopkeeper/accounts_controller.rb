@@ -46,7 +46,7 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
 
       render json: AccountSerializer.new(account, options).serializable_hash, status: :created
     else
-      render json: {code: 422, error_message: account.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(account)
     end
   end
 
@@ -60,7 +60,7 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
       }
       render json: AccountSerializer.new(@account, options).serializable_hash
     else
-      render json: {code: 422, error_message: @account.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(@account)
     end
   end
 
@@ -98,6 +98,6 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
   def prevent_personal_account_deletion
     return unless @account.personal?
 
-    render json: {code: 422, error_message: I18n.t("api.shopkeeper.accounts.personal.cannot_delete")}, status: :unprocessable_entity
+    render_error(code: 422, message: I18n.t("api.shopkeeper.accounts.personal.cannot_delete"), status: :unprocessable_entity)
   end
 end

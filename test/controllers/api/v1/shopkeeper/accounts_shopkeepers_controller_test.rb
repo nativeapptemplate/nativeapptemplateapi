@@ -53,6 +53,8 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal I18n.t("api.shopkeeper.accounts_shopkeepers.require_non_personal_account"), response.parsed_body["error_message"]
   end
 
   test "update updates accounts_shopkeeper roles" do
@@ -80,6 +82,16 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
+  end
+
+  test "update returns validation error when owner removes own admin" do
+    patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, @team_accounts_shopkeeper),
+      params: {accounts_shopkeeper: {admin: false, junior_member: true}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert response.parsed_body["error_message"].present?
   end
 
   test "update requires admin role" do
@@ -118,6 +130,8 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unauthorized
+    assert_equal 401, response.parsed_body["code"]
+    assert_equal I18n.t("unauthorized"), response.parsed_body["error_message"]
   end
 
   test "destroy returns error for personal account" do

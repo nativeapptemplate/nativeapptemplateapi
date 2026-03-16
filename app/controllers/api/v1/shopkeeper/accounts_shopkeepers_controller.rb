@@ -36,7 +36,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
 
       render json: AccountsShopkeeperSerializer.new(@accounts_shopkeeper, options).serializable_hash
     else
-      render json: {code: 422, error_message: @accounts_shopkeeper.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(@accounts_shopkeeper)
     end
   end
 
@@ -70,12 +70,12 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   def require_non_personal_account!
     return unless @account.personal?
 
-    render json: {code: 422, error_message: I18n.t("api.shopkeeper.accounts_shopkeepers.require_non_personal_account")}, status: :unprocessable_entity
+    render_error(code: 422, message: I18n.t("api.shopkeeper.accounts_shopkeepers.require_non_personal_account"), status: :unprocessable_entity)
   end
 
   def safeguard_account_owner_deletion!
     return unless @accounts_shopkeeper.account_owner?
 
-    render json: {code: 401, error_message: I18n.t("unauthorized")}, status: :unauthorized
+    render_error(code: 401, message: I18n.t("unauthorized"), status: :unauthorized)
   end
 end

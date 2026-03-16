@@ -29,6 +29,8 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :not_found
+    assert_equal 404, response.parsed_body["code"]
+    assert_equal I18n.t("api.shopkeeper.accounts_invitations.not_found"), response.parsed_body["error_message"]
   end
 
   test "update accepts invitation" do
@@ -57,6 +59,7 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
       headers: shopkeepers(:two).create_new_auth_token
 
     assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
     assert response.parsed_body["error_message"].present?
   end
 
@@ -69,17 +72,18 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
     assert_response :success
   end
 
-  test "show returns 410 gone for expired invitation" do
+  test "show returns 410 for expired invitation" do
     @invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
 
     get api_v1_shopkeeper_accounts_invitation_url(@invitation.token),
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :gone
+    assert_equal 410, response.parsed_body["code"]
     assert_equal I18n.t("api.shopkeeper.accounts_invitations.expired"), response.parsed_body["error_message"]
   end
 
-  test "update returns 410 gone for expired invitation" do
+  test "update returns 410 for expired invitation" do
     @invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
 
     other_shopkeeper = shopkeepers(:two)
@@ -87,6 +91,7 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
       headers: other_shopkeeper.create_new_auth_token
 
     assert_response :gone
+    assert_equal 410, response.parsed_body["code"]
     assert_equal I18n.t("api.shopkeeper.accounts_invitations.expired"), response.parsed_body["error_message"]
   end
 

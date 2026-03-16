@@ -26,6 +26,16 @@ class Api::V1::Shopkeeper::AccountsControllerTest < ActionDispatch::IntegrationT
     assert_equal @team_account.id.to_s, response.parsed_body["data"]["id"]
   end
 
+  test "create returns validation error with blank name" do
+    post api_v1_shopkeeper_accounts_url,
+      params: {account: {name: ""}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_not_nil response.parsed_body["error_message"]
+  end
+
   test "create creates a new account" do
     assert_difference "Account.count", 1 do
       post api_v1_shopkeeper_accounts_url,
@@ -34,6 +44,16 @@ class Api::V1::Shopkeeper::AccountsControllerTest < ActionDispatch::IntegrationT
     end
 
     assert_response :created
+  end
+
+  test "update returns validation error with blank name" do
+    patch api_v1_shopkeeper_account_url(@team_account),
+      params: {account: {name: ""}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_not_nil response.parsed_body["error_message"]
   end
 
   test "update requires admin role" do
@@ -72,6 +92,15 @@ class Api::V1::Shopkeeper::AccountsControllerTest < ActionDispatch::IntegrationT
       headers: other_shopkeeper.create_new_auth_token
 
     assert_response :unauthorized
+  end
+
+  test "destroy prevents personal account deletion" do
+    delete api_v1_shopkeeper_account_url(@account),
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal I18n.t("api.shopkeeper.accounts.personal.cannot_delete"), response.parsed_body["error_message"]
   end
 
   test "destroy succeeds for owner" do

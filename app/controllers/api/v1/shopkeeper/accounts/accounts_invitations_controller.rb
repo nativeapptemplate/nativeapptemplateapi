@@ -25,7 +25,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
     if accounts_invitation.save_and_send_invite
       render json: AccountsInvitationSerializer.new(accounts_invitation).serializable_hash, status: :created
     else
-      render json: {code: 422, error_message: accounts_invitation.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(accounts_invitation)
     end
   end
 
@@ -35,7 +35,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Sh
     if @accounts_invitation.update(invitation_params_update)
       render json: AccountsInvitationSerializer.new(@accounts_invitation).serializable_hash
     else
-      render json: {code: 422, error_message: @accounts_invitation.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(@accounts_invitation)
     end
   end
 
