@@ -25,9 +25,6 @@ class Shopkeeper < ApplicationRecord
     presence: true,
     inclusion: {in: %w[ios android]}
 
-  scope :android, -> { where(current_platform: "android") }
-  scope :ios, -> { where(current_platform: "ios") }
-
   # override devise method to include additional info as opts hash
   def send_confirmation_instructions(opts = {})
     generate_confirmation_token! unless @raw_confirmation_token

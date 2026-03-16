@@ -12,9 +12,6 @@ class AccountsInvitation < ApplicationRecord
 
   before_create :set_token
 
-  scope :active, -> { where(created_at: EXPIRES_IN.ago..) }
-  scope :expired, -> { where(created_at: ...EXPIRES_IN.ago) }
-
   def expired?
     created_at < EXPIRES_IN.ago
   end

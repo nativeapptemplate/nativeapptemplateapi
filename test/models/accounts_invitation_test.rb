@@ -299,27 +299,6 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     end
   end
 
-  test "active scope returns non-expired invitations" do
-    active_invitation = AccountsInvitation.create!(
-      account: @account,
-      name: "Active User",
-      email: "active_scope@example.com",
-      junior_member: true
-    )
-
-    expired_invitation = AccountsInvitation.create!(
-      account: @account,
-      name: "Expired User",
-      email: "expired_scope@example.com",
-      junior_member: true
-    )
-    expired_invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
-
-    active_invitations = AccountsInvitation.active
-    assert_includes active_invitations, active_invitation
-    assert_not_includes active_invitations, expired_invitation
-  end
-
   test "resend_invite touches created_at and sends invite" do
     invitation = AccountsInvitation.create!(
       account: @account,

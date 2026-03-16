@@ -66,20 +66,6 @@ class ShopkeeperTest < ActiveSupport::TestCase
     assert shopkeeper.valid?
   end
 
-  test "android scope returns android shopkeepers" do
-    shopkeeper = shopkeepers(:one)
-    shopkeeper.update!(current_platform: "android")
-
-    assert_includes Shopkeeper.android, shopkeeper
-  end
-
-  test "ios scope returns ios shopkeepers" do
-    shopkeeper = shopkeepers(:one)
-    shopkeeper.update!(current_platform: "ios")
-
-    assert_includes Shopkeeper.ios, shopkeeper
-  end
-
   test "should have many shops through accounts" do
     shopkeeper = shopkeepers(:one)
     shopkeeper.create_default_account
