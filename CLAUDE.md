@@ -173,3 +173,7 @@ bin/rails test
 1. Create job class in `app/jobs/`
 2. Specify queue with `queue_as :default` (or :critical, :low, etc.)
 3. Call with `MyJob.perform_later(args)`
+
+## Testing Policy
+
+Create test passing all of path including unhappy path. Creating and updating that test is must.

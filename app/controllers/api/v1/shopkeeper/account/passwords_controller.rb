@@ -5,7 +5,7 @@ class Api::V1::Shopkeeper::Account::PasswordsController < Api::V1::Shopkeeper::B
     if current_shopkeeper.update_with_password(password_params)
       render json: {status: 200}, status: :ok
     else
-      render json: {code: 422, error_message: current_shopkeeper.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(current_shopkeeper)
     end
   end
 

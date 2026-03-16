@@ -5,8 +5,7 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
     authorize @accounts_invitation, :show_by_token?
 
     if @accounts_invitation.expired?
-      render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
-      return
+      return render_error(code: 410, message: I18n.t("api.shopkeeper.accounts_invitations.expired"), status: :gone)
     end
 
     options = {}
@@ -18,15 +17,14 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
     authorize @accounts_invitation, :accept?
 
     if @accounts_invitation.expired?
-      render json: {code: 410, error_message: I18n.t("api.shopkeeper.accounts_invitations.expired")}, status: :gone
-      return
+      return render_error(code: 410, message: I18n.t("api.shopkeeper.accounts_invitations.expired"), status: :gone)
     end
 
     if @accounts_invitation.accept!(current_shopkeeper)
       render json: {status: 200}, status: :ok
     else
       error_message = @accounts_invitation.errors.full_messages.first || I18n.t("something_went_wrong")
-      render json: {code: 422, error_message: error_message}, status: :unprocessable_entity
+      render_error(code: 422, message: error_message, status: :unprocessable_entity)
     end
   end
 
@@ -42,6 +40,6 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
   def set_accounts_invitation
     @accounts_invitation = AccountsInvitation.find_by!(token: params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: {code: 404, error_message: I18n.t("api.shopkeeper.accounts_invitations.not_found")}, status: :not_found
+    render_error(code: 404, message: I18n.t("api.shopkeeper.accounts_invitations.not_found"), status: :not_found)
   end
 end

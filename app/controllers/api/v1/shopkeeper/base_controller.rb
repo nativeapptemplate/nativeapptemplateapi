@@ -23,7 +23,15 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   private
 
+  def render_validation_error(record)
+    render json: {code: 422, error_message: record.errors.full_messages.to_sentence}, status: :unprocessable_entity
+  end
+
+  def render_error(code:, message:, status:)
+    render json: {code: code, error_message: message}, status: status
+  end
+
   def user_not_authorized
-    render json: {code: 401, error_message: I18n.t("unauthorized")}, status: :unauthorized
+    render_error(code: 401, message: I18n.t("unauthorized"), status: :unauthorized)
   end
 end

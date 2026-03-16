@@ -32,7 +32,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
     if shop.save
       render json: ShopSerializer.new(shop).serializable_hash, status: :created
     else
-      render json: {code: 422, error_message: shop.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(shop)
     end
   end
 
@@ -42,7 +42,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
     if @shop.update(shop_params_update)
       render json: ShopSerializer.new(@shop).serializable_hash
     else
-      render json: {code: 422, error_message: @shop.errors.full_messages.to_sentence}, status: :unprocessable_entity
+      render_validation_error(@shop)
     end
   end
 

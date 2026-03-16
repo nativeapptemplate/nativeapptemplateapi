@@ -69,6 +69,8 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     end
 
     assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert response.parsed_body["error_message"].present?
   end
 
   test "create requires admin role" do
@@ -118,6 +120,8 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert response.parsed_body["error_message"].present?
   end
 
   test "update requires admin role" do
@@ -158,16 +162,23 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     assert_response :unauthorized
   end
 
-  test "resend sends invitation email again and touches created_at" do
-    original_created_at = @invitation.created_at
+  test "resend sends invitation email again" do
+    post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
+      headers: @shopkeeper.create_new_auth_token
 
-    travel_to(1.hour.from_now) do
-      post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
-        headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    assert_enqueued_emails 1
+  end
 
-      assert_response :success
-      assert @invitation.reload.created_at > original_created_at
-    end
+  test "resend resets expiration for expired invitation" do
+    @invitation.update_column(:created_at, (AccountsInvitation::EXPIRES_IN + 1.minute).ago)
+    assert @invitation.expired?
+
+    post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :success
+    assert_not @invitation.reload.expired?
   end
 
   test "resend requires admin role" do
