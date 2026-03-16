@@ -43,27 +43,6 @@ class AccountTest < ActiveSupport::TestCase
     assert_not_includes Account.team, personal_account
   end
 
-  test "personal_account_for? returns true for owner's personal account" do
-    account = Account.create!(name: "Personal", owner: @shopkeeper, personal: true)
-    assert account.personal_account_for?(@shopkeeper)
-  end
-
-  test "personal_account_for? returns false for team account" do
-    account = Account.create!(name: "Team", owner: @shopkeeper, personal: false)
-    assert_not account.personal_account_for?(@shopkeeper)
-  end
-
-  test "owner? returns true for account owner" do
-    account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    assert account.owner?(@shopkeeper)
-  end
-
-  test "owner? returns false for non-owner" do
-    other_shopkeeper = shopkeepers(:two)
-    account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    assert_not account.owner?(other_shopkeeper)
-  end
-
   test "admin? returns true when shopkeeper is admin" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
     AccountsShopkeeper.create!(

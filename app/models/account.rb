@@ -14,19 +14,11 @@ class Account < ApplicationRecord
 
   after_create :create_default_shop!
 
-  def personal_account_for?(shopkeeper)
-    personal? && owner?(shopkeeper)
-  end
-
   def admin?(shopkeeper)
     accounts_shopkeeper = AccountsShopkeeper.find_by(account: self, shopkeeper: shopkeeper)
     return false if accounts_shopkeeper.blank?
 
     accounts_shopkeeper.admin?
-  end
-
-  def owner?(user)
-    owner_id == user.id
   end
 
   private
