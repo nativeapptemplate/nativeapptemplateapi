@@ -17,20 +17,8 @@ class AccountsShopkeeper < ApplicationRecord
   end
 
   def permissions
-    role = if admin?
-      Role.find_by(tag: "admin")
-    elsif senior_manager?
-      Role.find_by(tag: "senior_manager")
-    elsif junior_manager?
-      Role.find_by(tag: "junior_manager")
-    elsif senior_member?
-      Role.find_by(tag: "senior_member")
-    elsif junior_member?
-      Role.find_by(tag: "junior_member")
-    elsif guest?
-      Role.find_by(tag: "guest")
-    end
-
+    role_tag = active_roles.first&.to_s
+    role = Role.find_by!(tag: role_tag)
     role.permissions
   end
 

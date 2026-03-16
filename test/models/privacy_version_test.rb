@@ -73,6 +73,11 @@ class PrivacyVersionTest < ActiveSupport::TestCase
     assert_equal 5, PrivacyVersion.current_version
   end
 
+  test "current_version returns nil when no current version exists" do
+    PrivacyVersion.update_all(current_type: :uncurrent)
+    assert_nil PrivacyVersion.current_version
+  end
+
   test "should load from fixtures" do
     assert PrivacyVersion.count > 0
 
