@@ -1,0 +1,1540 @@
+openapi: 3.1.0
+info:
+  title: NativeAppTemplate API
+  description: REST API for multi-tenant SaaS backend serving NativeAppTemplate iOS/Android mobile applications. Shopkeepers authenticate via token-based auth to manage shops and item tags.
+  version: 1.0.0
+
+servers:
+  - url: /api/v1/shopkeeper
+    description: Shopkeeper API
+
+security:
+  - tokenAuth: []
+
+components:
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: access-token
+      description: |
+        Token-based authentication via devise_token_auth.
+        Required headers: `access-token`, `client`, `uid`, `token-type: Bearer`.
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        error_message:
+          type: string
+
+    # --- Resources ---
+
+    ShopAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: ['string', 'null']
+        time_zone:
+          type: string
+        item_tags_count:
+          type: integer
+        scanned_item_tags_count:
+          type: integer
+        completed_item_tags_count:
+          type: integer
+        display_shop_server_path:
+          type: string
+
+    Shop:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [shop]
+        attributes:
+          $ref: '#/components/schemas/ShopAttributes'
+        relationships:
+          type: object
+          properties:
+            account:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [account]
+
+    ItemTagAttributes:
+      type: object
+      properties:
+        shop_id:
+          type: string
+          format: uuid
+        queue_number:
+          type: string
+        state:
+          type: string
+          enum: [idled, completed]
+        scan_state:
+          type: string
+          enum: [unscanned, scanned]
+        customer_read_at:
+          type: ['string', 'null']
+          format: date-time
+        completed_at:
+          type: ['string', 'null']
+          format: date-time
+        already_completed:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        shop_name:
+          type: string
+
+    ItemTag:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [item_tag]
+        attributes:
+          $ref: '#/components/schemas/ItemTagAttributes'
+        relationships:
+          type: object
+          properties:
+            shop:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [shop]
+
+    AccountAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+        owner_id:
+          type: string
+          format: uuid
+        personal:
+          type: boolean
+        is_admin:
+          type: boolean
+        owner_name:
+          type: string
+        accounts_shopkeepers_count:
+          type: integer
+        accounts_invitations_count:
+          type: integer
+        shops_count:
+          type: integer
+
+    Account:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [account]
+        attributes:
+          $ref: '#/components/schemas/AccountAttributes'
+        relationships:
+          type: object
+          properties:
+            owner:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [shopkeeper]
+            accounts_shopkeepers:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      type:
+                        type: string
+                        enum: [accounts_shopkeeper]
+            accounts_invitations:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      type:
+                        type: string
+                        enum: [accounts_invitation]
+
+    ShopkeeperAttributes:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        time_zone:
+          type: string
+        locale:
+          type: string
+
+    Shopkeeper:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [shopkeeper]
+        attributes:
+          $ref: '#/components/schemas/ShopkeeperAttributes'
+
+    AccountsShopkeeperAttributes:
+      type: object
+      properties:
+        account_id:
+          type: string
+          format: uuid
+        shopkeeper_id:
+          type: string
+          format: uuid
+        admin:
+          type: boolean
+        senior_manager:
+          type: boolean
+        junior_manager:
+          type: boolean
+        senior_member:
+          type: boolean
+        junior_member:
+          type: boolean
+        guest:
+          type: boolean
+
+    AccountsShopkeeper:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [accounts_shopkeeper]
+        attributes:
+          $ref: '#/components/schemas/AccountsShopkeeperAttributes'
+        relationships:
+          type: object
+          properties:
+            account:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [account]
+            shopkeeper:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [shopkeeper]
+
+    AccountsInvitationAttributes:
+      type: object
+      properties:
+        account_id:
+          type: string
+          format: uuid
+        invited_by_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        token:
+          type: string
+        email:
+          type: string
+          format: email
+        admin:
+          type: boolean
+        senior_manager:
+          type: boolean
+        junior_manager:
+          type: boolean
+        senior_member:
+          type: boolean
+        junior_member:
+          type: boolean
+        guest:
+          type: boolean
+
+    AccountsInvitation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [accounts_invitation]
+        attributes:
+          $ref: '#/components/schemas/AccountsInvitationAttributes'
+        relationships:
+          type: object
+          properties:
+            account:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [account]
+            invited_by:
+              type: object
+              properties:
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      format: uuid
+                    type:
+                      type: string
+                      enum: [shopkeeper]
+
+    PermissionAttributes:
+      type: object
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Permission:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [permission]
+        attributes:
+          $ref: '#/components/schemas/PermissionAttributes'
+
+    # --- Request bodies ---
+
+    ShopCreateRequest:
+      type: object
+      required: [shop]
+      properties:
+        shop:
+          type: object
+          required: [name, time_zone]
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            time_zone:
+              type: string
+
+    ShopUpdateRequest:
+      type: object
+      required: [shop]
+      properties:
+        shop:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            time_zone:
+              type: string
+
+    ItemTagCreateRequest:
+      type: object
+      required: [item_tag]
+      properties:
+        item_tag:
+          type: object
+          required: [queue_number]
+          properties:
+            queue_number:
+              type: string
+
+    ItemTagUpdateRequest:
+      type: object
+      required: [item_tag]
+      properties:
+        item_tag:
+          type: object
+          properties:
+            queue_number:
+              type: string
+
+    AccountCreateRequest:
+      type: object
+      required: [account]
+      properties:
+        account:
+          type: object
+          required: [name]
+          properties:
+            name:
+              type: string
+
+    AccountUpdateRequest:
+      type: object
+      required: [account]
+      properties:
+        account:
+          type: object
+          properties:
+            name:
+              type: string
+
+    AccountsShopkeeperUpdateRequest:
+      type: object
+      required: [accounts_shopkeeper]
+      properties:
+        accounts_shopkeeper:
+          type: object
+          properties:
+            admin:
+              type: boolean
+            senior_manager:
+              type: boolean
+            junior_manager:
+              type: boolean
+            senior_member:
+              type: boolean
+            junior_member:
+              type: boolean
+            guest:
+              type: boolean
+
+    AccountsInvitationCreateRequest:
+      type: object
+      required: [accounts_invitation]
+      properties:
+        accounts_invitation:
+          type: object
+          required: [name, email]
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              format: email
+            admin:
+              type: boolean
+            senior_manager:
+              type: boolean
+            junior_manager:
+              type: boolean
+            senior_member:
+              type: boolean
+            junior_member:
+              type: boolean
+            guest:
+              type: boolean
+
+    AccountsInvitationUpdateRequest:
+      type: object
+      required: [accounts_invitation]
+      properties:
+        accounts_invitation:
+          type: object
+          properties:
+            name:
+              type: string
+            admin:
+              type: boolean
+            senior_manager:
+              type: boolean
+            junior_manager:
+              type: boolean
+            senior_member:
+              type: boolean
+            junior_member:
+              type: boolean
+            guest:
+              type: boolean
+
+    PasswordUpdateRequest:
+      type: object
+      required: [shopkeeper]
+      properties:
+        shopkeeper:
+          type: object
+          required: [current_password, password, password_confirmation]
+          properties:
+            current_password:
+              type: string
+            password:
+              type: string
+            password_confirmation:
+              type: string
+
+    # --- Response wrappers ---
+
+    JsonApiResponse:
+      type: object
+      properties:
+        data:
+          oneOf:
+            - type: object
+            - type: array
+              items:
+                type: object
+        included:
+          type: array
+          items:
+            type: object
+        meta:
+          type: object
+
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          enum: [200]
+
+  responses:
+    Unauthorized:
+      description: Not authenticated or not authorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            error_message: Unauthorized
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            error_message: Not found
+
+    Gone:
+      description: Resource expired or no longer available
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 410
+            error_message: Invitation has expired
+
+    UnprocessableEntity:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 422
+            error_message: Name can't be blank
+
+tags:
+  - name: Permissions
+    description: Retrieve permissions and app configuration metadata
+  - name: Me
+    description: Current shopkeeper profile actions
+  - name: Account
+    description: Current shopkeeper account settings (password)
+  - name: Shops
+    description: CRUD operations on shops
+  - name: Item Tags
+    description: CRUD and state operations on item tags within shops
+  - name: Accounts
+    description: CRUD operations on accounts (organizations)
+  - name: Members
+    description: Manage account members (accounts_shopkeepers)
+  - name: Invitations
+    description: Manage account invitations (scoped to an account)
+  - name: Accounts Invitations
+    description: Accept or reject invitations by token (top-level)
+
+paths:
+  # ──────────────── Permissions ────────────────
+  /permissions:
+    get:
+      operationId: listPermissions
+      summary: List permissions with app config metadata
+      tags: [Permissions]
+      responses:
+        '200':
+          description: Permissions list with meta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Permission'
+                  meta:
+                    type: object
+                    properties:
+                      ios_app_version:
+                        type: string
+                      android_app_version:
+                        type: string
+                      should_update_privacy:
+                        type: boolean
+                      should_update_terms:
+                        type: boolean
+                      maximum_queue_number_length:
+                        type: integer
+                      shop_limit_count:
+                        type: integer
+                      account_limit_count:
+                        type: integer
+                      accounts_shopkeeper_limit_count:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ──────────────── Me ────────────────
+  /me/update_confirmed_privacy_version:
+    patch:
+      operationId: updateConfirmedPrivacyVersion
+      summary: Confirm current privacy version
+      tags: [Me]
+      responses:
+        '200':
+          description: Privacy version confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /me/update_confirmed_terms_version:
+    patch:
+      operationId: updateConfirmedTermsVersion
+      summary: Confirm current terms version
+      tags: [Me]
+      responses:
+        '200':
+          description: Terms version confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ──────────────── Account / Password ────────────────
+  /account/password:
+    patch:
+      operationId: updatePassword
+      summary: Update current shopkeeper password
+      tags: [Account]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordUpdateRequest'
+      responses:
+        '200':
+          description: Password updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────── Shops ────────────────
+  /shops:
+    get:
+      operationId: listShops
+      summary: List shops for current account
+      tags: [Shops]
+      responses:
+        '200':
+          description: Shop list with meta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+                  meta:
+                    type: object
+                    properties:
+                      limit_count:
+                        type: integer
+                      created_shops_count:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: createShop
+      summary: Create a new shop
+      tags: [Shops]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopCreateRequest'
+      responses:
+        '201':
+          description: Shop created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /shops/{shopId}:
+    parameters:
+      - name: shopId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getShop
+      summary: Get a shop
+      tags: [Shops]
+      responses:
+        '200':
+          description: Shop detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      operationId: updateShop
+      summary: Update a shop
+      tags: [Shops]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShopUpdateRequest'
+      responses:
+        '200':
+          description: Shop updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteShop
+      summary: Delete a shop
+      tags: [Shops]
+      responses:
+        '200':
+          description: Shop deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /shops/{shopId}/reset:
+    parameters:
+      - name: shopId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    delete:
+      operationId: resetShop
+      summary: Reset all item tags in a shop
+      tags: [Shops]
+      responses:
+        '200':
+          description: Shop reset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ──────────────── Item Tags ────────────────
+  /shops/{shopId}/item_tags:
+    parameters:
+      - name: shopId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: listItemTags
+      summary: List item tags for a shop
+      tags: [Item Tags]
+      responses:
+        '200':
+          description: Item tag list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ItemTag'
+                  included:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: createItemTag
+      summary: Create an item tag in a shop
+      tags: [Item Tags]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemTagCreateRequest'
+      responses:
+        '201':
+          description: Item tag created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemTag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /item_tags/{itemTagId}:
+    parameters:
+      - name: itemTagId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getItemTag
+      summary: Get an item tag
+      tags: [Item Tags]
+      responses:
+        '200':
+          description: Item tag detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemTag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      operationId: updateItemTag
+      summary: Update an item tag
+      tags: [Item Tags]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemTagUpdateRequest'
+      responses:
+        '200':
+          description: Item tag updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemTag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteItemTag
+      summary: Delete an item tag
+      tags: [Item Tags]
+      responses:
+        '200':
+          description: Item tag deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /item_tags/{itemTagId}/complete:
+    parameters:
+      - name: itemTagId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      operationId: completeItemTag
+      summary: Mark an item tag as completed
+      tags: [Item Tags]
+      responses:
+        '200':
+          description: Item tag completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemTag'
+                  included:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /item_tags/{itemTagId}/reset:
+    parameters:
+      - name: itemTagId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    patch:
+      operationId: resetItemTag
+      summary: Reset an item tag to initial state
+      tags: [Item Tags]
+      responses:
+        '200':
+          description: Item tag reset
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ItemTag'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ──────────────── Accounts ────────────────
+  /accounts:
+    get:
+      operationId: listAccounts
+      summary: List accounts for current shopkeeper
+      tags: [Accounts]
+      responses:
+        '200':
+          description: Account list with meta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Account'
+                  meta:
+                    type: object
+                    properties:
+                      limit_count:
+                        type: integer
+                      created_accounts_count:
+                        type: integer
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: createAccount
+      summary: Create a new account
+      tags: [Accounts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCreateRequest'
+      responses:
+        '201':
+          description: Account created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /accounts/{accountId}:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getAccount
+      summary: Get an account with members and invitations
+      tags: [Accounts]
+      responses:
+        '200':
+          description: Account detail with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Account'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/AccountsShopkeeper'
+                        - $ref: '#/components/schemas/AccountsInvitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      operationId: updateAccount
+      summary: Update an account
+      tags: [Accounts]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateRequest'
+      responses:
+        '200':
+          description: Account updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Account'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteAccount
+      summary: Delete an account (cannot delete personal account)
+      tags: [Accounts]
+      responses:
+        '200':
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────── Members (AccountsShopkeepers) ────────────────
+  /accounts/{accountId}/members:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: listMembers
+      summary: List members of an account
+      tags: [Members]
+      responses:
+        '200':
+          description: Members list with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AccountsShopkeeper'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Account'
+                        - $ref: '#/components/schemas/Shopkeeper'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /accounts/{accountId}/members/{memberId}:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: memberId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getMember
+      summary: Get a member
+      tags: [Members]
+      responses:
+        '200':
+          description: Member detail with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsShopkeeper'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Account'
+                        - $ref: '#/components/schemas/Shopkeeper'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    patch:
+      operationId: updateMember
+      summary: Update a member's roles
+      tags: [Members]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountsShopkeeperUpdateRequest'
+      responses:
+        '200':
+          description: Member updated with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsShopkeeper'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Account'
+                        - $ref: '#/components/schemas/Shopkeeper'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteMember
+      summary: Remove a member from an account
+      tags: [Members]
+      responses:
+        '200':
+          description: Member removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────── Invitations (scoped to account) ────────────────
+  /accounts/{accountId}/invitations:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: listInvitations
+      summary: List invitations for an account
+      tags: [Invitations]
+      responses:
+        '200':
+          description: Invitations list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AccountsInvitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      operationId: createInvitation
+      summary: Create and send an invitation
+      tags: [Invitations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountsInvitationCreateRequest'
+      responses:
+        '201':
+          description: Invitation created and sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsInvitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  /accounts/{accountId}/invitations/{invitationId}:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    get:
+      operationId: getInvitation
+      summary: Get an invitation with account and inviter details
+      tags: [Invitations]
+      responses:
+        '200':
+          description: Invitation detail with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsInvitation'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Account'
+                        - $ref: '#/components/schemas/Shopkeeper'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      operationId: updateInvitation
+      summary: Update an invitation
+      tags: [Invitations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountsInvitationUpdateRequest'
+      responses:
+        '200':
+          description: Invitation updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsInvitation'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteInvitation
+      summary: Delete an invitation
+      tags: [Invitations]
+      responses:
+        '200':
+          description: Invitation deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /accounts/{accountId}/invitations/{invitationId}/resend:
+    parameters:
+      - name: accountId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: invitationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    post:
+      operationId: resendInvitation
+      summary: Resend an invitation email
+      tags: [Invitations]
+      responses:
+        '200':
+          description: Invitation resent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ──────────────── Accounts Invitations (by token) ────────────────
+  /accounts_invitations/{token}:
+    parameters:
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      operationId: getAccountsInvitationByToken
+      summary: View an invitation by token
+      tags: [Accounts Invitations]
+      responses:
+        '200':
+          description: Invitation detail with included relationships
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/AccountsInvitation'
+                  included:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/Account'
+                        - $ref: '#/components/schemas/Shopkeeper'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          $ref: '#/components/responses/Gone'
+
+    patch:
+      operationId: acceptInvitation
+      summary: Accept an invitation
+      tags: [Accounts Invitations]
+      responses:
+        '200':
+          description: Invitation accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          $ref: '#/components/responses/Gone'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: rejectInvitation
+      summary: Reject an invitation
+      tags: [Accounts Invitations]
+      responses:
+        '200':
+          description: Invitation rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
