@@ -3,11 +3,10 @@ class AppVersion < ApplicationRecord
   enum :forced_update_type, {unforced_update: 1, forced_update: 2}
 
   def self.current_version(platform:)
-    AppVersion
-      .current
+    current
       .where(platform: platform)
       .order(version: :desc)
       .first
-      .version
+      &.version
   end
 end

@@ -99,6 +99,20 @@ class AppVersionTest < ActiveSupport::TestCase
     assert_equal 5, AppVersion.current_version(platform: "android")
   end
 
+  test "current_version returns nil for nonexistent platform" do
+    assert_nil AppVersion.current_version(platform: "nonexistent")
+  end
+
+  test "current_version respects chained scopes" do
+    version = AppVersion.forced_update.current_version(platform: "ios")
+    assert_not_nil version
+
+    # unforced_update scope should not find forced_update records
+    AppVersion.where(platform: "ios").update_all(forced_update_type: :forced_update)
+    version = AppVersion.unforced_update.current_version(platform: "ios")
+    assert_nil version
+  end
+
   test "should load from fixtures" do
     assert AppVersion.count > 0
 

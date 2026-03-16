@@ -73,6 +73,11 @@ class TermsVersionTest < ActiveSupport::TestCase
     assert_equal 5, TermsVersion.current_version
   end
 
+  test "current_version returns nil when no current version exists" do
+    TermsVersion.update_all(current_type: :uncurrent)
+    assert_nil TermsVersion.current_version
+  end
+
   test "should load from fixtures" do
     assert TermsVersion.count > 0
 
