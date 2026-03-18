@@ -5,6 +5,8 @@ info:
   version: 1.0.0
 
 servers:
+  - url: /
+    description: Shopkeeper Auth
   - url: /api/v1/shopkeeper
     description: Shopkeeper API
 
@@ -391,6 +393,41 @@ components:
         attributes:
           $ref: '#/components/schemas/PermissionAttributes'
 
+    # --- Auth Resources ---
+
+    ShopkeeperSignIn:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        uid:
+          type: string
+          format: email
+        time_zone:
+          type: string
+        locale:
+          type: string
+        token:
+          type: string
+        client:
+          type: string
+        expiry:
+          type: integer
+        account_id:
+          type: string
+          format: uuid
+        personal_account_id:
+          type: string
+          format: uuid
+        account_owner_id:
+          type: string
+          format: uuid
+        account_name:
+          type: string
+
     # --- Request bodies ---
 
     ShopCreateRequest:
@@ -532,6 +569,71 @@ components:
             guest:
               type: boolean
 
+    SignUpRequest:
+      type: object
+      required: [name, email, password, time_zone, current_platform]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        time_zone:
+          type: string
+        current_platform:
+          type: string
+          enum: [ios, android]
+
+    SignInRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    AccountUpdateAuthRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        time_zone:
+          type: string
+
+    ConfirmationRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+
+    ForgotPasswordRequest:
+      type: object
+      required: [email, redirect_url]
+      properties:
+        email:
+          type: string
+          format: email
+        redirect_url:
+          type: string
+
+    ResetPasswordRequest:
+      type: object
+      required: [password, password_confirmation]
+      properties:
+        password:
+          type: string
+        password_confirmation:
+          type: string
+
     PasswordUpdateRequest:
       type: object
       required: [shopkeeper]
@@ -572,6 +674,14 @@ components:
           type: integer
           enum: [200]
 
+    SuccessMessageResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
   responses:
     Unauthorized:
       description: Not authenticated or not authorized
@@ -603,6 +713,16 @@ components:
             code: 410
             error_message: Invitation has expired
 
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 400
+            error_message: Validation failed
+
     UnprocessableEntity:
       description: Validation error
       content:
@@ -614,6 +734,14 @@ components:
             error_message: Name can't be blank
 
 tags:
+  - name: Auth - Registration
+    description: Shopkeeper sign-up, account update, and account deletion
+  - name: Auth - Sessions
+    description: Shopkeeper sign-in and sign-out
+  - name: Auth - Confirmation
+    description: Email confirmation for shopkeeper accounts
+  - name: Auth - Password Reset
+    description: Forgot password and reset password flow
   - name: Permissions
     description: Retrieve permissions and app configuration metadata
   - name: Me
@@ -634,6 +762,269 @@ tags:
     description: Accept or reject invitations by token (top-level)
 
 paths:
+  # ──────────────── Auth - Registration ────────────────
+  /shopkeeper_auth:
+    post:
+      operationId: signUp
+      summary: Register a new shopkeeper
+      tags: [Auth - Registration]
+      security: []
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: Shopkeeper registered (confirmation email sent)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopkeeperSignIn'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    patch:
+      operationId: updateAuthAccount
+      summary: Update shopkeeper account info
+      tags: [Auth - Registration]
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdateAuthRequest'
+      responses:
+        '200':
+          description: Account updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopkeeperSignIn'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+    delete:
+      operationId: deleteAuthAccount
+      summary: Delete shopkeeper account
+      tags: [Auth - Registration]
+      servers:
+        - url: /
+      responses:
+        '200':
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+
+  # ──────────────── Auth - Sessions ────────────────
+  /shopkeeper_auth/sign_in:
+    post:
+      operationId: signIn
+      summary: Sign in a shopkeeper
+      tags: [Auth - Sessions]
+      security: []
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Signed in successfully
+          headers:
+            access-token:
+              schema:
+                type: string
+              description: Authentication token
+            client:
+              schema:
+                type: string
+              description: Client identifier
+            uid:
+              schema:
+                type: string
+              description: User email
+            expiry:
+              schema:
+                type: string
+              description: Token expiry timestamp
+            token-type:
+              schema:
+                type: string
+              description: Always "Bearer"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShopkeeperSignIn'
+        '401':
+          description: Not confirmed or bad credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                not_confirmed:
+                  value:
+                    code: 401
+                    error_message: devise_token_auth.sessions.not_confirmed
+                bad_credentials:
+                  value:
+                    code: 401
+                    error_message: devise_token_auth.sessions.bad_credentials
+
+  /shopkeeper_auth/sign_out:
+    delete:
+      operationId: signOut
+      summary: Sign out a shopkeeper
+      tags: [Auth - Sessions]
+      servers:
+        - url: /
+      responses:
+        '200':
+          description: Signed out successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 404
+                error_message: devise_token_auth.sessions.user_not_found
+
+  # ──────────────── Auth - Confirmation ────────────────
+  /shopkeeper_auth/confirmation:
+    post:
+      operationId: resendConfirmation
+      summary: Resend confirmation email
+      tags: [Auth - Confirmation]
+      security: []
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmationRequest'
+      responses:
+        '200':
+          description: Confirmation email sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessageResponse'
+        '401':
+          description: Missing email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 401
+                error_message: devise_token_auth.confirmations.missing_email
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 404
+                error_message: devise_token_auth.confirmations.user_not_found
+
+  # ──────────────── Auth - Password Reset ────────────────
+  /shopkeeper_auth/password:
+    post:
+      operationId: forgotPassword
+      summary: Request a password reset email
+      tags: [Auth - Password Reset]
+      security: []
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordRequest'
+      responses:
+        '200':
+          description: Password reset email sent (or paranoid response)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          description: Missing email or redirect URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missing_email:
+                  value:
+                    code: 401
+                    error_message: devise_token_auth.passwords.missing_email
+                missing_redirect_url:
+                  value:
+                    code: 401
+                    error_message: devise_token_auth.passwords.missing_redirect_url
+        '422':
+          description: Redirect URL not allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 422
+                error_message: devise_token_auth.passwords.not_allowed_redirect_url
+
+    patch:
+      operationId: resetPassword
+      summary: Reset password with token
+      tags: [Auth - Password Reset]
+      security: []
+      servers:
+        - url: /
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessageResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
   # ──────────────── Permissions ────────────────
   /permissions:
     get:
