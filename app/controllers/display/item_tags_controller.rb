@@ -4,11 +4,9 @@ class Display::ItemTagsController < Display::BaseController
   def completings
     items_count = 9
 
-    # Use pagy method because pagy_countless method causes Pagy::OverflowError.
     @pagy, @completed_item_tags = pagy(
       @shop.item_tags.completed.sorted,
-      limit: items_count,
-      cycle: true
+      limit: items_count
     )
 
     @type = params[:type]

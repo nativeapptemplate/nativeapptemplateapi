@@ -2,4 +2,5 @@
 # CVEs that are not relevant to the application can be enumerated on the ignore list below.
 
 ignore:
-  - CVE-THAT-DOES-NOT-APPLY
+  # devise 5.0.3+ fixes this, but devise_token_auth ~> 1.2 pins devise < 5
+  - CVE-2026-32700
