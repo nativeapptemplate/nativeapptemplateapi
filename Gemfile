@@ -21,7 +21,7 @@ gem "turbo-rails", "~> 2.0.3"
 gem "stimulus-rails", "~> 1.0", ">= 1.0.2"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder", "~> 2.12"
+gem "jbuilder", "~> 2.14"
 
 # Solid adapters for queue, cache, and cable (database-backed, no Redis needed)
 gem "solid_queue"
@@ -41,19 +41,19 @@ gem "image_processing", "~> 1.12"
 # Security update
 gem "nokogiri", ">= 1.12.5"
 
-gem "devise_token_auth", "~> 1.2", ">= 1.2.2"
+gem "devise_token_auth", "~> 1.2", ">= 1.2.6"
 gem "jsonapi-serializer"
 gem "pundit"
 gem "aasm"
 # https://github.com/aasm/aasm
-gem "after_commit_everywhere", "~> 1.4"
+gem "after_commit_everywhere", "~> 1.6"
 gem "config"
 gem "acts_as_tenant"
-gem "inline_svg", "~> 1.6"
+gem "inline_svg", "~> 1.10"
 gem "pagy", "~> 43"
 gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
-gem "madmin", github: "excid3/madmin"
+gem "madmin", "~> 2.0"
 gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 3.0"
