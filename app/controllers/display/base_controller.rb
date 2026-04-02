@@ -1,5 +1,5 @@
 module Display
   class BaseController < NonApiApplicationController
-    include Pagy::Backend
+    include Pagy::Method
   end
 end
