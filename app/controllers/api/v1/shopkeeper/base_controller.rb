@@ -3,6 +3,7 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
   include SetCurrentRequestDetails
   include Pundit::Authorization
   include CurrentShopkeeperHelper
+  include Pagy::Method
 
   before_action :authenticate_shopkeeper!
   after_action :verify_authorized
@@ -33,5 +34,14 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   def user_not_authorized
     render_error(code: 401, message: I18n.t("unauthorized"), status: :unauthorized)
+  end
+
+  def pagy_meta(pagy)
+    {
+      current_page: pagy.page,
+      total_pages: pagy.pages,
+      total_count: pagy.count,
+      limit: pagy.limit
+    }
   end
 end
