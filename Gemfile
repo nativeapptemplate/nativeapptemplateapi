@@ -56,7 +56,7 @@ gem "whenever", require: false
 gem "madmin", "~> 2.0"
 gem "valid_email2"
 gem "importmap-rails"
-gem "tailwindcss-rails", "~> 3.0"
+gem "tailwindcss-rails", "~> 4.0"
 gem "rack-attack"
 gem "resend"
 # Fix LoadError: cannot load such file -- csv
