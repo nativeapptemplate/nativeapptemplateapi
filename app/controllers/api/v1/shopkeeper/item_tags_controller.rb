@@ -5,10 +5,14 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def index
     authorize ItemTag
 
-    @item_tags = @shop.item_tags.order(queue_number: :asc).includes(:shop)
+    @pagy, @item_tags = pagy(
+      @shop.item_tags.order(queue_number: :asc).includes(:shop),
+      limit: params[:page].present? ? Pagy::OPTIONS[:limit] : 1000
+    )
 
     options = {}
     options[:include] = [:shop]
+    options[:meta] = pagy_meta(@pagy)
     render json: ItemTagSerializer.new(@item_tags, options).serializable_hash
   end
 

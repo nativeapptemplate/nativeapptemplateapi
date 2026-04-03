@@ -16,6 +16,45 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert_includes response.parsed_body["data"].map { |t| t["attributes"]["queue_number"] }, @item_tag.queue_number
   end
 
+  test "index returns pagination meta" do
+    get api_v1_shopkeeper_shop_item_tags_url(@shop), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+
+    meta = response.parsed_body["meta"]
+    assert_not_nil meta
+    assert_equal 1, meta["current_page"]
+    assert_equal @shop.item_tags.count, meta["total_count"]
+    assert meta["total_pages"].present?
+    assert meta["limit"].present?
+  end
+
+  test "index without page param returns up to 1000 items for backward compat" do
+    get api_v1_shopkeeper_shop_item_tags_url(@shop), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+
+    meta = response.parsed_body["meta"]
+    assert_equal 1000, meta["limit"]
+    assert_equal @shop.item_tags.count, response.parsed_body["data"].size
+  end
+
+  test "index with page param paginates with default limit" do
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: 1), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+
+    meta = response.parsed_body["meta"]
+    assert_equal Pagy::OPTIONS[:limit], meta["limit"]
+    assert_equal 1, meta["current_page"]
+  end
+
+  test "index with page param beyond last page returns empty data" do
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: 9999), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+
+    assert_empty response.parsed_body["data"]
+    meta = response.parsed_body["meta"]
+    assert_equal 9999, meta["current_page"]
+  end
+
   test "index requires authentication" do
     get api_v1_shopkeeper_shop_item_tags_url(@shop)
     assert_response :unauthorized
