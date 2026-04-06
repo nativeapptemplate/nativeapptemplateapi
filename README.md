@@ -4,6 +4,10 @@ A [Rails 8.1](https://rubyonrails.org/) API backend for NativeAppTemplate iOS/An
 
 For more information, visit [nativeapptemplate.com](https://nativeapptemplate.com).
 
+## API Documentation
+
+[API Documentation](https://nativeapptemplate.com/api-docs/index.html)
+
 ## Related Repositories
 
 ### Paid Clients
