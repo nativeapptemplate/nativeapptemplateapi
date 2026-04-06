@@ -21,7 +21,7 @@ You'll need the following installed to run the template successfully:
 * Ruby 4.0.2+
 * PostgreSQL 16+
 * Libvips - `brew install vips`
-* [Overmind](https://github.com/DarthSim/overmind) or Foreman - `brew install tmux overmind` or `gem install foreman` - helps run all your processes in development
+* [Overmind](https://github.com/DarthSim/overmind) - `brew install tmux overmind` - helps run all your processes in development
 
 If you use Homebrew, dependencies are listed in `Brewfile` so you can install them using:
 
@@ -55,7 +55,7 @@ To run your application, you'll use the `bin/dev` command:
 bin/dev
 ```
 
-This starts up Overmind (or Foreman) running the processes defined in `Procfile.dev`. We've configured this to run the Rails server out of the box.
+This starts up Overmind running the processes defined in `Procfile.dev`. We've configured this to run the Rails server out of the box.
 
 ## Contributing
 
