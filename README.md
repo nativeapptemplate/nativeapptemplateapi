@@ -1,16 +1,26 @@
 # NativeAppTemplate API
 
-This is a Rails API app for NativeAppTemplate-iOS/Android.
-To get started, clone the repository.
+A [Rails 8.1](https://rubyonrails.org/) API backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints.
+
+For more information, visit [nativeapptemplate.com](https://nativeapptemplate.com).
+
+## Related Repositories
+
+### Paid Clients
+- [NativeAppTemplate-iOS](https://github.com/nativeapptemplate/NativeAppTemplate-iOS)
+- [NativeAppTemplate-Android](https://github.com/nativeapptemplate/NativeAppTemplate-Android)
+
+### Free Clients
+- [NativeAppTemplate-Free-iOS](https://github.com/nativeapptemplate/NativeAppTemplate-Free-iOS)
+- [NativeAppTemplate-Free-Android](https://github.com/nativeapptemplate/NativeAppTemplate-Free-Android)
 
 ## Requirements
 
 You'll need the following installed to run the template successfully:
 
-* Ruby 3.3.5+
-* Node.js v20.17+
+* Ruby 4.0.2+
 * PostgreSQL 16+
-* Libvips or Imagemagick - `brew install vips imagemagick`
+* Libvips - `brew install vips`
 * [Overmind](https://github.com/DarthSim/overmind) or Foreman - `brew install tmux overmind` or `gem install foreman` - helps run all your processes in development
 
 If you use Homebrew, dependencies are listed in `Brewfile` so you can install them using:
