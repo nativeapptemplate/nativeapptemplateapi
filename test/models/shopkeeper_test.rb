@@ -213,4 +213,59 @@ class ShopkeeperTest < ActiveSupport::TestCase
       shopkeeper.destroy
     end
   end
+
+  test "should nullify item_tags references on destroy" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    other_shopkeeper = shopkeepers(:two)
+    other_shopkeeper.create_default_account
+    other_account = other_shopkeeper.accounts.first
+
+    item_tag = ActsAsTenant.with_tenant(other_account) do
+      shop = other_account.shops.create!(name: "Other Shop", created_by: other_shopkeeper)
+      shop.item_tags.create!(
+        queue_number: "A1",
+        account: other_account,
+        completed_by: shopkeeper
+      )
+    end
+
+    ActsAsTenant.without_tenant do
+      shopkeeper.destroy
+    end
+
+    ActsAsTenant.with_tenant(other_account) do
+      item_tag.reload
+      assert_nil item_tag.completed_by_id
+      assert ItemTag.exists?(item_tag.id)
+    end
+  end
+
+  test "should successfully destroy shopkeeper with item_tags in other accounts" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    other_shopkeeper = shopkeepers(:two)
+    other_shopkeeper.create_default_account
+    other_account = other_shopkeeper.accounts.first
+
+    item_tag = ActsAsTenant.with_tenant(other_account) do
+      shop = other_account.shops.create!(name: "Other Shop", created_by: other_shopkeeper)
+      shop.item_tags.create!(
+        queue_number: "B1",
+        account: other_account,
+        created_by: shopkeeper
+      )
+    end
+
+    ActsAsTenant.without_tenant do
+      assert_nothing_raised do
+        shopkeeper.destroy!
+      end
+    end
+
+    ActsAsTenant.with_tenant(other_account) do
+      item_tag.reload
+      assert_nil item_tag.created_by_id
+    end
+  end
 end
