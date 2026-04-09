@@ -10,8 +10,8 @@ class Shopkeeper < ApplicationRecord
   has_many :shops, through: :accounts
   has_many :item_tags, through: :shops
   has_many :created_shops, class_name: "Shop", foreign_key: :created_by_id, inverse_of: :created_by
-  has_many :created_item_tags, class_name: "ItemTag", foreign_key: :created_by_id, inverse_of: :created_by
-  has_many :completed_item_tags, class_name: "ItemTag", foreign_key: :completed_by_id, inverse_of: :completed_by
+  has_many :created_item_tags, class_name: "ItemTag", foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
+  has_many :completed_item_tags, class_name: "ItemTag", foreign_key: :completed_by_id, inverse_of: :completed_by, dependent: :nullify
 
   attribute :token, :string
   attribute :client, :string

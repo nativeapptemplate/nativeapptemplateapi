@@ -30,6 +30,21 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     end
   end
 
+  test "delete current shopkeeper with item_tags" do
+    shopkeeper.create_default_account
+    account = shopkeeper.accounts.first
+
+    ActsAsTenant.with_tenant(account) do
+      shop = account.shops.create!(name: "Test Shop", created_by: shopkeeper)
+      shop.item_tags.create!(queue_number: "A1", account: account, completed_by: shopkeeper)
+    end
+
+    assert_difference "Shopkeeper.count", -1 do
+      delete shopkeeper_registration_url, headers: shopkeeper.create_new_auth_token
+      assert_response :success
+    end
+  end
+
   def shopkeeper
     @shopkeeper ||= shopkeepers(:one)
   end
