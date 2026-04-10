@@ -2,11 +2,43 @@
 
 A [Rails 8.1](https://rubyonrails.org/) API backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints.
 
+Extracted from the Rails API backend for [MyTurnTag Creator for iOS](https://apps.apple.com/app/myturntag-creator/id1516198303) and [MyTurnTag Creator for Android](https://play.google.com/store/apps/details?id=com.myturntag.myturntagcreator).
+
 For more information, visit [nativeapptemplate.com](https://nativeapptemplate.com).
 
 ## API Documentation
 
 [API Documentation](https://nativeapptemplate.com/api-docs/index.html)
+
+## Features
+
+- **Ruby on Rails 8.1**
+- **PostgreSQL**
+- **Solid Queue/Cable/Cache**
+- **[devise_token_auth](https://github.com/lynndylanhurley/devise_token_auth)**
+- **[jsonapi-serializer](https://github.com/jsonapi-serializer/jsonapi-serializer)**
+- **[pundit](https://github.com/varvet/pundit)**
+- **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
+- **[pagy](https://github.com/ddnexus/pagy)**
+- **[Turbo](https://turbo.hotwired.dev/)** (real-time page updates for Number Tags Webpage)
+- **Test** (Minitest)
+
+### Included Features
+
+- Sign Up / Sign In / Sign Out
+- Email Confirmation
+- Forgot Password
+- CRUD Operations for Shops (Create/Read/Update/Delete)
+- CRUD Operations for Shops' Nested Resource, Number Tags (ItemTags) (Create/Read/Update/Delete)
+- URL Path-Based Multitenancy (prepends `/:account_id/` to URLs)
+- User Invitation to Organizations
+- Role-Based Permissions and Access Control
+- Organization Switching UI
+- Admin Panel
+- Force App Version Update
+- Force Privacy Policy Version Update
+- Force Terms of Use Version Update
+- And more!
 
 ## Related Repositories
 
