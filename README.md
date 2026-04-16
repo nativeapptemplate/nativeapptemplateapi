@@ -1,5 +1,7 @@
 # NativeAppTemplate API
 
+<a href="https://www.producthunt.com/products/nativeapptemplate?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-nativeapptemplate-2-0" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1124956&theme=light" alt="NativeAppTemplate 2.0 - Native iOS + Android + Rails boilerplate, now open source | Product Hunt" width="250" height="54" /></a>
+
 A [Rails 8.1](https://rubyonrails.org/) API backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints.
 
 Extracted from the Rails API backend for [MyTurnTag Creator for iOS](https://apps.apple.com/app/myturntag-creator/id1516198303) and [MyTurnTag Creator for Android](https://play.google.com/store/apps/details?id=com.myturntag.myturntagcreator).
