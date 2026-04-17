@@ -1,6 +1,7 @@
 # NativeAppTemplate API
 
 <a href="https://www.producthunt.com/products/nativeapptemplate?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-nativeapptemplate-2-0" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1124956&theme=light" alt="NativeAppTemplate 2.0 - Native iOS + Android + Rails boilerplate, now open source | Product Hunt" width="250" height="54" /></a>
+[![Mentioned in Awesome Rails](https://awesome.re/mentioned-badge.svg)](https://github.com/gramantin/awesome-rails#startersboilerplates)
 
 A [Rails 8.1](https://rubyonrails.org/) API backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints.
 
