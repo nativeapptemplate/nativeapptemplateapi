@@ -96,7 +96,7 @@ bin/rails dbconsole           # Database console
 - Run tests: `bin/rails test` (205 tests, 402 assertions)
 
 ### Development Server Configuration
-- Server bind and mailer host are env-driven via `HOST`/`PORT` in `.env` (defaults `127.0.0.1:3000`)
+- Server bind and mailer host auto-detect the current Wi-Fi IP (`ipconfig getifaddr en0` in `Procfile.dev`; `Socket.ip_address_list` private IPv4 in `development.rb`) so Rails and mobile apps agree on one reachable address; override with `HOST` in `.env` only if `en0` isn't Wi-Fi. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem

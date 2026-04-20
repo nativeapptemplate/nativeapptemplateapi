@@ -83,9 +83,9 @@ Run `bin/setup` to install Ruby and JavaScript dependencies and setup your datab
 bin/setup
 ```
 
-## Running NativeAppTemplate API on localhost
+## Running NativeAppTemplate API on your Wi-Fi
 
-Copy `.env.sample` to `.env` and set `HOST` (and optionally `PORT`) to control the server bind address and mailer URL host. Defaults to `127.0.0.1:3000`. For mobile-device-on-LAN access, set `HOST=<your-lan-ip>`. Foreman auto-loads `.env` under `bin/dev`.
+`bin/dev` binds Rails to the current Wi-Fi IP (auto-detected via `ipconfig getifaddr en0`), so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. To check the IP: `ipconfig getifaddr en0` (or System Settings → Network). If `en0` isn't Wi-Fi on your machine (wired-primary, Thunderbolt networking), copy `.env.sample` to `.env` and set `HOST` to the correct interface's IP. Never use `127.0.0.1`, `localhost`, or `0.0.0.0` — Rails and the mobile apps must agree on the same Wi-Fi IP.
 
 To run your application, you'll use the `bin/dev` command:
 
