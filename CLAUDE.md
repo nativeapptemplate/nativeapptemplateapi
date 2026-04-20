@@ -96,7 +96,7 @@ bin/rails dbconsole           # Database console
 - Run tests: `bin/rails test` (205 tests, 402 assertions)
 
 ### Development Server Configuration
-- Server bind and mailer host auto-detect the current Wi-Fi IP (`ipconfig getifaddr en0` in `Procfile.dev`; `Socket.ip_address_list` private IPv4 in `development.rb`) so Rails and mobile apps agree on one reachable address; override with `HOST` in `.env` only if `en0` isn't Wi-Fi. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
+- `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem

@@ -1,1 +1,1 @@
-web: bin/rails server -p ${PORT:-3000} -b ${HOST:-$(ipconfig getifaddr en0)}
+web: bin/rails server -p ${PORT:-3000} -b ${HOST:?HOST is required - set it in .env to your current Wi-Fi IP}

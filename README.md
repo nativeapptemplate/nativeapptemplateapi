@@ -85,7 +85,7 @@ bin/setup
 
 ## Running NativeAppTemplate API on your Wi-Fi
 
-`bin/dev` binds Rails to the current Wi-Fi IP (auto-detected via `ipconfig getifaddr en0`), so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. To check the IP: `ipconfig getifaddr en0` (or System Settings → Network). If `en0` isn't Wi-Fi on your machine (wired-primary, Thunderbolt networking), copy `.env.sample` to `.env` and set `HOST` to the correct interface's IP. Never use `127.0.0.1`, `localhost`, or `0.0.0.0` — Rails and the mobile apps must agree on the same Wi-Fi IP.
+Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
 
 To run your application, you'll use the `bin/dev` command:
 

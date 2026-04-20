@@ -1,5 +1,4 @@
 require "active_support/core_ext/integer/time"
-require "socket"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -39,8 +38,7 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  lan_ip = Socket.ip_address_list.find { |a| a.ipv4_private? && !a.ipv4_loopback? }&.ip_address
-  config.action_mailer.default_url_options = {host: ENV.fetch("HOST") { lan_ip }, port: ENV.fetch("PORT", 3000).to_i}
+  config.action_mailer.default_url_options = {host: ENV.fetch("HOST"), port: ENV.fetch("PORT", 3000).to_i}
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
