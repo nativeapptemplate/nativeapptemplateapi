@@ -1,1 +1,1 @@
-web: bin/rails server -p $PORT -b 192.168.1.21
+web: bin/rails server -p ${PORT:-3000} -b ${HOST:?HOST is required - set it in .env to your current Wi-Fi IP}

@@ -38,7 +38,11 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.default_url_options = {host: "192.168.1.21", port: ENV.fetch("PORT", 3000).to_i}
+  # .env is sourced by bin/dev for the dev server only; direct Rails
+  # invocations (console, test, setup, CI) don't see it, so default to
+  # localhost for the mailer so boot succeeds. Procfile.dev still refuses
+  # to start the dev server without an explicit HOST.
+  config.action_mailer.default_url_options = {host: ENV.fetch("HOST", "localhost"), port: ENV.fetch("PORT", 3000).to_i}
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

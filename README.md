@@ -83,9 +83,9 @@ Run `bin/setup` to install Ruby and JavaScript dependencies and setup your datab
 bin/setup
 ```
 
-## Running NativeAppTemplate API on localhost
+## Running NativeAppTemplate API on your Wi-Fi
 
-Replace the IP address `192.168.1.21` with your localhost IP address in `Procfile.dev` and `config/environments/development.rb`.
+Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
 
 To run your application, you'll use the `bin/dev` command:
 
