@@ -85,7 +85,7 @@ bin/setup
 
 ## Running NativeAppTemplate API on localhost
 
-Replace the IP address `192.168.1.21` with your localhost IP address in `Procfile.dev` and `config/environments/development.rb`.
+Copy `.env.sample` to `.env` and set `HOST` (and optionally `PORT`) to control the server bind address and mailer URL host. Defaults to `127.0.0.1:3000`. For mobile-device-on-LAN access, set `HOST=<your-lan-ip>`. Foreman auto-loads `.env` under `bin/dev`.
 
 To run your application, you'll use the `bin/dev` command:
 

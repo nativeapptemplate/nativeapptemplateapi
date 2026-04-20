@@ -96,7 +96,7 @@ bin/rails dbconsole           # Database console
 - Run tests: `bin/rails test` (205 tests, 402 assertions)
 
 ### Development Server Configuration
-- Server binds to specific IP: `192.168.1.21:3000` (not localhost)
+- Server bind and mailer host are env-driven via `HOST`/`PORT` in `.env` (defaults `127.0.0.1:3000`)
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem
