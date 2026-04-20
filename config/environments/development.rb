@@ -38,9 +38,9 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  # HOST is only loaded into ENV by Foreman under `bin/dev`; direct Rails
-  # invocations (console, test, setup, CI) don't see .env, so default to
-  # localhost for the mailer so boot succeeds. `Procfile.dev` still refuses
+  # .env is sourced by bin/dev for the dev server only; direct Rails
+  # invocations (console, test, setup, CI) don't see it, so default to
+  # localhost for the mailer so boot succeeds. Procfile.dev still refuses
   # to start the dev server without an explicit HOST.
   config.action_mailer.default_url_options = {host: ENV.fetch("HOST", "localhost"), port: ENV.fetch("PORT", 3000).to_i}
 

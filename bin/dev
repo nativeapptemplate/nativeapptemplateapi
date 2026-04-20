@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
 
+# Load .env so HOST/PORT are inherited by Overmind and the spawned
+# processes. Overmind (unlike Foreman) does not auto-load .env.
+if [ -f .env ]; then
+  set -a
+  . ./.env
+  set +a
+fi
+
 # Default to port 3000 if not specified
 export PORT="${PORT:-3000}"
 
