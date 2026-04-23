@@ -2,15 +2,15 @@ class Api::Shopkeeper::ItemTagPolicy < Api::Shopkeeper::BasePolicy
   include Api::Shopkeeper::Concerns::Authorization
 
   def index?
-    true
-  end
-
-  def create?
-    admin? || senior_manager?
+    admin? || member?
   end
 
   def show?
-    true
+    admin? || member?
+  end
+
+  def create?
+    admin? || member?
   end
 
   def update?
@@ -22,10 +22,10 @@ class Api::Shopkeeper::ItemTagPolicy < Api::Shopkeeper::BasePolicy
   end
 
   def complete?
-    admin? || senior_manager? || junior_manager? || senior_member? || junior_member?
+    create?
   end
 
-  def reset?
-    complete?
+  def idle?
+    create?
   end
 end
