@@ -12,10 +12,6 @@ Rails.application.routes.draw do
   post "/admin_auth/sign_in", to: "admin_auth/sessions#create", as: "admin_session"
   delete "/admin_auth/sign_out", to: "admin_auth/sessions#destroy", as: "destroy_admin_session"
 
-  scope controller: :static do
-    get :index
-  end
-
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"
 
@@ -74,6 +70,4 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  root to: "static#index"
 end
