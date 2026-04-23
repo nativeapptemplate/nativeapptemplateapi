@@ -46,10 +46,6 @@ Rails.application.routes.draw do
         end
 
         resources :shops, shallow: true do
-          member do
-            delete :reset
-          end
-
           resources :item_tags do
             member do
               patch :reset

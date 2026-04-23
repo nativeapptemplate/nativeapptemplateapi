@@ -20,8 +20,4 @@ class Api::Shopkeeper::ShopPolicy < Api::Shopkeeper::BasePolicy
   def destroy?
     create?
   end
-
-  def reset?
-    admin? || senior_manager? || junior_manager? || senior_member?
-  end
 end
