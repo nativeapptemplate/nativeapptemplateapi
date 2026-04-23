@@ -63,3 +63,6 @@
 .claude/logs/
 .claude/tmp/
 .claude/*.log
+
+# Private docs — not for publication
+/docs-private/
