@@ -467,14 +467,56 @@ git commit -m "Update serializers for new ItemTag schema"
 
 ### 10.1 Edit `app/policies/api/shopkeeper/item_tag_policy.rb`
 
-Remove permission checks referencing deleted permission tags:
-- `manage_tags`, `write_info_to_tags`, `reset_all_tags`, `complete_or_reset_tags`, `show_tag_info`
+ItemTag is a child resource of Shop. In this substrate, there are no separate ItemTag permissions — ItemTag operations are authorized via Shop permissions. This matches modern collaborative SaaS (Notion, Linear, Trello) where parent permissions implicitly apply to children.
 
-Replace with generic permission checks:
-- `create_shops` (if treating ItemTag as Shop-scoped)
-- `update_shops`, `delete_shops`, `read_data`
+Mapping:
+- `read_data` → index, show
+- `update_shops` → create, update, destroy, state toggle (complete/idle)
 
-Actual mapping depends on the role redesign in Step 12. Initial simpler version: all authenticated shopkeepers can CRUD item_tags within their own account (via `acts_as_tenant` scoping).
+Expected policy:
+
+```ruby
+class Api::Shopkeeper::ItemTagPolicy < Api::Shopkeeper::BasePolicy
+  def index?
+    shopkeeper.has_permission?("read_data")
+  end
+
+  def show?
+    shopkeeper.has_permission?("read_data")
+  end
+
+  def create?
+    shopkeeper.has_permission?("update_shops")
+  end
+
+  def update?
+    shopkeeper.has_permission?("update_shops")
+  end
+
+  def destroy?
+    shopkeeper.has_permission?("update_shops")
+  end
+
+  # State toggle actions (if the controller has complete / idle custom actions)
+  def complete?
+    shopkeeper.has_permission?("update_shops")
+  end
+
+  def idle?
+    shopkeeper.has_permission?("update_shops")
+  end
+end
+```
+
+(Adjust method names to match the actual controller actions and base policy class structure.)
+
+Also check other policies for references to removed permission tags and replace with the new permission set:
+
+```bash
+grep -rn "manage_tags\|write_info_to_tags\|reset_all_tags\|complete_or_reset_tags\|show_tag_info" app/policies/
+```
+
+Any match must be replaced with `update_shops` or `read_data` as appropriate, or the method removed if it was queue-specific.
 
 ### 10.2 Verify
 
@@ -487,7 +529,7 @@ grep -rn "manage_tags\|write_info_to_tags\|reset_all_tags\|complete_or_reset_tag
 
 ```bash
 git add app/policies/
-git commit -m "Update ItemTag policy: remove queue-specific permission checks"
+git commit -m "Update ItemTag policy: use Shop permissions (read_data, update_shops)"
 ```
 
 ---

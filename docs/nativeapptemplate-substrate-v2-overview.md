@@ -103,7 +103,7 @@ Shopkeeper (user)
 - `invitation`
 - `read_data`
 
-**Role → Permission mapping (Notion-style, member can create)**:
+**Role → Permission mapping (collaborative SaaS model, Notion-style)**:
 
 | Permission | admin | member |
 |---|---|---|
@@ -113,6 +113,12 @@ Shopkeeper (user)
 | update_organizations | ✓ | |
 | invitation | ✓ | |
 | read_data | ✓ | ✓ |
+
+**ItemTag access** (no separate permissions — uses Shop permissions):
+- `read_data` → index, show item_tags
+- `update_shops` → create, update, destroy, state toggle item_tags
+
+See section 6.10 for rationale on the unified permission approach.
 
 #### Version enforcement (preserved)
 
@@ -420,6 +426,31 @@ The agent can rename identifiers but cannot rewrite arbitrary string literals wi
 - Keeps related code fresh in memory
 - Reduces context-switching cost
 - Allows iOS validation to inform Android design decisions
+
+### 6.10 Why no separate ItemTag permissions
+
+ItemTag is a child of Shop. Modern collaborative SaaS (Notion, Linear, Trello) treat parent-level permissions as implicitly applying to children. Adding separate ItemTag permissions would:
+
+- Double the permission count (shop-level + item-tag-level)
+- Complicate the role-permission matrix for a 2-tier role system
+- Be overkill given that admin and member have nearly identical capabilities in this design
+
+The policy file resolves ItemTag operations to Shop permissions:
+- `read_data` → index, show
+- `update_shops` → create, update, destroy, state toggle
+
+This matches "collaborative SaaS" model (Notion/Linear/Trello-style): both admin and member can freely CRUD resources; admin's only extra capability is team management (invitation, organization settings).
+
+If a future agent-generated domain requires operational separation (e.g., clinic staff can toggle item state but only admin can create items), a new `toggle_item_tags` permission can be introduced alongside a third role tier at that time. For now, keeping permissions minimal is aligned with YAGNI.
+
+### 6.11 Why admin and member can both create and modify resources
+
+An alternative design (operational SaaS model) would restrict resource creation or state changes to admin only. We chose the collaborative model because:
+
+- ~90% of agent-generatable domains (task trackers, shopping lists, reading lists, bookmark managers, recipe collections, habit trackers) are collaborative by nature
+- The operational model (clinic waitlist, factory inventory, restaurant service) is a specialized case
+- In collaborative apps, "member" implies peer collaborator, not restricted user
+- If a domain needs the operational model later, a third role tier (`viewer` or `staff`) can be added
 
 ---
 
