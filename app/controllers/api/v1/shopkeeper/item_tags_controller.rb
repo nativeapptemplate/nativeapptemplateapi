@@ -53,7 +53,11 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def complete
     authorize @item_tag
 
-    @item_tag.complete_tag!(current_shopkeeper)
+    if @item_tag.may_complete?
+      @item_tag.completed_by = current_shopkeeper
+      @item_tag.completed_at = Time.current
+      @item_tag.complete!
+    end
 
     options = {}
     options[:include] = [:shop]
@@ -63,7 +67,9 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def idle
     authorize @item_tag
 
-    @item_tag.reset!
+    @item_tag.completed_by_id = nil
+    @item_tag.completed_at = nil
+    @item_tag.idle!
 
     render json: ItemTagSerializer.new(@item_tag).serializable_hash
   end

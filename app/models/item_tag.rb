@@ -25,22 +25,6 @@ class ItemTag < ApplicationRecord
     end
   end
 
-  def complete_tag!(shopkeeper)
-    return unless may_complete?
-
-    self.completed_by = shopkeeper
-    self.completed_at = Time.current
-    complete!
-  end
-
-  def reset!
-    self.completed_by_id = nil
-    self.completed_at = nil
-    idle
-
-    save!
-  end
-
   private
 
   def limit_count
