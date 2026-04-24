@@ -8,62 +8,66 @@ class Api::Shopkeeper::ShopPolicyTest < ActiveSupport::TestCase
     @shop = @account.shops.first
   end
 
-  test "index? returns true for all users" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.index?
+  def admin_accounts_shopkeeper
+    @account.accounts_shopkeepers.first.tap { |as| as.update!(admin: true) }
   end
 
-  test "show? returns true for all users" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.show?
-  end
-
-  test "create? returns true for account owner" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    assert accounts_shopkeeper.account_owner?
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.create?
-  end
-
-  test "create? returns false for non-owner" do
+  def member_accounts_shopkeeper
     other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      admin: true
-    )
-    assert_not accounts_shopkeeper.account_owner?
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert_not policy.create?
-  end
-
-  test "update? returns true for admin" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    accounts_shopkeeper.update!(admin: true)
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.update?
-  end
-
-  test "update? returns false for non-admin" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
+    AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
       member: true
     )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert_not policy.update?
   end
 
-  test "destroy? delegates to create?" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert_equal policy.create?, policy.destroy?
+  test "index? returns true for admin" do
+    policy = Api::Shopkeeper::ShopPolicy.new(admin_accounts_shopkeeper, @shop)
+    assert policy.index?
+  end
+
+  test "index? returns true for member" do
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+    assert policy.index?
+  end
+
+  test "show? returns true for admin" do
+    policy = Api::Shopkeeper::ShopPolicy.new(admin_accounts_shopkeeper, @shop)
+    assert policy.show?
+  end
+
+  test "show? returns true for member" do
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+    assert policy.show?
+  end
+
+  test "create? returns true for admin" do
+    policy = Api::Shopkeeper::ShopPolicy.new(admin_accounts_shopkeeper, @shop)
+    assert policy.create?
+  end
+
+  test "create? returns true for member" do
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+    assert policy.create?
+  end
+
+  test "update? returns true for admin" do
+    policy = Api::Shopkeeper::ShopPolicy.new(admin_accounts_shopkeeper, @shop)
+    assert policy.update?
+  end
+
+  test "update? returns true for member" do
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+    assert policy.update?
+  end
+
+  test "destroy? returns true for admin" do
+    policy = Api::Shopkeeper::ShopPolicy.new(admin_accounts_shopkeeper, @shop)
+    assert policy.destroy?
+  end
+
+  test "destroy? returns true for member" do
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+    assert policy.destroy?
   end
 end
