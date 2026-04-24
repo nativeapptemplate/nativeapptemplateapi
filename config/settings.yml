@@ -23,7 +23,6 @@ mobile_app:
   play_store_url: https://play.google.com/store/apps/details?id=com.yourdomain.nativeapptemplate
 
 minimum_password_length: 8
-maximum_queue_number_length: 5
 
 shop:
   limit_count: 99
@@ -40,5 +39,3 @@ accounts_invitation:
 
 item_tag:
   limit_count: 99
-  default_count: 10
-  default_queue_number_length: 4
