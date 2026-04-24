@@ -54,7 +54,7 @@ class Api::Shopkeeper::ShopPolicyTest < ActiveSupport::TestCase
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      senior_manager: true
+      member: true
     )
 
     policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
@@ -65,73 +65,5 @@ class Api::Shopkeeper::ShopPolicyTest < ActiveSupport::TestCase
     accounts_shopkeeper = @account.accounts_shopkeepers.first
     policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
     assert_equal policy.create?, policy.destroy?
-  end
-
-  test "reset? returns true for admin" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
-    accounts_shopkeeper.update!(admin: true)
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.reset?
-  end
-
-  test "reset? returns true for senior_manager" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      senior_manager: true
-    )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.reset?
-  end
-
-  test "reset? returns true for junior_manager" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      junior_manager: true
-    )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.reset?
-  end
-
-  test "reset? returns true for senior_member" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      senior_member: true
-    )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert policy.reset?
-  end
-
-  test "reset? returns false for junior_member" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      junior_member: true
-    )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert_not policy.reset?
-  end
-
-  test "reset? returns false for guest" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      guest: true
-    )
-
-    policy = Api::Shopkeeper::ShopPolicy.new(accounts_shopkeeper, @shop)
-    assert_not policy.reset?
   end
 end

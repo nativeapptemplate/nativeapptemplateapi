@@ -38,7 +38,7 @@ class Api::Shopkeeper::AccountPolicyTest < ActiveSupport::TestCase
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      senior_manager: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountPolicy.new(accounts_shopkeeper, @account)

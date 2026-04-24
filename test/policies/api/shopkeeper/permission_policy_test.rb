@@ -9,17 +9,18 @@ class Api::Shopkeeper::PermissionPolicyTest < ActiveSupport::TestCase
     @permission = Permission.first
   end
 
-  test "index? returns true for all users" do
+  test "index? returns true for admin" do
+    @accounts_shopkeeper.update!(admin: true)
     policy = Api::Shopkeeper::PermissionPolicy.new(@accounts_shopkeeper, @permission)
     assert policy.index?
   end
 
-  test "index? returns true for guest" do
+  test "index? returns true for member" do
     other_shopkeeper = shopkeepers(:two)
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      guest: true
+      member: true
     )
 
     policy = Api::Shopkeeper::PermissionPolicy.new(accounts_shopkeeper, @permission)
