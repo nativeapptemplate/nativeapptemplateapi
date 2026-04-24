@@ -36,6 +36,7 @@ class ShopTest < ActiveSupport::TestCase
       sample = shop.item_tags.first
       assert_equal "Sample", sample.name
       assert sample.description.start_with?("This is a sample")
+      assert_equal 1, sample.position
       assert sample.idled?
     end
   end

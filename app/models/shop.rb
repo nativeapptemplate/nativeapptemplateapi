@@ -17,6 +17,7 @@ class Shop < ApplicationRecord
       account: account,
       name: "Sample",
       description: "This is a sample. You can update or delete it.",
+      position: 1,
       created_by: created_by
     )
   rescue => e
