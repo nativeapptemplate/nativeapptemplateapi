@@ -7,11 +7,7 @@ class AccountsInvitationResource < Madmin::Resource
   attribute :created_at, form: false
   attribute :updated_at, form: false
   attribute :admin
-  attribute :senior_manager
-  attribute :junior_manager
-  attribute :senior_member
-  attribute :junior_member
-  attribute :guest
+  attribute :member
 
   # Associations
   attribute :account
