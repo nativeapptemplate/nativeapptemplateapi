@@ -28,35 +28,32 @@ class ShopTest < ActiveSupport::TestCase
     assert_equal @shopkeeper, shop.created_by
   end
 
-  test "should create default item tags after creation" do
+  test "creating a shop creates exactly one sample item tag" do
     ActsAsTenant.with_tenant(@account) do
       shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      expected_count = ConfigSettings.item_tag.default_count
-      assert_equal expected_count, shop.item_tags.count
+      assert_equal 1, shop.item_tags.count
+
+      sample = shop.item_tags.first
+      assert_equal "Sample", sample.name
+      assert sample.description.start_with?("This is a sample")
+      assert sample.idled?
     end
   end
 
-  test "default item tags should have correct queue numbers" do
+  test "sample item tag failure does not prevent shop creation" do
     ActsAsTenant.with_tenant(@account) do
-      shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      item_tags = shop.item_tags.sorted
+      shop = @account.shops.new(name: "Test Shop", created_by: @shopkeeper)
 
-      # Queue numbers are formatted based on ConfigSettings.item_tag.default_queue_number_length
-      # which defaults to 4, making the format "A001" not "A01"
-      assert_equal "A001", item_tags.first.queue_number
-      assert item_tags.all? { |tag| tag.queue_number.start_with?("A") }
-    end
-  end
+      # Stub the association to raise during the after_create callback
+      shop.define_singleton_method(:item_tags) do
+        raise StandardError, "boom"
+      end
 
-  test "should not create default item tags if item tags already exist" do
-    ActsAsTenant.with_tenant(@account) do
-      shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      initial_count = shop.item_tags.count
+      assert_difference "Shop.count", 1 do
+        shop.save!
+      end
 
-      # Manually trigger the callback
-      shop.send(:create_default_item_tags!)
-
-      assert_equal initial_count, shop.item_tags.reload.count
+      assert_predicate shop, :persisted?
     end
   end
 
@@ -64,52 +61,11 @@ class ShopTest < ActiveSupport::TestCase
     ActsAsTenant.with_tenant(@account) do
       shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
       item_tag_count = shop.item_tags.count
+      assert item_tag_count > 0
 
       assert_difference "ItemTag.count", -item_tag_count do
         shop.destroy
       end
-    end
-  end
-
-  test "latest_completed_item_tag returns most recently completed tag" do
-    ActsAsTenant.with_tenant(@account) do
-      shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      item_tag1 = shop.item_tags.first
-      item_tag2 = shop.item_tags.second
-
-      item_tag1.complete_tag!(@shopkeeper)
-      sleep 0.01 # Ensure different timestamps
-      item_tag2.complete_tag!(@shopkeeper)
-
-      assert_equal item_tag2, shop.latest_completed_item_tag
-    end
-  end
-
-  test "latest_completed_item_tag returns nil if no completed tags" do
-    ActsAsTenant.with_tenant(@account) do
-      shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      assert_nil shop.latest_completed_item_tag
-    end
-  end
-
-  test "reset! resets all item tags" do
-    ActsAsTenant.with_tenant(@account) do
-      shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
-      item_tag1 = shop.item_tags.first
-      item_tag2 = shop.item_tags.second
-
-      item_tag1.complete_tag!(@shopkeeper)
-      item_tag2.complete_tag!(@shopkeeper)
-
-      assert item_tag1.completed?
-      assert item_tag2.completed?
-
-      shop.reset!
-
-      assert item_tag1.reload.idled?
-      assert item_tag2.reload.idled?
-      assert_nil item_tag1.completed_at
-      assert_nil item_tag2.completed_at
     end
   end
 end

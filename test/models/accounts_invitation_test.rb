@@ -13,7 +13,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       name: "Invited User",
       email: "invited@example.com",
       invited_by: @shopkeeper,
-      junior_member: true
+      member: true
     )
     assert invitation.valid?
   end
@@ -22,7 +22,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     invitation = AccountsInvitation.new(
       account: @account,
       email: "invited@example.com",
-      junior_member: true
+      member: true
     )
     assert_not invitation.valid?
     assert_includes invitation.errors[:name], "can't be blank"
@@ -32,7 +32,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     invitation = AccountsInvitation.new(
       account: @account,
       name: "Invited User",
-      junior_member: true
+      member: true
     )
     assert_not invitation.valid?
     assert_includes invitation.errors[:email], "can't be blank"
@@ -43,14 +43,14 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "User 1",
       email: "same@example.com",
-      junior_member: true
+      member: true
     )
 
     duplicate = AccountsInvitation.new(
       account: @account,
       name: "User 2",
       email: "same@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_not duplicate.valid?
@@ -65,14 +65,14 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "User 1",
       email: "same@example.com",
-      junior_member: true
+      member: true
     )
 
     invitation2 = AccountsInvitation.new(
       account: account2,
       name: "User 2",
       email: "same@example.com",
-      junior_member: true
+      member: true
     )
 
     assert invitation2.valid?
@@ -83,7 +83,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "token@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_not_nil invitation.token
@@ -96,14 +96,14 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "User 1",
       email: "user1@example.com",
-      junior_member: true
+      member: true
     )
 
     invitation2 = AccountsInvitation.create!(
       account: @account,
       name: "User 2",
       email: "user2@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_not_equal invitation1.token, invitation2.token
@@ -114,7 +114,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "param@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_equal invitation.token, invitation.to_param
@@ -125,7 +125,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "accept@example.com",
-      senior_manager: true
+      member: true
     )
 
     other_shopkeeper = shopkeepers(:two)
@@ -141,7 +141,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       shopkeeper: other_shopkeeper
     )
 
-    assert accounts_shopkeeper.senior_manager?
+    assert accounts_shopkeeper.member?
   end
 
   test "accept! destroys invitation after creating accounts_shopkeeper" do
@@ -149,7 +149,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "destroy@example.com",
-      junior_member: true
+      member: true
     )
 
     other_shopkeeper = shopkeepers(:two)
@@ -164,7 +164,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "invalid@example.com",
-      junior_member: true
+      member: true
     )
 
     # Create a shopkeeper that's already a member
@@ -172,7 +172,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     result = invitation.accept!(other_shopkeeper)
@@ -186,7 +186,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "atomic@example.com",
-      junior_member: true
+      member: true
     )
 
     other_shopkeeper = shopkeepers(:two)
@@ -194,7 +194,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     initial_invitation_count = AccountsInvitation.count
@@ -212,7 +212,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "reject@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_difference "AccountsInvitation.count", -1 do
@@ -229,7 +229,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     )
 
     assert invitation.admin?
-    assert_not invitation.senior_manager?
+    assert_not invitation.member?
   end
 
   test "active_roles returns array of assigned roles" do
@@ -238,12 +238,12 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       name: "Invited User",
       email: "active@example.com",
       admin: true,
-      senior_member: true
+      member: true
     )
 
     active_roles = invitation.active_roles
     assert_includes active_roles, :admin
-    assert_includes active_roles, :senior_member
+    assert_includes active_roles, :member
     assert_equal 2, active_roles.length
   end
 
@@ -252,7 +252,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "send@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_difference "AccountsInvitation.count", 1 do
@@ -266,7 +266,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "send2@example.com",
-      junior_member: true
+      member: true
     )
 
     # Email delivery is tested by the fact that the method doesn't raise an error
@@ -280,7 +280,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "recent@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_not invitation.expired?
@@ -291,7 +291,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       account: @account,
       name: "Invited User",
       email: "old@example.com",
-      junior_member: true
+      member: true
     )
 
     travel_to(AccountsInvitation::EXPIRES_IN.from_now + 1.minute) do
@@ -305,7 +305,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       name: "Invited User",
       email: "resend@example.com",
       invited_by: @shopkeeper,
-      junior_member: true
+      member: true
     )
 
     original_created_at = invitation.created_at

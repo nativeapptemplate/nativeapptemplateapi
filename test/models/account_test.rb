@@ -61,7 +61,7 @@ class AccountTest < ActiveSupport::TestCase
       account: account,
       shopkeeper: other_shopkeeper,
       admin: false,
-      junior_member: true
+      member: true
     )
 
     assert_not account.admin?(other_shopkeeper)
@@ -80,7 +80,7 @@ class AccountTest < ActiveSupport::TestCase
       account: account,
       name: "Test User",
       email: "test@example.com",
-      junior_member: true
+      member: true
     )
 
     assert_difference "AccountsInvitation.count", -1 do
