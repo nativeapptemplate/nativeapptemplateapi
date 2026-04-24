@@ -6,7 +6,7 @@ ruby file: ".ruby-version"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "rails", "~> 8.1"
 
-gem "propshaft", "~> 1.0"
+gem "propshaft", "~> 1.3"
 
 # Use postgresql as the database for Active Record
 gem "pg"
