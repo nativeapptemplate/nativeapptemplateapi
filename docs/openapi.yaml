@@ -45,12 +45,8 @@ components:
           type: string
         item_tags_count:
           type: integer
-        scanned_item_tags_count:
-          type: integer
         completed_item_tags_count:
           type: integer
-        display_shop_server_path:
-          type: string
 
     Shop:
       type: object
@@ -85,22 +81,18 @@ components:
         shop_id:
           type: string
           format: uuid
-        queue_number:
+        name:
           type: string
+        description:
+          type: ['string', 'null']
+        position:
+          type: ['integer', 'null']
         state:
           type: string
           enum: [idled, completed]
-        scan_state:
-          type: string
-          enum: [unscanned, scanned]
-        customer_read_at:
-          type: ['string', 'null']
-          format: date-time
         completed_at:
           type: ['string', 'null']
           format: date-time
-        already_completed:
-          type: boolean
         created_at:
           type: string
           format: date-time
@@ -249,15 +241,7 @@ components:
           format: uuid
         admin:
           type: boolean
-        senior_manager:
-          type: boolean
-        junior_manager:
-          type: boolean
-        senior_member:
-          type: boolean
-        junior_member:
-          type: boolean
-        guest:
+        member:
           type: boolean
 
     AccountsShopkeeper:
@@ -317,15 +301,7 @@ components:
           format: email
         admin:
           type: boolean
-        senior_manager:
-          type: boolean
-        junior_manager:
-          type: boolean
-        senior_member:
-          type: boolean
-        junior_member:
-          type: boolean
-        guest:
+        member:
           type: boolean
 
     AccountsInvitation:
@@ -465,10 +441,17 @@ components:
       properties:
         item_tag:
           type: object
-          required: [queue_number]
+          required: [name]
           properties:
-            queue_number:
+            name:
               type: string
+            description:
+              type: string
+            position:
+              type: integer
+            state:
+              type: string
+              enum: [idled, completed]
 
     ItemTagUpdateRequest:
       type: object
@@ -477,8 +460,15 @@ components:
         item_tag:
           type: object
           properties:
-            queue_number:
+            name:
               type: string
+            description:
+              type: string
+            position:
+              type: integer
+            state:
+              type: string
+              enum: [idled, completed]
 
     AccountCreateRequest:
       type: object
@@ -510,15 +500,7 @@ components:
           properties:
             admin:
               type: boolean
-            senior_manager:
-              type: boolean
-            junior_manager:
-              type: boolean
-            senior_member:
-              type: boolean
-            junior_member:
-              type: boolean
-            guest:
+            member:
               type: boolean
 
     AccountsInvitationCreateRequest:
@@ -536,15 +518,7 @@ components:
               format: email
             admin:
               type: boolean
-            senior_manager:
-              type: boolean
-            junior_manager:
-              type: boolean
-            senior_member:
-              type: boolean
-            junior_member:
-              type: boolean
-            guest:
+            member:
               type: boolean
 
     AccountsInvitationUpdateRequest:
@@ -558,15 +532,7 @@ components:
               type: string
             admin:
               type: boolean
-            senior_manager:
-              type: boolean
-            junior_manager:
-              type: boolean
-            senior_member:
-              type: boolean
-            junior_member:
-              type: boolean
-            guest:
+            member:
               type: boolean
 
     SignUpRequest:
@@ -1054,8 +1020,6 @@ paths:
                         type: boolean
                       should_update_terms:
                         type: boolean
-                      maximum_queue_number_length:
-                        type: integer
                       shop_limit_count:
                         type: integer
                       account_limit_count:
@@ -1231,29 +1195,6 @@ paths:
       responses:
         '200':
           description: Shop deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SuccessResponse'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-  /shops/{shopId}/reset:
-    parameters:
-      - name: shopId
-        in: path
-        required: true
-        schema:
-          type: string
-          format: uuid
-
-    delete:
-      operationId: resetShop
-      summary: Reset all item tags in a shop
-      tags: [Shops]
-      responses:
-        '200':
-          description: Shop reset
           content:
             application/json:
               schema:
@@ -1441,7 +1382,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /item_tags/{itemTagId}/reset:
+  /item_tags/{itemTagId}/idle:
     parameters:
       - name: itemTagId
         in: path
@@ -1451,12 +1392,12 @@ paths:
           format: uuid
 
     patch:
-      operationId: resetItemTag
-      summary: Reset an item tag to initial state
+      operationId: idleItemTag
+      summary: Reset an item tag to idled state
       tags: [Item Tags]
       responses:
         '200':
-          description: Item tag reset
+          description: Item tag idled
           content:
             application/json:
               schema:
