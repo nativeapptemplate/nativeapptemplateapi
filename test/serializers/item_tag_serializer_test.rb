@@ -19,12 +19,15 @@ class ItemTagSerializerTest < ActiveSupport::TestCase
 
       attributes = serialized[:data][:attributes]
       assert_equal @item_tag.shop_id, attributes[:shop_id]
-      assert_equal @item_tag.queue_number, attributes[:queue_number]
+      assert_equal @item_tag.name, attributes[:name]
+      assert_equal @item_tag.description, attributes[:description]
+      if @item_tag.position
+        assert_equal @item_tag.position, attributes[:position]
+      else
+        assert_nil attributes[:position]
+      end
       assert_equal @item_tag.state, attributes[:state]
-      assert_equal @item_tag.scan_state, attributes[:scan_state]
-      assert_nil attributes[:customer_read_at]
       assert_nil attributes[:completed_at]
-      assert_equal @item_tag.already_completed, attributes[:already_completed]
     end
   end
 
@@ -79,7 +82,9 @@ class ItemTagSerializerTest < ActiveSupport::TestCase
 
   test "should serialize completed item tag" do
     ActsAsTenant.with_tenant(@account) do
-      @item_tag.complete_tag!(@shopkeeper)
+      @item_tag.completed_by = @shopkeeper
+      @item_tag.completed_at = Time.current
+      @item_tag.complete!
 
       serializer = ItemTagSerializer.new(@item_tag)
       serialized = serializer.serializable_hash
@@ -87,19 +92,6 @@ class ItemTagSerializerTest < ActiveSupport::TestCase
       attributes = serialized[:data][:attributes]
       assert_equal "completed", attributes[:state]
       assert attributes[:completed_at]
-      assert_not_nil attributes[:already_completed]
-    end
-  end
-
-  test "should serialize scanned item tag" do
-    ActsAsTenant.with_tenant(@account) do
-      @item_tag.scan_tag!
-
-      serializer = ItemTagSerializer.new(@item_tag)
-      serialized = serializer.serializable_hash
-
-      attributes = serialized[:data][:attributes]
-      assert_equal "scanned", attributes[:scan_state]
     end
   end
 end
