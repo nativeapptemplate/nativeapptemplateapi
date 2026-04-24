@@ -57,6 +57,24 @@ class ItemTagTest < ActiveSupport::TestCase
     end
   end
 
+  test "auto-assigns position to max+1 on create when not provided" do
+    ActsAsTenant.with_tenant(@account) do
+      # @shop already has 1 sample item with position 1 (from after_create callback)
+      item_tag = @shop.item_tags.create!(name: "Buy milk", account: @account)
+      assert_equal 2, item_tag.position
+
+      next_item = @shop.item_tags.create!(name: "Buy eggs", account: @account)
+      assert_equal 3, next_item.position
+    end
+  end
+
+  test "respects explicit position on create" do
+    ActsAsTenant.with_tenant(@account) do
+      item_tag = @shop.item_tags.create!(name: "Pinned", position: 99, account: @account)
+      assert_equal 99, item_tag.position
+    end
+  end
+
   test "should belong to shop" do
     ActsAsTenant.with_tenant(@account) do
       item_tag = @shop.item_tags.first

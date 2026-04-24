@@ -12,6 +12,8 @@ class ItemTag < ApplicationRecord
   validates :name, presence: true
   validate :limit_count, on: :create
 
+  before_create :set_default_position
+
   aasm(:state, column: "state") do
     state :idled, initial: true
     state :completed
@@ -26,6 +28,12 @@ class ItemTag < ApplicationRecord
   end
 
   private
+
+  def set_default_position
+    return if position.present?
+
+    self.position = (shop.item_tags.maximum(:position) || 0) + 1
+  end
 
   def limit_count
     the_limit_count = ConfigSettings.item_tag.limit_count
