@@ -80,5 +80,4 @@ class Api::V1::Shopkeeper::ShopsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
-
 end
