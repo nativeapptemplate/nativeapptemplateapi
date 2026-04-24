@@ -9,7 +9,7 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
       account: @account,
       name: "Invited User",
       email: "invited@example.com",
-      junior_member: true
+      member: true
     )
   end
 
@@ -52,7 +52,7 @@ class Api::V1::Shopkeeper::AccountsInvitationsControllerTest < ActionDispatch::I
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: shopkeepers(:two),
-      junior_member: true
+      member: true
     )
 
     patch api_v1_shopkeeper_accounts_invitation_url(@invitation.token),

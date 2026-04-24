@@ -81,16 +81,4 @@ class Api::V1::Shopkeeper::ShopsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  # reset
-  test "reset resets all item_tags in shop" do
-    item_tag = @shop.item_tags.first
-    item_tag.complete!
-    assert item_tag.reload.completed?
-
-    delete reset_api_v1_shopkeeper_shop_url(@shop),
-      headers: @shopkeeper.create_new_auth_token
-
-    assert_response :success
-    assert item_tag.reload.idled?
-  end
 end

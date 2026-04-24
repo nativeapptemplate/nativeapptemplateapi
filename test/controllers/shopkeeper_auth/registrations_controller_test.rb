@@ -36,7 +36,7 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
 
     ActsAsTenant.with_tenant(account) do
       shop = account.shops.create!(name: "Test Shop", created_by: shopkeeper)
-      shop.item_tags.create!(queue_number: "A1", account: account, completed_by: shopkeeper)
+      shop.item_tags.create!(name: "Buy milk", account: account, completed_by: shopkeeper)
     end
 
     assert_difference "Shopkeeper.count", -1 do

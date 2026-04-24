@@ -9,11 +9,9 @@ class Api::V1::Shopkeeper::BaseControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "render_validation_error returns 422 with error messages" do
-    item_tag = @shop.item_tags.first
-
-    # Try to create a duplicate queue_number to trigger validation error
+    # Try to create an item_tag with a blank name to trigger validation error
     post api_v1_shopkeeper_shop_item_tags_url(@shop),
-      params: {item_tag: {queue_number: item_tag.queue_number}},
+      params: {item_tag: {name: ""}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity

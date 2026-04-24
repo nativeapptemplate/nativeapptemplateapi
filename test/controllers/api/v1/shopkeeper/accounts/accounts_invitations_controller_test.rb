@@ -11,7 +11,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
       name: "Invited User",
       email: "invited@example.com",
       invited_by: @shopkeeper,
-      junior_member: true
+      member: true
     )
   end
 
@@ -20,7 +20,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
       account: @account,
       name: "Another User",
       email: "another@example.com",
-      junior_member: true
+      member: true
     )
 
     get api_v1_shopkeeper_account_accounts_invitations_url(@account),
@@ -45,7 +45,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
           accounts_invitation: {
             name: "New User",
             email: "newuser@example.com",
-            junior_member: true
+            member: true
           }
         },
         headers: @shopkeeper.create_new_auth_token
@@ -62,7 +62,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
           accounts_invitation: {
             name: "",
             email: "invalid@example.com",
-            junior_member: true
+            member: true
           }
         },
         headers: @shopkeeper.create_new_auth_token
@@ -78,7 +78,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     post api_v1_shopkeeper_account_accounts_invitations_url(@account),
@@ -86,7 +86,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
         accounts_invitation: {
           name: "New User",
           email: "newuser@example.com",
-          junior_member: true
+          member: true
         }
       },
       headers: other_shopkeeper.create_new_auth_token
@@ -99,15 +99,15 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
       params: {
         accounts_invitation: {
           name: "Updated Name",
-          senior_member: true,
-          junior_member: false
+          admin: true,
+          member: false
         }
       },
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :success
     assert_equal "Updated Name", @invitation.reload.name
-    assert @invitation.senior_member?
+    assert @invitation.admin?
   end
 
   test "update returns error for invalid data" do
@@ -129,7 +129,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     patch api_v1_shopkeeper_account_accounts_invitation_url(@account, @invitation.token),
@@ -153,7 +153,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     delete api_v1_shopkeeper_account_accounts_invitation_url(@account, @invitation.token),
@@ -191,7 +191,7 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, @invitation.token),
