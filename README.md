@@ -22,7 +22,6 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
 - **[pagy](https://github.com/ddnexus/pagy)**
-- **[Turbo](https://turbo.hotwired.dev/)**
 - **Test** (Minitest)
 
 ### Included Features
