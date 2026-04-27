@@ -55,7 +55,7 @@ en:
       accounts_shopkeepers:
         require_non_personal_account: "Require non personal organization."
       item_tags:
-        not_found: "Whoops, we weren't able to find this item tag. You may need to switch to another organization. Go Organizations tab."
+        not_found: "Whoops, we weren't able to find this item tag."
 
   shopkeeper:
     notification_mailer:
