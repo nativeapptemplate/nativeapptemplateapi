@@ -57,18 +57,18 @@ class RoleTest < ActiveSupport::TestCase
     assert_includes admin_role.permissions.pluck(:tag), "invitation"
   end
 
-  test "guest role should have minimal permissions" do
-    guest_role = Role.find_by(tag: "guest")
-    assert guest_role.permissions.count > 0
+  test "member role should have minimal permissions" do
+    member_role = Role.find_by(tag: "member")
+    assert member_role.permissions.count > 0
 
     read_data_permission = Permission.find_by(tag: "read_data")
-    assert_includes guest_role.permissions, read_data_permission
+    assert_includes member_role.permissions, read_data_permission
   end
 
   test "roles should be ordered by position" do
     admin = Role.find_by(tag: "admin")
-    guest = Role.find_by(tag: "guest")
+    member = Role.find_by(tag: "member")
 
-    assert admin.position < guest.position
+    assert admin.position < member.position
   end
 end

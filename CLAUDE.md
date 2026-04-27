@@ -70,7 +70,7 @@ bin/rails dbconsole           # Database console
 - `Account` - Top-level tenant/organization
 - `Shopkeeper` - Main user type (belongs to Account)
 - `Shop` - Core business entity (belongs to Account)
-- `ItemTag` - Belongs to Shop with unique name constraint
+- `ItemTag` - Belongs to Shop; has name/description/position and a binary state (idled/completed)
 - `Role` & `Permission` - Authorization system
 - State machines implemented with AASM gem
 

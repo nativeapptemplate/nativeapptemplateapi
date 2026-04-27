@@ -28,7 +28,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     get api_v1_shopkeeper_account_accounts_shopkeepers_url(@team_account),
@@ -62,23 +62,23 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, accounts_shopkeeper),
-      params: {accounts_shopkeeper: {senior_member: true, junior_member: false}},
+      params: {accounts_shopkeeper: {admin: true, member: false}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :success
-    assert accounts_shopkeeper.reload.senior_member?
-    assert_not accounts_shopkeeper.junior_member?
+    assert accounts_shopkeeper.reload.admin?
+    assert_not accounts_shopkeeper.member?
   end
 
   test "update returns error for personal account" do
     accounts_shopkeeper = @account.accounts_shopkeepers.first
 
     patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@account, accounts_shopkeeper),
-      params: {accounts_shopkeeper: {admin: false, junior_member: true}},
+      params: {accounts_shopkeeper: {admin: false, member: true}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
@@ -86,7 +86,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
 
   test "update returns validation error when owner removes own admin" do
     patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, @team_accounts_shopkeeper),
-      params: {accounts_shopkeeper: {admin: false, junior_member: true}},
+      params: {accounts_shopkeeper: {admin: false, member: true}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
@@ -99,11 +99,11 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, @team_accounts_shopkeeper),
-      params: {accounts_shopkeeper: {senior_member: true}},
+      params: {accounts_shopkeeper: {member: true}},
       headers: other_shopkeeper.create_new_auth_token
 
     assert_response :unauthorized
@@ -114,7 +114,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     assert_difference "AccountsShopkeeper.count", -1 do
@@ -148,7 +148,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     delete api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, accounts_shopkeeper),

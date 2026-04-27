@@ -2,26 +2,22 @@ class Api::Shopkeeper::ShopPolicy < Api::Shopkeeper::BasePolicy
   include Api::Shopkeeper::Concerns::Authorization
 
   def index?
-    true
-  end
-
-  def create?
-    owner?
+    admin? || member?
   end
 
   def show?
-    true
+    admin? || member?
+  end
+
+  def create?
+    admin? || member?
   end
 
   def update?
-    admin?
+    admin? || member?
   end
 
   def destroy?
-    create?
-  end
-
-  def reset?
-    admin? || senior_manager? || junior_manager? || senior_member?
+    admin? || member?
   end
 end

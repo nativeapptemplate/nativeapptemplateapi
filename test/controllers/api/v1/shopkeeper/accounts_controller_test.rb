@@ -61,7 +61,7 @@ class Api::V1::Shopkeeper::AccountsControllerTest < ActionDispatch::IntegrationT
     AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     patch api_v1_shopkeeper_account_url(@team_account),

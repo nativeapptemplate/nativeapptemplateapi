@@ -9,7 +9,7 @@ class AccountsShopkeeperSerializerTest < ActiveSupport::TestCase
     @accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: shopkeepers(:two),
-      senior_manager: true
+      member: true
     )
   end
 
@@ -32,12 +32,12 @@ class AccountsShopkeeperSerializerTest < ActiveSupport::TestCase
     end
   end
 
-  test "should serialize senior_manager role" do
+  test "should serialize member role" do
     serializer = AccountsShopkeeperSerializer.new(@accounts_shopkeeper)
     serialized = serializer.serializable_hash
 
     attributes = serialized[:data][:attributes]
-    assert attributes[:senior_manager]
+    assert attributes[:member]
     assert_not attributes[:admin]
   end
 

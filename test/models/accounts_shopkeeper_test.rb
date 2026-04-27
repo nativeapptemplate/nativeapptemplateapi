@@ -12,13 +12,13 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     accounts_shopkeeper = AccountsShopkeeper.new(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
     assert accounts_shopkeeper.valid?
   end
 
   test "should require shopkeeper" do
-    accounts_shopkeeper = AccountsShopkeeper.new(account: @account, junior_member: true)
+    accounts_shopkeeper = AccountsShopkeeper.new(account: @account, member: true)
     assert_not accounts_shopkeeper.valid?
     assert_includes accounts_shopkeeper.errors[:shopkeeper], "must exist"
   end
@@ -28,7 +28,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     duplicate = AccountsShopkeeper.new(
@@ -48,24 +48,29 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     accounts_shopkeeper2 = AccountsShopkeeper.new(
       account: account2,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     assert accounts_shopkeeper2.valid?
   end
 
   test "should touch account when updated" do
-    accounts_shopkeeper = @account.accounts_shopkeepers.first
+    other_shopkeeper = shopkeepers(:two)
+    accounts_shopkeeper = AccountsShopkeeper.create!(
+      account: @account,
+      shopkeeper: other_shopkeeper,
+      member: true
+    )
     old_updated_at = @account.updated_at
 
     sleep 0.01
-    accounts_shopkeeper.update!(senior_member: true)
+    accounts_shopkeeper.update!(admin: true)
 
     assert @account.reload.updated_at > old_updated_at
   end
@@ -80,7 +85,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     assert_not accounts_shopkeeper.account_owner?
@@ -92,7 +97,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     assert accounts_shopkeeper.admin?
 
     accounts_shopkeeper.admin = false
-    accounts_shopkeeper.junior_member = true
+    accounts_shopkeeper.member = true
 
     assert_not accounts_shopkeeper.valid?
     assert_includes accounts_shopkeeper.errors[:admin], I18n.t("activerecord.errors.models.accounts_shopkeeper.attributes.admin.cannot_be_removed")
@@ -107,7 +112,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     )
 
     accounts_shopkeeper.admin = false
-    accounts_shopkeeper.junior_member = true
+    accounts_shopkeeper.member = true
 
     assert accounts_shopkeeper.valid?
   end
@@ -120,64 +125,16 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     assert_equal admin_role.permissions, accounts_shopkeeper.permissions
   end
 
-  test "permissions returns senior_manager permissions for senior_manager role" do
+  test "permissions returns member permissions for member role" do
     other_shopkeeper = shopkeepers(:two)
     accounts_shopkeeper = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      senior_manager: true
+      member: true
     )
 
-    senior_manager_role = Role.find_by(tag: "senior_manager")
-    assert_equal senior_manager_role.permissions, accounts_shopkeeper.permissions
-  end
-
-  test "permissions returns junior_manager permissions for junior_manager role" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      junior_manager: true
-    )
-
-    junior_manager_role = Role.find_by(tag: "junior_manager")
-    assert_equal junior_manager_role.permissions, accounts_shopkeeper.permissions
-  end
-
-  test "permissions returns senior_member permissions for senior_member role" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      senior_member: true
-    )
-
-    senior_member_role = Role.find_by(tag: "senior_member")
-    assert_equal senior_member_role.permissions, accounts_shopkeeper.permissions
-  end
-
-  test "permissions returns junior_member permissions for junior_member role" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      junior_member: true
-    )
-
-    junior_member_role = Role.find_by(tag: "junior_member")
-    assert_equal junior_member_role.permissions, accounts_shopkeeper.permissions
-  end
-
-  test "permissions returns guest permissions for guest role" do
-    other_shopkeeper = shopkeepers(:two)
-    accounts_shopkeeper = AccountsShopkeeper.create!(
-      account: @account,
-      shopkeeper: other_shopkeeper,
-      guest: true
-    )
-
-    guest_role = Role.find_by(tag: "guest")
-    assert_equal guest_role.permissions, accounts_shopkeeper.permissions
+    member_role = Role.find_by(tag: "member")
+    assert_equal member_role.permissions, accounts_shopkeeper.permissions
   end
 
   test "role helper methods work correctly" do
@@ -189,11 +146,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     )
 
     assert accounts_shopkeeper.admin?
-    assert_not accounts_shopkeeper.senior_manager?
-    assert_not accounts_shopkeeper.junior_manager?
-    assert_not accounts_shopkeeper.senior_member?
-    assert_not accounts_shopkeeper.junior_member?
-    assert_not accounts_shopkeeper.guest?
+    assert_not accounts_shopkeeper.member?
   end
 
   test "active_roles returns array of active roles" do
@@ -202,12 +155,12 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
       account: @account,
       shopkeeper: other_shopkeeper,
       admin: true,
-      senior_member: true
+      member: true
     )
 
     active_roles = accounts_shopkeeper.active_roles
     assert_includes active_roles, :admin
-    assert_includes active_roles, :senior_member
+    assert_includes active_roles, :member
     assert_equal 2, active_roles.length
   end
 
@@ -228,13 +181,13 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     member_as = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: shopkeeper3,
-      junior_member: true
+      member: true
     )
 
     assert_includes AccountsShopkeeper.admin, admin_as
     assert_not_includes AccountsShopkeeper.admin, member_as
 
-    assert_includes AccountsShopkeeper.junior_member, member_as
-    assert_not_includes AccountsShopkeeper.junior_member, admin_as
+    assert_includes AccountsShopkeeper.member, member_as
+    assert_not_includes AccountsShopkeeper.member, admin_as
   end
 end

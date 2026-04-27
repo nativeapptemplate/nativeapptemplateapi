@@ -55,7 +55,7 @@ en:
       accounts_shopkeepers:
         require_non_personal_account: "Require non personal organization."
       item_tags:
-        not_found: "Whoops, we weren't able to find this number tag. You may need to switch to another organization. Go Organizations tab."
+        not_found: "Whoops, we weren't able to find this item tag."
 
   shopkeeper:
     notification_mailer:
@@ -107,7 +107,9 @@ en:
   activerecord:
     attributes:
       item_tag:
-        queue_number: "Tag Number"
+        name: "Name"
+        description: "Description"
+        position: "Position"
       accounts_shopkeeper:
         shopkeeper: "User"
         shopkeeper_id: "User"
@@ -132,12 +134,6 @@ en:
             current_platform:
               format: "%{message}"
               blank: "Your input data is wrong."         
-        item_tag:
-          attributes:
-            queue_number:
-              format_error: "must be a 2-5 alphanumeric characters."
-              uniqueness_error: "has already been registered."
-
   errors:
     messages:
       validate_sign_up_params: "Please submit proper sign up data in request body."
@@ -145,4 +141,4 @@ en:
       limit_count_account: "You can create up to %{limit_count} organizations."
       limit_count_shop: "You can create up to %{limit_count} shops across all organizations."
       limit_count_accounts_shopkeeper: "Organization members can be created up to %{limit_count}. Please contact the organization admin user or owner."
-      limit_count_item_tag: "You can create up to %{limit_count} number tags."
+      limit_count_item_tag: "You can create up to %{limit_count} item tags."

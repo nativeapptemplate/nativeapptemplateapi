@@ -22,7 +22,6 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
 - **[pagy](https://github.com/ddnexus/pagy)**
-- **[Turbo](https://turbo.hotwired.dev/)** (real-time page updates for Number Tags Webpage)
 - **Test** (Minitest)
 
 ### Included Features
@@ -31,7 +30,7 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - Email Confirmation
 - Forgot Password
 - CRUD Operations for Shops (Create/Read/Update/Delete)
-- CRUD Operations for Shops' Nested Resource, Number Tags (ItemTags) (Create/Read/Update/Delete)
+- CRUD Operations for Shops' Nested Resource, Item Tags (Create/Read/Update/Delete)
 - URL Path-Based Multitenancy (prepends `/:account_id/` to URLs)
 - User Invitation to Organizations
 - Role-Based Permissions and Access Control

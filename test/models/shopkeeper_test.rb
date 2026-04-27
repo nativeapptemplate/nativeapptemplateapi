@@ -185,7 +185,7 @@ class ShopkeeperTest < ActiveSupport::TestCase
       invited_by: shopkeeper,
       name: "Invited User",
       email: "invited@example.com",
-      junior_member: true
+      member: true
     )
 
     shopkeeper.destroy
@@ -224,7 +224,7 @@ class ShopkeeperTest < ActiveSupport::TestCase
     item_tag = ActsAsTenant.with_tenant(other_account) do
       shop = other_account.shops.create!(name: "Other Shop", created_by: other_shopkeeper)
       shop.item_tags.create!(
-        queue_number: "A1",
+        name: "Buy milk",
         account: other_account,
         completed_by: shopkeeper
       )
@@ -251,7 +251,7 @@ class ShopkeeperTest < ActiveSupport::TestCase
     item_tag = ActsAsTenant.with_tenant(other_account) do
       shop = other_account.shops.create!(name: "Other Shop", created_by: other_shopkeeper)
       shop.item_tags.create!(
-        queue_number: "B1",
+        name: "Buy bread",
         account: other_account,
         created_by: shopkeeper
       )

@@ -29,7 +29,7 @@ class AccountSerializerTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: shopkeepers(:two),
-      junior_member: true
+      member: true
     )
 
     serializer = AccountSerializer.new(@account)
@@ -44,7 +44,7 @@ class AccountSerializerTest < ActiveSupport::TestCase
       account: @account,
       name: "Test User",
       email: "test@example.com",
-      junior_member: true
+      member: true
     )
 
     serializer = AccountSerializer.new(@account)
@@ -78,7 +78,7 @@ class AccountSerializerTest < ActiveSupport::TestCase
     AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     serializer = AccountSerializer.new(@account, params: {current_shopkeeper: other_shopkeeper})
