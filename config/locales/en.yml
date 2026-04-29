@@ -32,8 +32,6 @@
 en:
   hello: "hello"
   welcome: "welcome"
-  forgot_your_password: "Forgot your password?"
-  send_me_reset_password_instructions: "Send me reset password instructions"
   change_my_password: "Change my password"
   change_your_password: "Change your password"
   confirm_new_password: "Confirm new password"
@@ -45,8 +43,6 @@ en:
   api:
     shopkeeper:
       accounts:
-        owner_required: "Only account owner is allowed to do that."
-        admin_required: "Only account admins are allowed to do that."
         personal:
           cannot_delete: "You cannot delete your personal account."
       accounts_invitations:
