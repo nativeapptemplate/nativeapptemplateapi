@@ -8,8 +8,8 @@ class Api::V1::Shopkeeper::PermissionsController < Api::V1::Shopkeeper::BaseCont
     current_privacy_version = PrivacyVersion.current_version
     current_terms_version = TermsVersion.current_version
 
-    should_update_privacy = current_shopkeeper.confirmed_privacy_version < current_privacy_version
-    should_update_terms = current_shopkeeper.confirmed_terms_version < current_terms_version
+    should_update_privacy = version_outdated?(current_shopkeeper.confirmed_privacy_version, current_privacy_version)
+    should_update_terms = version_outdated?(current_shopkeeper.confirmed_terms_version, current_terms_version)
 
     options = {}
     options[:meta] = {
@@ -24,5 +24,14 @@ class Api::V1::Shopkeeper::PermissionsController < Api::V1::Shopkeeper::BaseCont
 
     permissions = current_accounts_shopkeeper.permissions
     render json: PermissionSerializer.new(permissions, options).serializable_hash
+  end
+
+  private
+
+  # nil current → nothing published yet, nothing to update.
+  def version_outdated?(confirmed, current)
+    return false if current.nil?
+
+    confirmed < current
   end
 end

@@ -64,4 +64,15 @@ class Api::V1::Shopkeeper::PermissionsControllerTest < ActionDispatch::Integrati
 
     assert_response :unauthorized
   end
+
+  test "index does not crash when there is no current published privacy or terms version" do
+    PrivacyVersion.update_all(current_type: PrivacyVersion.current_types[:uncurrent])
+    TermsVersion.update_all(current_type: TermsVersion.current_types[:uncurrent])
+
+    get api_v1_shopkeeper_permissions_url, headers: @shopkeeper.create_new_auth_token
+
+    assert_response :success
+    assert_equal false, response.parsed_body["meta"]["should_update_privacy"]
+    assert_equal false, response.parsed_body["meta"]["should_update_terms"]
+  end
 end
