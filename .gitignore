@@ -63,6 +63,7 @@
 .claude/logs/
 .claude/tmp/
 .claude/*.log
+.claude/scheduled_tasks.lock
 
 # Private docs — not for publication
 /docs-private/
