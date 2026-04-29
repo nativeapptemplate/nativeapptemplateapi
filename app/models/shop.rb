@@ -26,10 +26,10 @@ class Shop < ApplicationRecord
 
   def limit_count
     ActsAsTenant.without_tenant do
-      the_limit_count = ConfigSettings.shop.limit_count
-      return if created_by.created_shops.count < the_limit_count
+      limit = ConfigSettings.shop.limit_count
+      return if created_by.created_shops.count < limit
 
-      errors.add :base, :limit_count_shop, limit_count: the_limit_count
+      errors.add :base, :limit_count_shop, limit_count: limit
     end
   end
 end

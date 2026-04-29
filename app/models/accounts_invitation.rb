@@ -55,14 +55,10 @@ class AccountsInvitation < ApplicationRecord
   private
 
   def set_token
-    the_token = nil
-
-    loop do
-      the_token = random_token
-      break unless AccountsInvitation.exists?(token: the_token)
+    self.token = loop do
+      candidate = random_token
+      break candidate unless AccountsInvitation.exists?(token: candidate)
     end
-
-    self.token = the_token
   end
 
   def random_token
