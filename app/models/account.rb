@@ -43,9 +43,9 @@ class Account < ApplicationRecord
   end
 
   def limit_count
-    the_limit_count = ConfigSettings.account.limit_count
-    return if owner.owned_accounts.count < the_limit_count
+    limit = ConfigSettings.account.limit_count
+    return if owner.owned_accounts.count < limit
 
-    errors.add :base, :limit_count_account, limit_count: the_limit_count
+    errors.add :base, :limit_count_account, limit_count: limit
   end
 end

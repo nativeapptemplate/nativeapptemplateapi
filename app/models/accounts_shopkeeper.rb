@@ -31,9 +31,9 @@ class AccountsShopkeeper < ApplicationRecord
   end
 
   def limit_count
-    the_limit_count = ConfigSettings.accounts_shopkeeper.limit_count
-    return if account.accounts_shopkeepers.count < the_limit_count
+    limit = ConfigSettings.accounts_shopkeeper.limit_count
+    return if account.accounts_shopkeepers.count < limit
 
-    errors.add :base, :limit_count_accounts_shopkeeper, limit_count: the_limit_count
+    errors.add :base, :limit_count_accounts_shopkeeper, limit_count: limit
   end
 end

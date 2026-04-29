@@ -36,9 +36,9 @@ class ItemTag < ApplicationRecord
   end
 
   def limit_count
-    the_limit_count = ConfigSettings.item_tag.limit_count
-    return if shop.item_tags.count < the_limit_count
+    limit = ConfigSettings.item_tag.limit_count
+    return if shop.item_tags.count < limit
 
-    errors.add :base, :limit_count_item_tag, limit_count: the_limit_count
+    errors.add :base, :limit_count_item_tag, limit_count: limit
   end
 end
