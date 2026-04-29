@@ -14,6 +14,7 @@ module ActiveSupport
   class TestCase
     setup do
       Dir[Rails.root.join("db", "fixtures", "test", "*.rb")].sort.each { |s| load s }
+      Rails.cache.clear
     end
 
     # Run tests in parallel with specified workers
