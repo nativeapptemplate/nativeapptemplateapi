@@ -1,4 +1,10 @@
 class ShopkeeperAuth::RegistrationsController < DeviseTokenAuth::RegistrationsController
+  rate_limit to: 10, within: 3.minutes, only: :create,
+    with: -> {
+      render json: {code: 429, error_message: I18n.t("errors.messages.too_many_signups")},
+        status: :too_many_requests
+    }
+
   before_action :set_confirm_success_url, only: %i[create]
   before_action :configure_permitted_parameters
 
