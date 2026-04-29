@@ -143,3 +143,4 @@ en:
       limit_count_accounts_shopkeeper: "Organization members can be created up to %{limit_count}. Please contact the organization admin user or owner."
       limit_count_item_tag: "You can create up to %{limit_count} item tags."
       too_many_signups: "Too many sign-up attempts. Please try again later."
+      too_many_logins: "Too many sign-in attempts. Please try again later."
