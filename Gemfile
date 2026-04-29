@@ -20,9 +20,6 @@ gem "turbo-rails", "~> 2.0.3"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
 gem "stimulus-rails", "~> 1.0", ">= 1.0.2"
 
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder", "~> 2.14"
-
 # Solid adapters for queue, cache, and cable (database-backed, no Redis needed)
 gem "solid_queue"
 gem "solid_cable"
@@ -49,7 +46,6 @@ gem "aasm"
 gem "after_commit_everywhere", "~> 1.6"
 gem "config"
 gem "acts_as_tenant"
-gem "inline_svg", "~> 1.10"
 gem "pagy", "~> 43"
 gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
