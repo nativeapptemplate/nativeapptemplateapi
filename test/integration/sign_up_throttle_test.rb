@@ -14,13 +14,13 @@ class SignUpThrottleTest < ActionDispatch::IntegrationTest
       as: :json
   end
 
-  test "the sixth sign-up from the same IP within an hour is rate-limited" do
-    5.times do |i|
+  test "the eleventh sign-up from the same IP within the window is rate-limited" do
+    10.times do |i|
       post_sign_up("throttle#{i}@example.com")
       assert_not_equal 429, response.status, "request #{i + 1} should not be throttled"
     end
 
-    post_sign_up("throttle5@example.com")
+    post_sign_up("throttle10@example.com")
 
     assert_response :too_many_requests
     assert_equal 429, response.parsed_body["code"]
