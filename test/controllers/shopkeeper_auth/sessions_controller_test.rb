@@ -28,4 +28,29 @@ class ShopkeeperAuth::SessionsControllerTest < ActionDispatch::IntegrationTest
     delete destroy_shopkeeper_session_url, headers: shopkeeper.create_new_auth_token
     assert_response :success
   end
+
+  test "successful sign-in updates current_platform to the source header value" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    shopkeeper.update_column(:current_platform, "ios")
+
+    post shopkeeper_session_url,
+      params: {email: shopkeeper.email, password: "password"},
+      headers: {source: "android"}
+
+    assert_response :success
+    assert_equal "android", shopkeeper.reload.current_platform
+  end
+
+  test "successful sign-in without source header preserves the existing current_platform" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    shopkeeper.update_column(:current_platform, "ios")
+
+    post shopkeeper_session_url,
+      params: {email: shopkeeper.email, password: "password"}
+
+    assert_response :success
+    assert_equal "ios", shopkeeper.reload.current_platform
+  end
 end

@@ -3,7 +3,10 @@ class ShopkeeperAuth::SessionsController < DeviseTokenAuth::SessionsController
     super
     return if @resource.blank?
 
-    @resource.current_platform = request.headers["source"]
+    source = request.headers["source"]
+    return if source.blank?
+
+    @resource.current_platform = source
     @resource.save!(validate: false)
   end
 
