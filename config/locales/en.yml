@@ -88,6 +88,7 @@ en:
       not_confirmed: "A confirmation email was sent to your account at '%{email}'. You must follow the instructions in the email before your account can be activated."
       bad_credentials: "Invalid email or password. Please try again."
       user_not_found: "User was not found or was not signed in."
+      missing_source: "Missing 'source' header."
     passwords:
       missing_email: "You must provide an email address."
       missing_redirect_url: "Missing redirect URL."

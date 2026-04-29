@@ -2,7 +2,7 @@ require "test_helper"
 
 class ShopkeeperAuth::SessionsControllerTest < ActionDispatch::IntegrationTest
   test "returns unauthorized if shopkeeper not valid" do
-    post shopkeeper_session_url
+    post shopkeeper_session_url, headers: {source: "ios"}
     assert_response :unauthorized
     assert response.parsed_body["error_message"]
     assert_equal I18n.t("devise_token_auth.sessions.bad_credentials"), response.parsed_body["error_message"]
@@ -42,7 +42,7 @@ class ShopkeeperAuth::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "android", shopkeeper.reload.current_platform
   end
 
-  test "successful sign-in without source header preserves the existing current_platform" do
+  test "sign-in without source header is rejected with 401" do
     shopkeeper = shopkeepers(:one)
     shopkeeper.create_default_account
     shopkeeper.update_column(:current_platform, "ios")
@@ -50,7 +50,8 @@ class ShopkeeperAuth::SessionsControllerTest < ActionDispatch::IntegrationTest
     post shopkeeper_session_url,
       params: {email: shopkeeper.email, password: "password"}
 
-    assert_response :success
+    assert_response :unauthorized
+    assert_equal I18n.t("devise_token_auth.sessions.missing_source"), response.parsed_body["error_message"]
     assert_equal "ios", shopkeeper.reload.current_platform
   end
 end

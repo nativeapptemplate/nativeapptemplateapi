@@ -1,10 +1,12 @@
 class ShopkeeperAuth::SessionsController < DeviseTokenAuth::SessionsController
   def create
+    source = request.headers["source"]
+    if source.blank?
+      return render json: {code: 401, error_message: I18n.t("devise_token_auth.sessions.missing_source")}, status: :unauthorized
+    end
+
     super
     return if @resource.blank?
-
-    source = request.headers["source"]
-    return if source.blank?
 
     @resource.current_platform = source
     @resource.save!(validate: false)
