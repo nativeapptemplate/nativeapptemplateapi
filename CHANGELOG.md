@@ -4,6 +4,14 @@
 
 ## 2026-05-02
 
+- Phase 1: Rails API substrate v2 refactor (#45) — turn queue-specific template into generic single-resource CRUD substrate (Shop → ItemTag)
+- Rename `ItemTag.queue_number` → `name`; add `description`, `position`, composite `(shop_id, position)` index; drop `scan_state`, `customer_read_at`, `already_completed` and the `(shop_id, queue_number)` unique index
+- Drop NFC/QR scan flows: remove `POST /scan`, `GET /scan_customer`, the entire `display/` namespace, `DELETE /shops/:id/reset`, app root + static controller
+- Rename `PATCH /item_tags/:id/reset` → `/idle` (matches AASM event name)
+- Auto-create one "Sample" ItemTag on Shop creation (was 10 A001–A010 queue numbers); drop `lib/tasks/shop.rake`
+- Collapse `AccountsShopkeeper::ROLES` from 7 tiers (admin/senior_manager/junior_manager/senior_member/junior_member/guest) to 2 (admin/member); `ItemTagPolicy` resolves to Shop permissions
+- Inline state transitions and `completed_by`/`completed_at` writes in controller actions; drop `scan_tag!`/`complete_tag!`/`reset!` model methods
+- Regenerate `docs/openapi.yaml`; refresh brakeman.ignore fingerprint; update locales and Madmin resources
 - Update gems within Gemfile constraints (bigdecimal, bootsnap, erb, ffi, irb, json, minitest, net-imap, nokogiri, pagy, parallel, parser, propshaft, puma, regexp_parser, rubocop, rubocop-ast, tailwindcss-ruby)
 
 ## 2026-03-10
