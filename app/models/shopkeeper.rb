@@ -34,7 +34,6 @@ class Shopkeeper < ApplicationRecord
     opts[:to] = unconfirmed_email if pending_reconfirmation?
     opts[:redirect_url] ||= DeviseTokenAuth.default_confirm_success_url
 
-    # send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
     Shopkeeper::NotificationMailer.with(resource: self, token: @raw_confirmation_token, opts: opts).confirmation_instructions.deliver_later
   end
 
@@ -45,7 +44,6 @@ class Shopkeeper < ApplicationRecord
     # fall back to "default" config name
     opts[:client_config] ||= "default"
 
-    # send_devise_notification(:reset_password_instructions, token, opts)
     Shopkeeper::NotificationMailer.with(resource: self, token: token, opts: opts).reset_password_instructions.deliver_later
 
     token

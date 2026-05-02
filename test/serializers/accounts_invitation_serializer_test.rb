@@ -45,19 +45,19 @@ class AccountsInvitationSerializerTest < ActiveSupport::TestCase
     assert attributes[:admin]
   end
 
-  test "should serialize junior_member role" do
+  test "should serialize member role" do
     invitation = AccountsInvitation.create!(
       account: @account,
-      name: "Junior Member",
-      email: "junior@example.com",
-      junior_member: true
+      name: "Member User",
+      email: "member@example.com",
+      member: true
     )
 
     serializer = AccountsInvitationSerializer.new(invitation)
     serialized = serializer.serializable_hash
 
     attributes = serialized[:data][:attributes]
-    assert attributes[:junior_member]
+    assert attributes[:member]
     assert_not attributes[:admin]
   end
 

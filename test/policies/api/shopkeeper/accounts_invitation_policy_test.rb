@@ -12,7 +12,7 @@ class Api::Shopkeeper::AccountsInvitationPolicyTest < ActiveSupport::TestCase
       name: "Invited User",
       email: "invited@example.com",
       invited_by: @shopkeeper,
-      junior_member: true
+      member: true
     )
   end
 
@@ -38,7 +38,7 @@ class Api::Shopkeeper::AccountsInvitationPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsInvitationPolicy.new(member, @invitation)
@@ -57,7 +57,7 @@ class Api::Shopkeeper::AccountsInvitationPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsInvitationPolicy.new(member, @invitation)
@@ -76,7 +76,7 @@ class Api::Shopkeeper::AccountsInvitationPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsInvitationPolicy.new(member, @invitation)
@@ -95,7 +95,7 @@ class Api::Shopkeeper::AccountsInvitationPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsInvitationPolicy.new(member, @invitation)

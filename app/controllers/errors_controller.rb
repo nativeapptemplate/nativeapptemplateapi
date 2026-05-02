@@ -1,17 +1,19 @@
 class ErrorsController < NonApiApplicationController
   def not_found
-    if request.content_type&.include?("application/json")
-      render json: {code: 404, error_message: "Not found."}, status: 404
-    else
-      render status: 404
-    end
+    render_error(404, "Not found.")
   end
 
   def internal_server_error
+    render_error(500, "Internal server error.")
+  end
+
+  private
+
+  def render_error(status, message)
     if request.content_type&.include?("application/json")
-      render json: {code: 500, error_message: "Internal server error."}, status: 500
+      render json: {code: status, error_message: message}, status: status
     else
-      render status: 500
+      render status: status
     end
   end
 end

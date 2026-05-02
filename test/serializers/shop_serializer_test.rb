@@ -33,41 +33,18 @@ class ShopSerializerTest < ActiveSupport::TestCase
     end
   end
 
-  test "should serialize scanned_item_tags_count" do
-    ActsAsTenant.with_tenant(@account) do
-      item_tag = @shop.item_tags.first
-      item_tag.scan_tag!
-
-      serializer = ShopSerializer.new(@shop)
-      serialized = serializer.serializable_hash
-
-      attributes = serialized[:data][:attributes]
-      assert_equal 1, attributes[:scanned_item_tags_count]
-    end
-  end
-
   test "should serialize completed_item_tags_count" do
     ActsAsTenant.with_tenant(@account) do
       item_tag = @shop.item_tags.first
-      item_tag.complete_tag!(@shopkeeper)
+      item_tag.completed_by = @shopkeeper
+      item_tag.completed_at = Time.current
+      item_tag.complete!
 
       serializer = ShopSerializer.new(@shop)
       serialized = serializer.serializable_hash
 
       attributes = serialized[:data][:attributes]
       assert_equal 1, attributes[:completed_item_tags_count]
-    end
-  end
-
-  test "should serialize display_shop_server_path" do
-    ActsAsTenant.with_tenant(@account) do
-      serializer = ShopSerializer.new(@shop)
-      serialized = serializer.serializable_hash
-
-      attributes = serialized[:data][:attributes]
-      assert_includes attributes[:display_shop_server_path], "/display/shops/"
-      assert_includes attributes[:display_shop_server_path], @shop.id
-      assert_includes attributes[:display_shop_server_path], "type=server"
     end
   end
 

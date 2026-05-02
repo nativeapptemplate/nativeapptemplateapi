@@ -1,4 +1,10 @@
 class ShopkeeperAuth::RegistrationsController < DeviseTokenAuth::RegistrationsController
+  rate_limit to: 10, within: 3.minutes, only: :create,
+    with: -> {
+      render json: {code: 429, error_message: I18n.t("errors.messages.too_many_signups")},
+        status: :too_many_requests
+    }
+
   before_action :set_confirm_success_url, only: %i[create]
   before_action :configure_permitted_parameters
 
@@ -33,18 +39,22 @@ class ShopkeeperAuth::RegistrationsController < DeviseTokenAuth::RegistrationsCo
   end
 
   def render_create_error
-    render json: {code: 422, error_message: @resource.errors.full_messages.to_sentence}, status: :unprocessable_entity
+    render_resource_error
   end
 
   def render_update_error
-    render json: {code: 422, error_message: @resource.errors.full_messages.to_sentence}, status: :unprocessable_entity
+    render_resource_error
   end
 
   def render_destroy_error
-    render json: {code: 422, error_message: @resource.errors.full_messages.to_sentence}, status: :unprocessable_entity
+    render_resource_error
   end
 
   private
+
+  def render_resource_error
+    render json: {code: 422, error_message: @resource.errors.full_messages.to_sentence}, status: :unprocessable_entity
+  end
 
   def validate_sign_up_params
     return if sign_up_params.present?

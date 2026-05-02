@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_09_072237) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_23_232155) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -99,22 +99,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_09_072237) do
 
   create_table "item_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
-    t.boolean "already_completed", default: false, null: false
     t.datetime "completed_at", precision: nil
     t.uuid "completed_by_id"
     t.datetime "created_at", null: false
     t.uuid "created_by_id"
-    t.datetime "customer_read_at", precision: nil
-    t.string "queue_number", null: false
-    t.integer "scan_state", default: 1, null: false
+    t.text "description"
+    t.string "name", null: false
+    t.integer "position"
     t.uuid "shop_id", null: false
     t.integer "state", default: 1, null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_item_tags_on_account_id"
     t.index ["completed_by_id"], name: "index_item_tags_on_completed_by_id"
     t.index ["created_by_id"], name: "index_item_tags_on_created_by_id"
-    t.index ["queue_number"], name: "index_item_tags_on_queue_number"
-    t.index ["shop_id", "queue_number"], name: "index_item_tags_on_shop_id_and_queue_number", unique: true
+    t.index ["shop_id", "position"], name: "index_item_tags_on_shop_id_and_position"
     t.index ["shop_id"], name: "index_item_tags_on_shop_id"
     t.index ["state"], name: "index_item_tags_on_state"
   end

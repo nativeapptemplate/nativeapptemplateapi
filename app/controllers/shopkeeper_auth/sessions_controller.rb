@@ -1,9 +1,28 @@
 class ShopkeeperAuth::SessionsController < DeviseTokenAuth::SessionsController
+  RENDER_LOGIN_THROTTLED = -> {
+    render json: {code: 429, error_message: I18n.t("errors.messages.too_many_logins")},
+      status: :too_many_requests
+  }
+  private_constant :RENDER_LOGIN_THROTTLED
+
+  rate_limit to: 5, within: 20.seconds, only: :create,
+    name: "logins/ip",
+    with: RENDER_LOGIN_THROTTLED
+
+  rate_limit to: 5, within: 20.seconds, only: :create,
+    name: "logins/email",
+    by: -> { params[:email].to_s.downcase.gsub(/\s+/, "") },
+    if: -> { params[:email].present? },
+    with: RENDER_LOGIN_THROTTLED
+
   def create
     super
     return if @resource.blank?
 
-    @resource.current_platform = request.headers["source"]
+    source = request.headers["source"]
+    return if source.blank?
+
+    @resource.current_platform = source
     @resource.save!(validate: false)
   end
 

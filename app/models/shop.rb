@@ -8,49 +8,28 @@ class Shop < ApplicationRecord
   validates :name, presence: true
   validate :limit_count, on: :create
 
-  after_create :create_default_item_tags!
-
-  def latest_completed_item_tag
-    item_tags.completed.sorted_recent_first_order.first
-  end
-
-  def create_default_item_tags!
-    return if item_tags.present?
-
-    ConfigSettings.item_tag.default_count.times do |i|
-      queue_number_length = ConfigSettings.item_tag.default_queue_number_length
-      number = (i + 1).to_s.rjust(queue_number_length - 1, "0")
-      queue_number = "A#{number}"
-
-      item_tag = item_tags.build
-      item_tag.account = account
-      item_tag.queue_number = queue_number
-      item_tag.save!
-    end
-  end
-
-  def reset!
-    item_tags.each do |item_tag|
-      item_tag.reset!
-    end
-
-    full_reload_entire_page
-  end
+  after_create :create_sample_item_tag
 
   private
 
-  def limit_count
-    ActsAsTenant.without_tenant do
-      the_limit_count = ConfigSettings.shop.limit_count
-      return if created_by.created_shops.count < the_limit_count
-
-      errors.add :base, :limit_count_shop, limit_count: the_limit_count
-    end
+  def create_sample_item_tag
+    item_tags.create!(
+      account: account,
+      name: "Sample",
+      description: "This is a sample. You can update or delete it.",
+      position: 1,
+      created_by: created_by
+    )
+  rescue => e
+    Rails.logger.warn "Failed to create sample item_tag for Shop #{id}: #{e.message}"
   end
 
-  def full_reload_entire_page
-    broadcast_append_to [self, :tb_stream_full_reload_entire_page],
-      target: "tb_display_container",
-      partial: "display/shops/full_reload_entire_page"
+  def limit_count
+    ActsAsTenant.without_tenant do
+      limit = ConfigSettings.shop.limit_count
+      return if created_by.created_shops.count < limit
+
+      errors.add :base, :limit_count_shop, limit_count: limit
+    end
   end
 end

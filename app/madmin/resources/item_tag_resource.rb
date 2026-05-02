@@ -1,14 +1,13 @@
 class ItemTagResource < Madmin::Resource
   # Attributes
   attribute :id, form: false
-  attribute :queue_number
+  attribute :name
+  attribute :description
+  attribute :position
   attribute :state
-  attribute :customer_read_at
   attribute :completed_at
   attribute :created_at, form: false
   attribute :updated_at, form: false
-  attribute :scan_state
-  attribute :already_completed
 
   # Associations
   attribute :account

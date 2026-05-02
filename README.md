@@ -22,7 +22,6 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
 - **[pagy](https://github.com/ddnexus/pagy)**
-- **[Turbo](https://turbo.hotwired.dev/)** (real-time page updates for Number Tags Webpage)
 - **Test** (Minitest)
 
 ### Included Features
@@ -31,7 +30,7 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - Email Confirmation
 - Forgot Password
 - CRUD Operations for Shops (Create/Read/Update/Delete)
-- CRUD Operations for Shops' Nested Resource, Number Tags (ItemTags) (Create/Read/Update/Delete)
+- CRUD Operations for Shops' Nested Resource, Item Tags (Create/Read/Update/Delete)
 - URL Path-Based Multitenancy (prepends `/:account_id/` to URLs)
 - User Invitation to Organizations
 - Role-Based Permissions and Access Control
@@ -85,7 +84,7 @@ bin/setup
 
 ## Running NativeAppTemplate API on your Wi-Fi
 
-Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
+Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATIVEAPPTEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
 
 To run your application, you'll use the `bin/dev` command:
 

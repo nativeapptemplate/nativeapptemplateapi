@@ -12,24 +12,8 @@ Rails.application.routes.draw do
   post "/admin_auth/sign_in", to: "admin_auth/sessions#create", as: "admin_session"
   delete "/admin_auth/sign_out", to: "admin_auth/sessions#destroy", as: "destroy_admin_session"
 
-  scope controller: :static do
-    get :index
-    get :scan
-    get :scan_customer
-  end
-
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"
-
-  namespace :display do
-    resources :shops, only: %i[show] do
-      resources :item_tags, only: [] do
-        collection do
-          get :completings
-        end
-      end
-    end
-  end
 
   mount_devise_token_auth_for "Shopkeeper",
     at: "shopkeeper_auth",
@@ -62,13 +46,9 @@ Rails.application.routes.draw do
         end
 
         resources :shops, shallow: true do
-          member do
-            delete :reset
-          end
-
           resources :item_tags do
             member do
-              patch :reset
+              patch :idle
               patch :complete
             end
           end
@@ -86,6 +66,4 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  root to: "static#index"
 end

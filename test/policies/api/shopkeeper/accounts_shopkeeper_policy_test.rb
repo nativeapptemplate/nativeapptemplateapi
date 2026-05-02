@@ -24,7 +24,7 @@ class Api::Shopkeeper::AccountsShopkeeperPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsShopkeeperPolicy.new(member, @team_accounts_shopkeeper)
@@ -41,7 +41,7 @@ class Api::Shopkeeper::AccountsShopkeeperPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsShopkeeperPolicy.new(member, @team_accounts_shopkeeper)
@@ -58,7 +58,7 @@ class Api::Shopkeeper::AccountsShopkeeperPolicyTest < ActiveSupport::TestCase
     member = AccountsShopkeeper.create!(
       account: @team_account,
       shopkeeper: other_shopkeeper,
-      junior_member: true
+      member: true
     )
 
     policy = Api::Shopkeeper::AccountsShopkeeperPolicy.new(member, @team_accounts_shopkeeper)

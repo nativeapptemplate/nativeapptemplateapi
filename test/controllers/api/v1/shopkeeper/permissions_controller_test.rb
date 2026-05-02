@@ -18,7 +18,6 @@ class Api::V1::Shopkeeper::PermissionsControllerTest < ActionDispatch::Integrati
     assert json["meta"]["android_app_version"].present?
     assert_not_nil json["meta"]["should_update_privacy"]
     assert_not_nil json["meta"]["should_update_terms"]
-    assert json["meta"]["maximum_queue_number_length"].present?
     assert json["meta"]["shop_limit_count"].present?
     assert json["meta"]["account_limit_count"].present?
     assert json["meta"]["accounts_shopkeeper_limit_count"].present?

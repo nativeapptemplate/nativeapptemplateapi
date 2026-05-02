@@ -70,7 +70,7 @@ bin/rails dbconsole           # Database console
 - `Account` - Top-level tenant/organization
 - `Shopkeeper` - Main user type (belongs to Account)
 - `Shop` - Core business entity (belongs to Account)
-- `ItemTag` - Belongs to Shop with unique name constraint
+- `ItemTag` - Belongs to Shop; has name/description/position and a binary state (idled/completed)
 - `Role` & `Permission` - Authorization system
 - State machines implemented with AASM gem
 
@@ -96,7 +96,7 @@ bin/rails dbconsole           # Database console
 - Run tests: `bin/rails test` (205 tests, 402 assertions)
 
 ### Development Server Configuration
-- `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
+- `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem

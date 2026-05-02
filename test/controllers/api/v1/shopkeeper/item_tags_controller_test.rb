@@ -13,7 +13,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   test "index returns item_tags" do
     get api_v1_shopkeeper_shop_item_tags_url(@shop), headers: @shopkeeper.create_new_auth_token
     assert_response :success
-    assert_includes response.parsed_body["data"].map { |t| t["attributes"]["queue_number"] }, @item_tag.queue_number
+    assert_includes response.parsed_body["data"].map { |t| t["attributes"]["name"] }, @item_tag.name
   end
 
   test "index returns pagination meta" do
@@ -64,7 +64,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   test "show returns an item_tag detail" do
     get api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
-    assert_equal response.parsed_body["data"]["attributes"]["queue_number"], @item_tag.queue_number
+    assert_equal response.parsed_body["data"]["attributes"]["name"], @item_tag.name
   end
 
   test "show returns 404 for nonexistent item_tag" do
@@ -80,18 +80,18 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   test "create creates a new item_tag" do
     assert_difference "ItemTag.count", 1 do
       post api_v1_shopkeeper_shop_item_tags_url(@shop),
-        params: {item_tag: {queue_number: "Z99"}},
+        params: {item_tag: {name: "Buy milk"}},
         headers: @shopkeeper.create_new_auth_token
     end
 
     assert_response :created
-    assert_equal "Z99", response.parsed_body["data"]["attributes"]["queue_number"]
+    assert_equal "Buy milk", response.parsed_body["data"]["attributes"]["name"]
   end
 
-  test "create returns validation error with blank queue_number" do
+  test "create returns validation error with blank name" do
     assert_no_difference "ItemTag.count" do
       post api_v1_shopkeeper_shop_item_tags_url(@shop),
-        params: {item_tag: {queue_number: ""}},
+        params: {item_tag: {name: ""}},
         headers: @shopkeeper.create_new_auth_token
     end
 
@@ -100,41 +100,29 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert response.parsed_body["error_message"].present?
   end
 
-  test "create returns validation error with duplicate queue_number" do
-    assert_no_difference "ItemTag.count" do
+  test "create allows duplicate name within the same shop" do
+    assert_difference "ItemTag.count", 1 do
       post api_v1_shopkeeper_shop_item_tags_url(@shop),
-        params: {item_tag: {queue_number: @item_tag.queue_number}},
+        params: {item_tag: {name: @item_tag.name}},
         headers: @shopkeeper.create_new_auth_token
     end
 
-    assert_response :unprocessable_entity
-    assert_equal 422, response.parsed_body["code"]
-  end
-
-  test "create returns validation error with invalid queue_number format" do
-    assert_no_difference "ItemTag.count" do
-      post api_v1_shopkeeper_shop_item_tags_url(@shop),
-        params: {item_tag: {queue_number: "A"}},
-        headers: @shopkeeper.create_new_auth_token
-    end
-
-    assert_response :unprocessable_entity
-    assert_equal 422, response.parsed_body["code"]
+    assert_response :created
   end
 
   # update
-  test "update succeeds with valid queue_number" do
+  test "update succeeds with valid name" do
     patch api_v1_shopkeeper_item_tag_url(@item_tag),
-      params: {item_tag: {queue_number: "X99"}},
+      params: {item_tag: {name: "Buy bread"}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :success
-    assert_equal "X99", @item_tag.reload.queue_number
+    assert_equal "Buy bread", @item_tag.reload.name
   end
 
-  test "update returns validation error with invalid queue_number" do
+  test "update returns validation error with blank name" do
     patch api_v1_shopkeeper_item_tag_url(@item_tag),
-      params: {item_tag: {queue_number: "A"}},
+      params: {item_tag: {name: ""}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :unprocessable_entity
@@ -167,21 +155,21 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert @item_tag.reload.completed?
   end
 
-  test "complete sets already_completed when already completed" do
+  test "complete is a no-op when item_tag is already completed" do
     @item_tag.complete!
     assert @item_tag.reload.completed?
 
     patch complete_api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
-    assert @item_tag.reload.already_completed
+    assert @item_tag.reload.completed?
   end
 
-  # reset
-  test "reset resets an item_tag" do
+  # idle
+  test "idle resets an item_tag" do
     @item_tag.complete!
     assert @item_tag.reload.completed?
 
-    patch reset_api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
+    patch idle_api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
     assert @item_tag.reload.idled?
   end

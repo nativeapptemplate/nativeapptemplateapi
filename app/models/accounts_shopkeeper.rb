@@ -1,7 +1,7 @@
 class AccountsShopkeeper < ApplicationRecord
   # Add account roles to this line
   # Do NOT to use any reserved words like `user` or `account`
-  ROLES = [:admin, :senior_manager, :junior_manager, :senior_member, :junior_member, :guest]
+  ROLES = [:admin, :member]
 
   include Rolified
 
@@ -31,9 +31,9 @@ class AccountsShopkeeper < ApplicationRecord
   end
 
   def limit_count
-    the_limit_count = ConfigSettings.accounts_shopkeeper.limit_count
-    return if account.accounts_shopkeepers.count < the_limit_count
+    limit = ConfigSettings.accounts_shopkeeper.limit_count
+    return if account.accounts_shopkeepers.count < limit
 
-    errors.add :base, :limit_count_accounts_shopkeeper, limit_count: the_limit_count
+    errors.add :base, :limit_count_accounts_shopkeeper, limit_count: limit
   end
 end

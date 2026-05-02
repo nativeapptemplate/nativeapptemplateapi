@@ -17,7 +17,6 @@ class Api::V1::Shopkeeper::PermissionsController < Api::V1::Shopkeeper::BaseCont
       android_app_version: current_android_app_version,
       should_update_privacy: should_update_privacy,
       should_update_terms: should_update_terms,
-      maximum_queue_number_length: ConfigSettings.maximum_queue_number_length,
       shop_limit_count: ConfigSettings.shop.limit_count,
       account_limit_count: ConfigSettings.account.limit_count,
       accounts_shopkeeper_limit_count: ConfigSettings.accounts_shopkeeper.limit_count

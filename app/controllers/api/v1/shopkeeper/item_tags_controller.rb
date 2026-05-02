@@ -1,12 +1,12 @@
 class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseController
   before_action :set_shop, only: %i[index create]
-  before_action :set_item_tag, only: %i[show update destroy complete reset]
+  before_action :set_item_tag, only: %i[show update destroy complete idle]
 
   def index
     authorize ItemTag
 
     @pagy, @item_tags = pagy(
-      @shop.item_tags.order(queue_number: :asc).includes(:shop),
+      @shop.item_tags.order(:position, :name).includes(:shop),
       limit: params[:page].present? ? Pagy::OPTIONS[:limit] : 1000
     )
 
@@ -53,27 +53,23 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def complete
     authorize @item_tag
 
-    options = {}
-    options[:include] = [:shop]
-
-    if @item_tag.completed?
-      # Purge ItemTagSerializer cache
-      @item_tag.already_completed = true
-      @item_tag.save!(validate: false)
-      render json: ItemTagSerializer.new(@item_tag, options).serializable_hash and return
+    if @item_tag.may_complete?
+      @item_tag.completed_by = current_shopkeeper
+      @item_tag.completed_at = Time.current
+      @item_tag.complete!
     end
 
-    @item_tag.complete_tag!(current_shopkeeper)
-
+    options = {}
+    options[:include] = [:shop]
     render json: ItemTagSerializer.new(@item_tag, options).serializable_hash
   end
 
-  def reset
+  def idle
     authorize @item_tag
 
-    ApplicationRecord.transaction do
-      @item_tag.reset!
-    end
+    @item_tag.completed_by_id = nil
+    @item_tag.completed_at = nil
+    @item_tag.idle!
 
     render json: ItemTagSerializer.new(@item_tag).serializable_hash
   end
@@ -91,6 +87,6 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   end
 
   def item_tag_params
-    params.require(:item_tag).permit(:queue_number)
+    params.require(:item_tag).permit(:name, :description, :position, :state)
   end
 end
