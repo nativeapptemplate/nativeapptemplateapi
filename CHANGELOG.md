@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## 2026-05-02
+
+- Update gems within Gemfile constraints (bigdecimal, bootsnap, erb, ffi, irb, json, minitest, net-imap, nokogiri, pagy, parallel, parser, propshaft, puma, regexp_parser, rubocop, rubocop-ast, tailwindcss-ruby)
+
 ## 2026-03-10
 
 - Update Rails from 7.1.5.1 to 8.1
