@@ -167,7 +167,7 @@ class AccountsInvitationTest < ActiveSupport::TestCase
       member: true
     )
 
-    # Create a shopkeeper that's already a member
+    # Create shopkeeper that's already a member
     other_shopkeeper = shopkeepers(:two)
     AccountsShopkeeper.create!(
       account: @account,

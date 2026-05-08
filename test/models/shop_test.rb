@@ -28,7 +28,7 @@ class ShopTest < ActiveSupport::TestCase
     assert_equal @shopkeeper, shop.created_by
   end
 
-  test "creating a shop creates exactly one sample item tag" do
+  test "creating shop creates exactly one sample item tag" do
     ActsAsTenant.with_tenant(@account) do
       shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
       assert_equal 1, shop.item_tags.count

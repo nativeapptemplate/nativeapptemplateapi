@@ -140,7 +140,7 @@ See section 6.10 for rationale on the unified permission approach.
 
 **Endpoints unchanged but with behavior change**:
 - `POST /api/v1/shopkeeper/shops/:shop_id/item_tags` — no longer auto-generates A001-A010; creates a single item with user-supplied `name`
-- `POST /api/v1/shopkeeper/shops` — creating a Shop now auto-generates exactly 1 "Sample" ItemTag (instead of 10 queue-number items), so new users see a reference item on the Shop detail screen instead of an empty state
+- `POST /api/v1/shopkeeper/shops` — creating Shop now auto-generates exactly 1 "Sample" ItemTag (instead of 10 queue-number items), so new users see a reference item on Shop detail screen instead of an empty state
 
 ### 2.3 UI contract
 
@@ -489,7 +489,7 @@ The Rails API uses a custom fixture system in `db/fixtures/<env>/` (not standard
 
 ### 8.3 What to avoid
 
-- Do NOT resurrect the Day 1 approach of fully deleting `ItemTag`. The Shop detail screen becomes empty without a child resource, and the agent's planner prompt assumes `ItemTag` exists as a rename target.
+- Do NOT resurrect the Day 1 approach of fully deleting `ItemTag`. Shop detail screen becomes empty without a child resource, and the agent's planner prompt assumes `ItemTag` exists as a rename target.
 - Do NOT introduce a new child model name (e.g. `ShopItem`). Keeping `ItemTag` aligns with the agent's planner prompt.
 - Do NOT add i18n / Localizable.strings indirection in Phase 2-5. UI strings should be direct literals so the agent's string-literal rename (Phase 6) can operate on them.
 - Do NOT touch the `AccountsInvitation` model or multi-account join table. Those stay; Free client just hides their UI.

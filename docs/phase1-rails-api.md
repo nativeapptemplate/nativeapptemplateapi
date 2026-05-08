@@ -378,7 +378,7 @@ class Shop < ApplicationRecord
 end
 ```
 
-**Rationale for sample item**: When a Shop is first created, the Shop detail screen would otherwise be empty. A single generic "Sample" item gives users a reference to understand the UI and something to delete/edit to learn the flow. The client-side empty state UI (already implemented) handles the case after the sample is deleted.
+**Rationale for sample item**: When Shop is first created, Shop detail screen would otherwise be empty. A single generic "Sample" item gives users a reference to understand the UI and something to delete/edit to learn the flow. The client-side empty state UI (already implemented) handles the case after the sample is deleted.
 
 Check callers of removed methods:
 
@@ -406,7 +406,7 @@ git commit -m "Simplify Shop model: replace queue auto-generation with single sa
 - Filter on `queue_number`, `scan_state`, etc.
 
 **Ensure standard CRUD actions work**:
-- `index` — list item_tags for a shop
+- `index` — list item_tags for shop
 - `show` — single item_tag
 - `create` — requires `name`, accepts optional `description`, `position`
 - `update` — modify `name`, `description`, `position`, `state`
@@ -757,7 +757,7 @@ end
 - Update fixture data references (`queue_number` → `name`)
 - Remove tests for removed endpoints (scan, reset_all)
 - Add tests for `description`, `position` handling
-- Note: tests that create a Shop will now also create a sample ItemTag via the callback. Adjust `assert_difference` expectations: creating a Shop now creates 1 Shop + 1 ItemTag.
+- Note: tests that create Shop will now also create a sample ItemTag via the callback. Adjust `assert_difference` expectations: creating Shop now creates 1 Shop + 1 ItemTag.
 
 **`test/policies/api/shopkeeper/item_tag_policy_test.rb`**:
 - Remove tests for deleted permission tags
@@ -912,7 +912,7 @@ Expected: all green, 0 failures, 0 errors. Test count will be lower than baselin
 bin/rails server -d
 
 # Create a test shopkeeper and shop, then verify:
-# - Creating a shop creates exactly 1 "Sample" item_tag automatically
+# - Creating shop creates exactly 1 "Sample" item_tag automatically
 # - The sample item_tag has state: "idled"
 # - Manual CRUD on item_tags works
 
@@ -1002,7 +1002,7 @@ Early, to catch fixture association breakage.
 
 ### 6. Sample item_tag and test isolation
 
-After the refactor, creating a Shop in tests auto-creates 1 ItemTag via `create_sample_item_tag`. Tests that count ItemTags must account for this:
+After the refactor, creating Shop in tests auto-creates 1 ItemTag via `create_sample_item_tag`. Tests that count ItemTags must account for this:
 
 ```ruby
 # Before: 0 item_tags after shop creation
