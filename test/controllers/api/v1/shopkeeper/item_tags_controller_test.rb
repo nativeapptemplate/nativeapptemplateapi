@@ -61,7 +61,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   end
 
   # show
-  test "show returns an item_tag detail" do
+  test "show returns item_tag detail" do
     get api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
     assert_equal response.parsed_body["data"]["attributes"]["name"], @item_tag.name
@@ -131,7 +131,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   end
 
   # destroy
-  test "destroy deletes an item_tag" do
+  test "destroy deletes item_tag" do
     assert_difference "ItemTag.count", -1 do
       delete api_v1_shopkeeper_item_tag_url(@item_tag),
         headers: @shopkeeper.create_new_auth_token
@@ -149,7 +149,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   end
 
   # complete
-  test "complete completes an item_tag" do
+  test "complete completes item_tag" do
     patch complete_api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
     assert @item_tag.reload.completed?
@@ -165,7 +165,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
   end
 
   # idle
-  test "idle resets an item_tag" do
+  test "idle resets item_tag" do
     @item_tag.complete!
     assert @item_tag.reload.completed?
 

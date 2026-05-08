@@ -799,7 +799,7 @@ paths:
   /shopkeeper_auth/sign_in:
     post:
       operationId: signIn
-      summary: Sign in a shopkeeper
+      summary: Sign in shopkeeper
       tags: [Auth - Sessions]
       security: []
       servers:
@@ -857,7 +857,7 @@ paths:
   /shopkeeper_auth/sign_out:
     delete:
       operationId: signOut
-      summary: Sign out a shopkeeper
+      summary: Sign out shopkeeper
       tags: [Auth - Sessions]
       servers:
         - url: /
@@ -1148,7 +1148,7 @@ paths:
 
     get:
       operationId: getShop
-      summary: Get a shop
+      summary: Get shop
       tags: [Shops]
       responses:
         '200':
@@ -1165,7 +1165,7 @@ paths:
 
     patch:
       operationId: updateShop
-      summary: Update a shop
+      summary: Update shop
       tags: [Shops]
       requestBody:
         required: true
@@ -1190,7 +1190,7 @@ paths:
 
     delete:
       operationId: deleteShop
-      summary: Delete a shop
+      summary: Delete shop
       tags: [Shops]
       responses:
         '200':
@@ -1214,7 +1214,7 @@ paths:
 
     get:
       operationId: listItemTags
-      summary: List item tags for a shop
+      summary: List item tags for shop
       tags: [Item Tags]
       parameters:
         - name: page
@@ -1256,7 +1256,7 @@ paths:
 
     post:
       operationId: createItemTag
-      summary: Create an item tag in a shop
+      summary: Create item tag in shop
       tags: [Item Tags]
       requestBody:
         required: true
@@ -1290,7 +1290,7 @@ paths:
 
     get:
       operationId: getItemTag
-      summary: Get an item tag
+      summary: Get item tag
       tags: [Item Tags]
       responses:
         '200':
@@ -1309,7 +1309,7 @@ paths:
 
     patch:
       operationId: updateItemTag
-      summary: Update an item tag
+      summary: Update item tag
       tags: [Item Tags]
       requestBody:
         required: true
@@ -1336,7 +1336,7 @@ paths:
 
     delete:
       operationId: deleteItemTag
-      summary: Delete an item tag
+      summary: Delete item tag
       tags: [Item Tags]
       responses:
         '200':
@@ -1361,7 +1361,7 @@ paths:
 
     patch:
       operationId: completeItemTag
-      summary: Mark an item tag as completed
+      summary: Mark item tag as completed
       tags: [Item Tags]
       responses:
         '200':
@@ -1393,7 +1393,7 @@ paths:
 
     patch:
       operationId: idleItemTag
-      summary: Reset an item tag to idled state
+      summary: Reset item tag to idled state
       tags: [Item Tags]
       responses:
         '200':

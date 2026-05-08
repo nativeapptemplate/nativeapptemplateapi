@@ -21,7 +21,7 @@ class Api::V1::Shopkeeper::ShopsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # show
-  test "show returns a shop detail" do
+  test "show returns shop detail" do
     get api_v1_shopkeeper_shop_url(@shop), headers: @shopkeeper.create_new_auth_token
     assert_response :success
     assert_equal response.parsed_body["data"]["attributes"]["name"], @shop.name
@@ -72,7 +72,7 @@ class Api::V1::Shopkeeper::ShopsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # destroy
-  test "destroy deletes a shop" do
+  test "destroy deletes shop" do
     assert_difference "Shop.count", -1 do
       delete api_v1_shopkeeper_shop_url(@shop),
         headers: @shopkeeper.create_new_auth_token
