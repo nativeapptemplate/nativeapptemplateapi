@@ -374,10 +374,11 @@ components:
       properties:
         token:
           type: string
-          description: Push token (APNs device token for ios, FCM registration token for android)
+          description: Push token (APNs device token for apple, FCM registration token for google)
         platform:
           type: string
-          enum: [ios, android]
+          enum: [apple, google]
+          description: Push service the token is for — `apple` (APNs) for iOS apps, `google` (FCM) for Android apps. Matches Action Push Native conventions.
         bundle_id:
           type: string
           nullable: true
@@ -416,7 +417,7 @@ components:
               type: string
             platform:
               type: string
-              enum: [ios, android]
+              enum: [apple, google]
             bundle_id:
               type: string
               nullable: true

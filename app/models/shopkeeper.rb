@@ -12,7 +12,7 @@ class Shopkeeper < ApplicationRecord
   has_many :created_shops, class_name: "Shop", foreign_key: :created_by_id, inverse_of: :created_by
   has_many :created_item_tags, class_name: "ItemTag", foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
   has_many :completed_item_tags, class_name: "ItemTag", foreign_key: :completed_by_id, inverse_of: :completed_by, dependent: :nullify
-  has_many :devices, dependent: :destroy
+  has_many :application_push_devices, as: :owner, class_name: "ApplicationPushDevice", dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 
   attribute :token, :string
