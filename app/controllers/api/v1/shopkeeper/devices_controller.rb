@@ -8,18 +8,18 @@ class Api::V1::Shopkeeper::DevicesController < Api::V1::Shopkeeper::BaseControll
   # token to a different shopkeeper (e.g. user signed out + new user
   # signed in on same device) reassigns the device row.
   def create
-    authorize Device
+    authorize ApplicationPushDevice
 
-    device = Device.find_or_initialize_by(
+    device = ApplicationPushDevice.find_or_initialize_by(
       platform: device_params[:platform],
       token: device_params[:token]
     )
-    device.shopkeeper = current_shopkeeper
+    device.owner = current_shopkeeper
     device.bundle_id = device_params[:bundle_id]
     device.last_active_at = Time.current
 
     if device.save
-      render json: DeviceSerializer.new(device).serializable_hash, status: device.previously_new_record? ? :created : :ok
+      render json: ApplicationPushDeviceSerializer.new(device).serializable_hash, status: device.previously_new_record? ? :created : :ok
     else
       render_validation_error(device)
     end
@@ -36,7 +36,7 @@ class Api::V1::Shopkeeper::DevicesController < Api::V1::Shopkeeper::BaseControll
   private
 
   def set_device
-    @device = current_shopkeeper.devices.find(params[:id])
+    @device = current_shopkeeper.application_push_devices.find(params[:id])
   end
 
   def device_params

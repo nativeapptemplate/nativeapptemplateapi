@@ -8,40 +8,40 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
 
   test "create requires authentication" do
     post api_v1_shopkeeper_devices_url,
-      params: {device: {token: "abc123", platform: "ios"}}
+      params: {device: {token: "abc123", platform: "apple"}}
     assert_response :unauthorized
   end
 
   test "create registers a new device and returns 201" do
-    assert_difference -> { Device.count }, 1 do
+    assert_difference -> { ApplicationPushDevice.count }, 1 do
       post api_v1_shopkeeper_devices_url,
-        params: {device: {token: "abc123", platform: "ios", bundle_id: "com.nativeapptemplate.example"}},
+        params: {device: {token: "abc123", platform: "apple", bundle_id: "com.nativeapptemplate.example"}},
         headers: @shopkeeper.create_new_auth_token
     end
     assert_response :created
     attrs = response.parsed_body["data"]["attributes"]
     assert_equal "abc123", attrs["token"]
-    assert_equal "ios", attrs["platform"]
+    assert_equal "apple", attrs["platform"]
     assert_equal "com.nativeapptemplate.example", attrs["bundle_id"]
   end
 
   test "create with same (platform, token) does not duplicate and returns 200" do
-    Device.create!(shopkeeper: @shopkeeper, token: "abc123", platform: "ios", last_active_at: 1.day.ago)
+    ApplicationPushDevice.create!(owner: @shopkeeper, token: "abc123", platform: "apple", last_active_at: 1.day.ago)
 
-    assert_no_difference -> { Device.count } do
+    assert_no_difference -> { ApplicationPushDevice.count } do
       post api_v1_shopkeeper_devices_url,
-        params: {device: {token: "abc123", platform: "ios"}},
+        params: {device: {token: "abc123", platform: "apple"}},
         headers: @shopkeeper.create_new_auth_token
     end
     assert_response :ok
   end
 
   test "create touches last_active_at on re-register" do
-    device = Device.create!(shopkeeper: @shopkeeper, token: "abc123", platform: "ios", last_active_at: 1.day.ago)
+    device = ApplicationPushDevice.create!(owner: @shopkeeper, token: "abc123", platform: "apple", last_active_at: 1.day.ago)
     original = device.last_active_at
 
     post api_v1_shopkeeper_devices_url,
-      params: {device: {token: "abc123", platform: "ios"}},
+      params: {device: {token: "abc123", platform: "apple"}},
       headers: @shopkeeper.create_new_auth_token
 
     assert_response :ok
@@ -50,15 +50,15 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
 
   test "create rebinds device to current_shopkeeper if token previously belonged to someone else" do
     other_shopkeeper = shopkeepers(:two)
-    Device.create!(shopkeeper: other_shopkeeper, token: "shared-token", platform: "ios")
+    ApplicationPushDevice.create!(owner: other_shopkeeper, token: "shared-token", platform: "apple")
 
-    assert_no_difference -> { Device.count } do
+    assert_no_difference -> { ApplicationPushDevice.count } do
       post api_v1_shopkeeper_devices_url,
-        params: {device: {token: "shared-token", platform: "ios"}},
+        params: {device: {token: "shared-token", platform: "apple"}},
         headers: @shopkeeper.create_new_auth_token
     end
     assert_response :ok
-    assert_equal @shopkeeper, Device.find_by(platform: "ios", token: "shared-token").shopkeeper
+    assert_equal @shopkeeper, ApplicationPushDevice.find_by(platform: "apple", token: "shared-token").owner
   end
 
   test "create returns 422 with missing platform" do
@@ -70,9 +70,9 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
   end
 
   test "destroy removes the device" do
-    device = Device.create!(shopkeeper: @shopkeeper, token: "abc123", platform: "ios")
+    device = ApplicationPushDevice.create!(owner: @shopkeeper, token: "abc123", platform: "apple")
 
-    assert_difference -> { Device.count }, -1 do
+    assert_difference -> { ApplicationPushDevice.count }, -1 do
       delete api_v1_shopkeeper_device_url(device),
         headers: @shopkeeper.create_new_auth_token
     end
@@ -81,9 +81,9 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
 
   test "destroy of another shopkeeper's device returns 404" do
     other = shopkeepers(:two)
-    other_device = Device.create!(shopkeeper: other, token: "other-token", platform: "ios")
+    other_device = ApplicationPushDevice.create!(owner: other, token: "other-token", platform: "apple")
 
-    assert_no_difference -> { Device.count } do
+    assert_no_difference -> { ApplicationPushDevice.count } do
       delete api_v1_shopkeeper_device_url(other_device),
         headers: @shopkeeper.create_new_auth_token
     end

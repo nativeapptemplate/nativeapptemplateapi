@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_10_015009) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_10_133742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -48,15 +48,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_015009) do
     t.index ["shopkeeper_id"], name: "index_accounts_shopkeepers_on_shopkeeper_id"
   end
 
-  create_table "action_push_native_devices", force: :cascade do |t|
+  create_table "action_push_native_devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "bundle_id"
     t.datetime "created_at", null: false
+    t.datetime "last_active_at"
     t.string "name"
-    t.bigint "owner_id"
+    t.uuid "owner_id"
     t.string "owner_type"
     t.string "platform", null: false
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.index ["owner_type", "owner_id"], name: "index_action_push_native_devices_on_owner"
+    t.index ["platform", "token"], name: "index_action_push_native_devices_on_platform_and_token", unique: true
   end
 
   create_table "active_storage_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -106,18 +109,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_015009) do
     t.datetime "updated_at", null: false
     t.integer "version", null: false
     t.index ["platform", "version"], name: "index_app_versions_on_platform_and_version", unique: true
-  end
-
-  create_table "devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "bundle_id"
-    t.datetime "created_at", null: false
-    t.datetime "last_active_at"
-    t.string "platform", null: false
-    t.uuid "shopkeeper_id", null: false
-    t.string "token", null: false
-    t.datetime "updated_at", null: false
-    t.index ["platform", "token"], name: "index_devices_on_platform_and_token", unique: true
-    t.index ["shopkeeper_id"], name: "index_devices_on_shopkeeper_id"
   end
 
   create_table "item_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -268,7 +259,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_015009) do
   add_foreign_key "accounts_shopkeepers", "shopkeepers"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "devices", "shopkeepers"
   add_foreign_key "item_tags", "accounts"
   add_foreign_key "item_tags", "shopkeepers", column: "completed_by_id", on_delete: :nullify
   add_foreign_key "item_tags", "shopkeepers", column: "created_by_id", on_delete: :nullify

@@ -1,5 +1,7 @@
-class DeviceSerializer
+class ApplicationPushDeviceSerializer
   include JSONAPI::Serializer
+
+  set_type :device
 
   attributes :token,
     :platform,
