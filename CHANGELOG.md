@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## 2026-05-10
+
+- Add push notifications scaffolding via `noticed` v2 (#58)
+- New `Device` model + migration (UUID primary key, unique on `[platform, token]`, `last_active_at` for staleness scope)
+- New `Api::V1::Shopkeeper::DevicesController` — POST `/devices` is idempotent upsert (rebinds token to current shopkeeper); DELETE `/devices/:id` unregisters
+- Add `ApplicationNotifier` base class + example `ItemTagCalledNotifier` (no provider config yet — APNs / FCM delivery + ItemTag AASM wiring land in PR #2 once credentials are provisioned)
+- `Shopkeeper has_many :devices, :notifications`; new locale entries under `notifiers.item_tag_called`
+- 21 new test runs (Device model + DevicesController + notifier); full suite still 0 failures
+
 ## 2026-05-02
 
 - Phase 1: Rails API substrate v2 refactor (#45) — turn queue-specific template into generic single-resource CRUD substrate (Shop → ItemTag)

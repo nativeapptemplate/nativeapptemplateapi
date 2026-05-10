@@ -55,6 +55,11 @@ gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
 gem "rack-attack"
 gem "resend"
+
+# Push notifications via APNs (iOS) and FCM (Android). Provider integration
+# (apnotic + googleauth + initializer with credentials) lands in a follow-up
+# PR; this PR scaffolds the model + controller + base notifier only.
+gem "noticed", "~> 2.7"
 # Fix LoadError: cannot load such file -- csv
 gem "csv", "~> 3.3"
 

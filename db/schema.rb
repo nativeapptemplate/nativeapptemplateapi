@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_23_232155) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_10_001856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -97,6 +97,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_232155) do
     t.index ["platform", "version"], name: "index_app_versions_on_platform_and_version", unique: true
   end
 
+  create_table "devices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "bundle_id"
+    t.datetime "created_at", null: false
+    t.datetime "last_active_at"
+    t.string "platform", null: false
+    t.uuid "shopkeeper_id", null: false
+    t.string "token", null: false
+    t.datetime "updated_at", null: false
+    t.index ["platform", "token"], name: "index_devices_on_platform_and_token", unique: true
+    t.index ["shopkeeper_id"], name: "index_devices_on_shopkeeper_id"
+  end
+
   create_table "item_tags", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id", null: false
     t.datetime "completed_at", precision: nil
@@ -115,6 +127,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_232155) do
     t.index ["shop_id", "position"], name: "index_item_tags_on_shop_id_and_position"
     t.index ["shop_id"], name: "index_item_tags_on_shop_id"
     t.index ["state"], name: "index_item_tags_on_state"
+  end
+
+  create_table "noticed_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "notifications_count"
+    t.jsonb "params"
+    t.uuid "record_id"
+    t.string "record_type"
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.index ["record_type", "record_id"], name: "index_noticed_events_on_record"
+  end
+
+  create_table "noticed_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "event_id", null: false
+    t.datetime "read_at", precision: nil
+    t.uuid "recipient_id", null: false
+    t.string "recipient_type", null: false
+    t.datetime "seen_at", precision: nil
+    t.string "type"
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_noticed_notifications_on_event_id"
+    t.index ["recipient_type", "recipient_id"], name: "index_noticed_notifications_on_recipient"
   end
 
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -221,6 +257,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_23_232155) do
   add_foreign_key "accounts_shopkeepers", "shopkeepers"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "devices", "shopkeepers"
   add_foreign_key "item_tags", "accounts"
   add_foreign_key "item_tags", "shopkeepers", column: "completed_by_id", on_delete: :nullify
   add_foreign_key "item_tags", "shopkeepers", column: "created_by_id", on_delete: :nullify

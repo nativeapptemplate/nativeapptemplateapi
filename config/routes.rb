@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   namespace :api, format: "json" do
     namespace :v1 do
       namespace :shopkeeper do
+        resources :devices, only: %i[create destroy]
         resources :permissions, only: %i[index]
         resource :me, only: [], controller: :me do
           member do
