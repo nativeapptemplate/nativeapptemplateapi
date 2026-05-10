@@ -41,9 +41,9 @@ en:
   default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
 
   notifiers:
-    item_tag_called:
-      title: "%{name} is ready"
-      body: "Please proceed to %{shop}."
+    item_tag:
+      title: "%{name}"
+      body: "%{shop}"
 
   api:
     shopkeeper:

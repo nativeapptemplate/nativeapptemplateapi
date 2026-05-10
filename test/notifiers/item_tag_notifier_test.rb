@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ItemTagCalledNotifierTest < ActiveSupport::TestCase
+class ItemTagNotifierTest < ActiveSupport::TestCase
   setup do
     @shopkeeper = shopkeepers(:one)
     @shopkeeper.create_default_account
@@ -10,13 +10,13 @@ class ItemTagCalledNotifierTest < ActiveSupport::TestCase
 
   test "delivering creates a Noticed::Event" do
     assert_difference -> { Noticed::Event.count }, 1 do
-      ItemTagCalledNotifier.with(record: @item_tag).deliver(@shopkeeper)
+      ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
     end
   end
 
   test "delivering creates a Noticed::Notification for the recipient" do
     assert_difference -> { Noticed::Notification.count }, 1 do
-      ItemTagCalledNotifier.with(record: @item_tag).deliver(@shopkeeper)
+      ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
     end
     notification = @shopkeeper.notifications.last
     assert_not_nil notification
@@ -24,10 +24,10 @@ class ItemTagCalledNotifierTest < ActiveSupport::TestCase
   end
 
   test "title and body resolve from i18n on the notification" do
-    ItemTagCalledNotifier.with(record: @item_tag).deliver(@shopkeeper)
+    ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
     notification = @shopkeeper.notifications.last
 
-    assert_equal I18n.t("notifiers.item_tag_called.title", name: @item_tag.name), notification.title
-    assert_equal I18n.t("notifiers.item_tag_called.body", shop: @shop.name), notification.body
+    assert_equal I18n.t("notifiers.item_tag.title", name: @item_tag.name), notification.title
+    assert_equal I18n.t("notifiers.item_tag.body", shop: @shop.name), notification.body
   end
 end

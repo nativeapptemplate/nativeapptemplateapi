@@ -1,4 +1,4 @@
-class ItemTagCalledNotifier < ApplicationNotifier
+class ItemTagNotifier < ApplicationNotifier
   deliver_by :action_push_native do |config|
     config.devices = -> { ApplicationPushDevice.where(owner: recipient) }
     config.format = -> {
@@ -12,11 +12,11 @@ class ItemTagCalledNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      I18n.t("notifiers.item_tag_called.title", name: record.name)
+      I18n.t("notifiers.item_tag.title", name: record.name)
     end
 
     def body
-      I18n.t("notifiers.item_tag_called.body", shop: record.shop.name)
+      I18n.t("notifiers.item_tag.body", shop: record.shop.name)
     end
 
     def url
