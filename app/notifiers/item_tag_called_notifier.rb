@@ -1,4 +1,15 @@
 class ItemTagCalledNotifier < ApplicationNotifier
+  deliver_by :action_push_native do |config|
+    config.devices = -> { ApplicationPushDevice.where(owner: recipient) }
+    config.format = -> {
+      {
+        title: title,
+        body: body,
+        data: {url: url}
+      }
+    }
+  end
+
   notification_methods do
     def title
       I18n.t("notifiers.item_tag_called.title", number: record.name)
