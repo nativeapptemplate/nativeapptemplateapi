@@ -24,10 +24,19 @@ class ItemTag < ApplicationRecord
 
     event :complete do
       transitions from: [:idled], to: :completed
+      after_commit :notify_completed
     end
   end
 
   private
+
+  def notify_completed
+    recipients = shop.account.shopkeepers
+    recipients = recipients.where.not(id: completed_by_id) if completed_by_id.present?
+    return if recipients.empty?
+
+    ItemTagNotifier.with(record: self).deliver(recipients)
+  end
 
   def set_default_position
     return if position.present?

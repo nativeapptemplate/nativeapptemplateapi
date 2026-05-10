@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Wire `ItemTagNotifier` to the `ItemTag` AASM `complete` event via `after_commit`. On state transition `idled → completed`, the notifier fires to all shopkeepers in the shop's account except the completer (`completed_by`). Only the AASM trigger — APNs/FCM provider credentials still pending (`bin/rails credentials:edit` once the keys are provisioned).
 - Drop the standalone `Device` model and consolidate push-token registration onto `ApplicationPushDevice` (subclass of `ActionPushNative::Device`) so `deliver_by :action_push_native` actually fires for tokens registered via `POST /api/v1/shopkeeper/devices`. The custom `devices` table is dropped; `action_push_native_devices` is rebuilt with UUID primary key + UUID polymorphic owner + `bundle_id` / `last_active_at` columns + unique `(platform, token)` index.
 - API contract change (still pre-mobile-client): `device.platform` enum is now `[apple, google]` (matches Action Push Native's APNs/FCM service convention) instead of `[ios, android]`. Mobile substrate clients (PRs #3-5) will register with `apple` or `google`.
 - Renames: `Device` → `ApplicationPushDevice`, `Api::Shopkeeper::DevicePolicy` → `Api::Shopkeeper::ApplicationPushDevicePolicy`, `DeviceSerializer` → `ApplicationPushDeviceSerializer` (JSONAPI `type` stays `device`); `Shopkeeper has_many :devices` → `has_many :application_push_devices, as: :owner`.

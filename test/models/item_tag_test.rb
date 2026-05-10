@@ -119,4 +119,61 @@ class ItemTagTest < ActiveSupport::TestCase
       assert item_tag.idled?
     end
   end
+
+  test "complete! fires ItemTagNotifier to all account shopkeepers except completer" do
+    ActsAsTenant.with_tenant(@account) do
+      other = shopkeepers(:two)
+      AccountsShopkeeper.create!(account: @account, shopkeeper: other, roles: {member: true})
+
+      item_tag = @shop.item_tags.first
+      item_tag.completed_by = @shopkeeper
+
+      assert_difference -> { Noticed::Event.count }, 1 do
+        assert_difference -> { Noticed::Notification.count }, 1 do
+          item_tag.complete!
+        end
+      end
+
+      notification = Noticed::Notification.last
+      assert_equal other, notification.recipient
+      assert_equal item_tag, notification.record
+    end
+  end
+
+  test "complete! fires notifier to all shopkeepers when completed_by is unset" do
+    ActsAsTenant.with_tenant(@account) do
+      other = shopkeepers(:two)
+      AccountsShopkeeper.create!(account: @account, shopkeeper: other, roles: {member: true})
+
+      item_tag = @shop.item_tags.first
+
+      assert_difference -> { Noticed::Notification.count }, 2 do
+        item_tag.complete!
+      end
+    end
+  end
+
+  test "complete! is a no-op for the notifier when account has only the completer" do
+    ActsAsTenant.with_tenant(@account) do
+      item_tag = @shop.item_tags.first
+      item_tag.completed_by = @shopkeeper
+
+      assert_no_difference -> { Noticed::Event.count } do
+        assert_no_difference -> { Noticed::Notification.count } do
+          item_tag.complete!
+        end
+      end
+    end
+  end
+
+  test "idle! does not fire ItemTagNotifier" do
+    ActsAsTenant.with_tenant(@account) do
+      item_tag = @shop.item_tags.first
+      item_tag.complete!
+
+      assert_no_difference -> { Noticed::Event.count } do
+        item_tag.idle!
+      end
+    end
+  end
 end
