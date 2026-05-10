@@ -42,7 +42,7 @@ en:
 
   notifiers:
     item_tag_called:
-      title: "Number %{number} is up"
+      title: "%{name} is ready"
       body: "Please proceed to %{shop}."
 
   api:

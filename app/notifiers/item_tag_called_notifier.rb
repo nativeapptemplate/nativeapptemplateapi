@@ -12,7 +12,7 @@ class ItemTagCalledNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      I18n.t("notifiers.item_tag_called.title", number: record.name)
+      I18n.t("notifiers.item_tag_called.title", name: record.name)
     end
 
     def body
