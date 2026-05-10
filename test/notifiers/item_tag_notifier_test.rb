@@ -27,7 +27,7 @@ class ItemTagNotifierTest < ActiveSupport::TestCase
     ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
     notification = @shopkeeper.notifications.last
 
-    assert_equal I18n.t("notifiers.item_tag.title", name: @item_tag.name), notification.title
-    assert_equal I18n.t("notifiers.item_tag.body", shop: @shop.name), notification.body
+    assert_equal I18n.t("notifiers.item_tag.title", shop: @shop.name), notification.title
+    assert_equal I18n.t("notifiers.item_tag.body", name: @item_tag.name), notification.body
   end
 end

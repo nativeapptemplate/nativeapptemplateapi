@@ -12,11 +12,11 @@ class ItemTagNotifier < ApplicationNotifier
 
   notification_methods do
     def title
-      I18n.t("notifiers.item_tag.title", name: record.name)
+      I18n.t("notifiers.item_tag.title", shop: record.shop.name)
     end
 
     def body
-      I18n.t("notifiers.item_tag.body", shop: record.shop.name)
+      I18n.t("notifiers.item_tag.body", name: record.name)
     end
 
     def url

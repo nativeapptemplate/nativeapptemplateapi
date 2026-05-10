@@ -42,8 +42,8 @@ en:
 
   notifiers:
     item_tag:
-      title: "%{name}"
-      body: "%{shop}"
+      title: "%{shop}"
+      body: "%{name}"
 
   api:
     shopkeeper:
