@@ -40,6 +40,11 @@ en:
   unauthorized: "You are not authorized to perform this action."
   default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
 
+  notifiers:
+    item_tag:
+      title: "%{shop}"
+      body: "%{name}"
+
   api:
     shopkeeper:
       accounts:

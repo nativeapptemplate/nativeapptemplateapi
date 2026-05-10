@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+## 2026-05-10
+
+- Add push notifications scaffolding via `noticed` v2 (#58)
+- New `Device` model + migration (UUID primary key, unique on `[platform, token]`, `last_active_at` for staleness scope)
+- New `Api::V1::Shopkeeper::DevicesController` — POST `/devices` is idempotent upsert (rebinds token to current shopkeeper); DELETE `/devices/:id` unregisters
+- Add `ApplicationNotifier` base class + example `ItemTagNotifier` with `deliver_by :action_push_native` wiring (Apple + Google push via Rails-native `action_push_native` 0.3.x)
+- Generate `ApplicationPushNotification` / `ApplicationPushDevice` / `ApplicationPushNotificationJob` and `config/push.yml` (APNs/FCM credentials still placeholders — provision via `bin/rails credentials:edit` before enabling delivery; ItemTag AASM trigger lands in a follow-up)
+- Note: the existing `Device` registration API (`POST /api/v1/shopkeeper/devices`) writes to the custom `Device` model, not `ApplicationPushDevice` — bridging the two (so registered tokens flow into Action Push Native delivery) is a follow-up
+- `Shopkeeper has_many :devices, :notifications`; new locale entries under `notifiers.item_tag` — title/body deliberately kept generic (`%{name}` / `%{shop}` only, no state-verbs like "completed" or "ready") so the agent's domain-adapt step can rewrite richer per-domain copy without fighting baked-in queue semantics
+- 21 new test runs (Device model + DevicesController + notifier); full suite still 0 failures
+
 ## 2026-05-02
 
 - Phase 1: Rails API substrate v2 refactor (#45) — turn queue-specific template into generic single-resource CRUD substrate (Shop → ItemTag)
