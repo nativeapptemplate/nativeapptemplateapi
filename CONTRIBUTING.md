@@ -55,6 +55,16 @@ This project uses [RuboCop with the Rails Omakase style](https://github.com/rail
 - Use fixtures (`test/fixtures/`) for test data.
 - Mock external HTTP calls with WebMock.
 
+## Rename safety
+
+This substrate is consumed by [`nativeapptemplate-agent`](https://github.com/nativeapptemplate/nativeapptemplate-agent), which mechanically renames `Shop`, `Shopkeeper`, and `ItemTag` (and all their case forms — PascalCase, snake_case, camelCase, flat, UPPER_SNAKE, humanized lower/title/sentence × singular/plural) to user-chosen target words. Some patterns that read fine in this repo break when renamed.
+
+Before merging changes that touch user-facing strings, OpenAPI summaries, test descriptors, or comments mentioning domain entities, read the [substrate rename-safety contract](https://github.com/nativeapptemplate/nativeapptemplate-agent/blob/main/docs/SUBSTRATE-CONTRACT.md).
+
+**Quick rule of thumb:** avoid `"a"` / `"an"` directly preceding `Shop`, `Shopkeeper`, or `ItemTag` (or their humanized forms) — write self-contained or article-free phrasings instead.
+
+**Failure mode this prevents:** an OpenAPI summary like `"Get an item tag"` or a test descriptor like `test "destroy deletes an item_tag"` reads correctly here but produces `"Get an patient"` / `"destroy deletes an patient"` after the rename pipeline substitutes a consonant-starting word like `Patient`.
+
 ## Development Setup
 
 See [README.md](README.md) for full setup instructions.
