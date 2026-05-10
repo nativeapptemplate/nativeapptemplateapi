@@ -10,7 +10,7 @@ GEM
       httpx (~> 1.6)
       jwt (>= 2)
       railties (>= 8.0)
-    action_text-trix (2.1.18)
+    action_text-trix (2.1.19)
       railties
     actioncable (8.1.3)
       actionpack (= 8.1.3)
@@ -103,7 +103,7 @@ GEM
       smart_properties
     bigdecimal (4.1.2)
     bindex (0.8.1)
-    bootsnap (1.24.1)
+    bootsnap (1.24.3)
       msgpack (~> 1.2)
     brakeman (8.0.4)
       racc
@@ -213,7 +213,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.4)
+    json (2.19.5)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.1.2)
@@ -237,7 +237,7 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailbin (1.1.1)
+    mailbin (1.1.2)
       importmap-rails
       rails (>= 7.1.0)
       turbo-rails
