@@ -8,6 +8,10 @@ namespace :madmin do
   resources :shops
   resources :item_tags
   resources :application_push_devices
+  namespace :noticed do
+    resources :events
+    resources :notifications
+  end
   resources :roles
   resources :permissions
   resources :roles_permissions
