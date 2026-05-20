@@ -4,10 +4,12 @@ class ItemTagNotifier < ApplicationNotifier
     config.format = -> {
       {
         title: title,
-        body: body,
-        data: {url: url}
+        body: body
       }
     }
+    config.with_data = -> { {url: url} }
+    config.with_apple = -> { {} }
+    config.with_google = -> { {} }
   end
 
   notification_methods do
@@ -20,10 +22,7 @@ class ItemTagNotifier < ApplicationNotifier
     end
 
     def url
-      Rails.application.routes.url_helpers.api_v1_shopkeeper_shop_item_tag_path(
-        shop_id: record.shop_id,
-        id: record.id
-      )
+      Rails.application.routes.url_helpers.api_v1_shopkeeper_item_tag_path(record.id)
     end
   end
 end
