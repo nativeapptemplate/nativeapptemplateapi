@@ -149,6 +149,18 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     assert_not accounts_shopkeeper.member?
   end
 
+  test "role predicate returns false (not nil) when role key is absent" do
+    other_shopkeeper = shopkeepers(:two)
+    accounts_shopkeeper = AccountsShopkeeper.create!(
+      account: @account,
+      shopkeeper: other_shopkeeper,
+      member: true
+    )
+
+    assert_not accounts_shopkeeper.roles.key?("admin")
+    assert_equal false, accounts_shopkeeper.admin?
+  end
+
   test "active_roles returns array of active roles" do
     other_shopkeeper = shopkeepers(:two)
     accounts_shopkeeper = AccountsShopkeeper.create!(

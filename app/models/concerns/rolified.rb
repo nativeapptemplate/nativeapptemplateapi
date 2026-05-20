@@ -23,7 +23,7 @@ module Rolified
       scope role, -> { where("roles @> ?", {role => true}.to_json) }
 
       define_method(:"#{role}=") { |value| super(ActiveRecord::Type::Boolean.new.cast(value)) }
-      define_method(:"#{role}?") { send(role) }
+      define_method(:"#{role}?") { !!send(role) }
     end
 
     # Store the roles in the roles json column and cast to booleans
