@@ -26,7 +26,13 @@ shared:
     # Please note that anything built directly from Xcode and loaded on your phone will have
     # the app generate DEVELOPMENT tokens, while everything else (TestFlight, Apple Store, ...)
     # will be considered as PRODUCTION environment.
-    # connect_to_development_server: <%= Rails.env.development? %>
+    #
+    # Without this, the gem defaults to the production APNs server. A Xcode
+    # debug build registers a sandbox token, and pushing it to the production
+    # server returns 400 BadDeviceToken, which the gem treats as TokenError and
+    # destroys the device. Match the server to the Rails environment so local
+    # development talks to the sandbox.
+    connect_to_development_server: <%= Rails.env.development? %>
 
   # Use bin/rails credentials:edit to set the fcm secrets under
   # action_push_native:fcm:{project_id, encryption_key}.
