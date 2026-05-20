@@ -4,3 +4,6 @@
 ignore:
   # devise 5.0.3+ fixes this, but devise_token_auth ~> 1.2 pins devise < 5
   - CVE-2026-32700
+  # devise 5.0.4+ fixes an Open Redirect in Timeoutable; we don't enable
+  # :timeoutable on Shopkeeper, and devise_token_auth ~> 1.2 pins devise < 5
+  - CVE-2026-40295
