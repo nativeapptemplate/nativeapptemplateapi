@@ -103,7 +103,7 @@ GEM
       smart_properties
     bigdecimal (4.1.2)
     bindex (0.8.1)
-    bootsnap (1.24.3)
+    bootsnap (1.24.4)
       msgpack (~> 1.2)
     brakeman (8.0.4)
       racc
@@ -160,7 +160,7 @@ GEM
     erubi (1.13.1)
     et-orbi (1.4.0)
       tzinfo
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -195,7 +195,7 @@ GEM
       csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
-    httpx (1.7.6)
+    httpx (1.7.8)
       http-2 (>= 1.1.3)
     i18n (1.14.8)
       concurrent-ruby (~> 1.0)
@@ -216,7 +216,7 @@ GEM
     json (2.19.5)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    jwt (3.1.2)
+    jwt (3.2.0)
       base64
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
@@ -241,7 +241,7 @@ GEM
       importmap-rails
       rails (>= 7.1.0)
       turbo-rails
-    marcel (1.1.0)
+    marcel (1.1.1)
     matrix (0.4.3)
     mini_magick (5.3.1)
       logger
@@ -299,7 +299,7 @@ GEM
       childprocess (>= 0.6.3, < 6)
       iniparse (~> 1.4)
       rexml (>= 3.3.9)
-    pagy (43.5.3)
+    pagy (43.5.4)
       json
       uri
       yaml
@@ -386,7 +386,7 @@ GEM
       actionpack (>= 7.0)
       railties (>= 7.0)
     rexml (3.4.4)
-    rubocop (1.86.1)
+    rubocop (1.86.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -404,7 +404,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.0)
+    rubocop-rails (2.35.2)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -423,7 +423,7 @@ GEM
     seed-fu (2.3.9)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
-    selenium-webdriver (4.43.0)
+    selenium-webdriver (4.44.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -457,11 +457,11 @@ GEM
     tailwindcss-rails (4.4.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
-    tailwindcss-ruby (4.2.4)
-    tailwindcss-ruby (4.2.4-aarch64-linux-gnu)
-    tailwindcss-ruby (4.2.4-arm64-darwin)
-    tailwindcss-ruby (4.2.4-x86_64-darwin)
-    tailwindcss-ruby (4.2.4-x86_64-linux-gnu)
+    tailwindcss-ruby (4.3.0)
+    tailwindcss-ruby (4.3.0-aarch64-linux-gnu)
+    tailwindcss-ruby (4.3.0-arm64-darwin)
+    tailwindcss-ruby (4.3.0-x86_64-darwin)
+    tailwindcss-ruby (4.3.0-x86_64-linux-gnu)
     thor (1.5.0)
     timeout (0.6.1)
     tsort (0.2.0)
@@ -498,7 +498,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yaml (0.4.0)
-    zeitwerk (2.7.5)
+    zeitwerk (2.8.1)
 
 PLATFORMS
   aarch64-linux
