@@ -7,6 +7,7 @@ namespace :madmin do
   resources :accounts_shopkeepers
   resources :shops
   resources :item_tags
+  resources :application_push_devices
   resources :roles
   resources :permissions
   resources :roles_permissions
