@@ -85,7 +85,7 @@ class AccountSerializerTest < ActiveSupport::TestCase
     serialized = serializer.serializable_hash
 
     attributes = serialized[:data][:attributes]
-    assert_not attributes[:is_admin]
+    assert_equal false, attributes[:is_admin]
   end
 
   test "should include owner relationship" do
