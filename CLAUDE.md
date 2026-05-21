@@ -80,6 +80,16 @@ bin/rails dbconsole           # Database console
 - Solid Cache for caching in production/staging
 - Monitor jobs at `/madmin/jobs` (Mission Control)
 
+### Push Notifications
+Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs for iOS, FCM for Android.
+
+- **Provider names, not OS names**: the device `platform` is `apple` (APNs) or `google` (FCM) — never `ios`/`android`. The enum (`validate: true`) rejects anything else with 422 "Platform is not included in the list".
+- **Models**: `ApplicationPushDevice < ActionPushNative::Device` (`action_push_native_devices` table; polymorphic `owner`, unique on `[platform, token]`). `ApplicationPushNotification < ActionPushNative::Notification`. Delivery records live in `noticed_events` / `noticed_notifications`. All visible in `/madmin`.
+- **Device registration**: `POST /api/v1/shopkeeper/devices` is idempotent on `(platform, token)` — re-POST updates `last_active_at`; a token bound to another shopkeeper is reassigned.
+- **Notifiers**: subclass `ApplicationNotifier` (`Noticed::Event`). `ItemTagNotifier` fires from the AASM `complete` event. In `deliver_by :action_push_native`, the `with_apple`, `with_google`, and `with_data` options must each return a **Hash** (use `{}` when empty) — passing `nil` raises `TypeError: no implicit conversion of nil into Hash`.
+- **Config & secrets**: `config/push.yml` reads everything from credentials (`bin/rails credentials:edit --environment <env>`) under `action_push_native:apns:{key_id, team_id, topic, encryption_key}` and `action_push_native:fcm:{project_id, encryption_key}`. APNs `encryption_key` is the full `.p8` PEM; FCM `encryption_key` is the entire service-account JSON. `topic` stays in credentials (not source) because the agent's rename pipeline would otherwise desync the bundle id.
+- **APNs sandbox vs production**: `connect_to_development_server: <%= Rails.env.development? %>`. The token's environment is fixed at iOS build time — Xcode debug builds get **sandbox** tokens, TestFlight/App Store get **production**. They must match the server: test Xcode debug builds against a **local development** server; use TestFlight to test against Render. A mismatch returns APNs `400 BadDeviceToken`, which the gem treats as `TokenError` and **destroys the device row** (the default `rescue_from`). FCM has no such split.
+
 ### Testing Strategy
 - Minitest for all tests (models, controllers, integration, policies)
 - WebMock for stubbing external HTTP requests
