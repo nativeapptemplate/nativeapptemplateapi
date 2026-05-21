@@ -22,6 +22,7 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
 - **[pagy](https://github.com/ddnexus/pagy)**
+- **[noticed](https://github.com/excid3/noticed)** + **[action_push_native](https://github.com/basecamp/action_push_native)** (push notifications)
 - **Test** (Minitest)
 
 ### Included Features
@@ -39,6 +40,7 @@ For more information, visit [nativeapptemplate.com](https://nativeapptemplate.co
 - Force App Version Update
 - Force Privacy Policy Version Update
 - Force Terms of Use Version Update
+- Push Notifications (APNs for iOS, FCM for Android) — paid clients only
 - And more!
 
 ## Related Repositories
@@ -81,6 +83,8 @@ Run `bin/setup` to install Ruby and JavaScript dependencies and setup your datab
 ```bash
 bin/setup
 ```
+
+Push notifications (used by the paid iOS/Android clients) need APNs and FCM credentials. Add them per environment with `bin/rails credentials:edit --environment <env>` under `action_push_native:apns` and `action_push_native:fcm`; see `config/push.yml` for the expected keys.
 
 ## Running NativeAppTemplate API on your Wi-Fi
 
