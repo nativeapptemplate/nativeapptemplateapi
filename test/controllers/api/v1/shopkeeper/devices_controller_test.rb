@@ -25,6 +25,29 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
     assert_equal "com.nativeapptemplate.example", attrs["bundle_id"]
   end
 
+  test "create registers a google (FCM) device and returns 201" do
+    assert_difference -> { ApplicationPushDevice.count }, 1 do
+      post api_v1_shopkeeper_devices_url,
+        params: {device: {token: "fcm-token-123", platform: "google", bundle_id: "com.nativeapptemplate.nativeapptemplate"}},
+        headers: @shopkeeper.create_new_auth_token
+    end
+    assert_response :created
+    attrs = response.parsed_body["data"]["attributes"]
+    assert_equal "fcm-token-123", attrs["token"]
+    assert_equal "google", attrs["platform"]
+    assert_equal "com.nativeapptemplate.nativeapptemplate", attrs["bundle_id"]
+  end
+
+  test "create returns 422 for an unsupported platform" do
+    assert_no_difference -> { ApplicationPushDevice.count } do
+      post api_v1_shopkeeper_devices_url,
+        params: {device: {token: "abc123", platform: "android"}},
+        headers: @shopkeeper.create_new_auth_token
+    end
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+  end
+
   test "create with same (platform, token) does not duplicate and returns 200" do
     ApplicationPushDevice.create!(owner: @shopkeeper, token: "abc123", platform: "apple", last_active_at: 1.day.ago)
 
