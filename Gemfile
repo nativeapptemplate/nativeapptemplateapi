@@ -33,7 +33,10 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", ">= 1.4.2", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.12"
+gem "image_processing", "~> 2.0"
+# image_processing 2.0 makes the image library a soft dependency; ruby-vips
+# is Active Storage's default variant processor, so require it explicitly.
+gem "ruby-vips"
 
 # Security update
 gem "nokogiri", ">= 1.12.5"
