@@ -2,6 +2,17 @@
 
 ## [Unreleased]
 
+- Document push notification setup in CLAUDE.md (detailed) and README (feature lists, marked paid-clients only) (#76)
+- Add test coverage for `google`/FCM device registration and rejection of unsupported `platform` values (#75)
+- Connect to the APNs **sandbox** server in development (`connect_to_development_server: Rails.env.development?`). A Xcode debug build registers a sandbox token; pushing it to the production APNs host returned `400 BadDeviceToken`, which the gem treats as `TokenError` and destroys the device row. Development now matches the sandbox; staging/production keep production (#74)
+- Add `Noticed::Event` and `Noticed::Notification` to the madmin dashboard, with cross-linkable associations (#73)
+- Add `ApplicationPushDevice` to the madmin dashboard (#72)
+- Fix push delivery crashing with `TypeError (no implicit conversion of nil into Hash)`: `ItemTagNotifier` now sets the `with_apple`/`with_google`/`with_data` options (Action Push Native does `{}.merge(option)` and rejects `nil`). Also fix the notification `url` to the shallow `api_v1_shopkeeper_item_tag_path` route (`item_tags` is declared `shallow: true`) (#71)
+- Fix `is_admin` serializing as `null` for non-admin members: `Rolified` role predicates now coerce to a real boolean instead of returning `nil` when the role key is absent from the `roles` JSON (#70)
+- Upgrade `noticed` from 2.9.3 to 3.0.0 (#69)
+- Bump gems within Gemfile constraints (bootsnap, faraday, httpx, jwt, marcel, pagy, rubocop, rubocop-rails, selenium-webdriver, tailwindcss-ruby, zeitwerk) (#68)
+- Ignore `CVE-2026-40295` (devise Timeoutable open redirect) in bundler-audit — `:timeoutable` isn't enabled and `devise_token_auth ~> 1.2` pins `devise < 5` (#67)
+- Populate APNs/FCM credentials for development, staging, and production so `config/push.yml` resolves Action Push Native config at runtime (#66)
 - Update Ruby from 4.0.2 to 4.0.3
 - Update gems within Gemfile constraints (action_text-trix, bootsnap, json, mailbin, multi_xml, rubocop-rails, rubyzip)
 - Wire `ItemTagNotifier` to the `ItemTag` AASM `complete` event via `after_commit`. On state transition `idled → completed`, the notifier fires to all shopkeepers in the shop's account except the completer (`completed_by`). Only the AASM trigger — APNs/FCM provider credentials still pending (`bin/rails credentials:edit` once the keys are provisioned).
