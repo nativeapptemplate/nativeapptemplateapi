@@ -33,7 +33,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", ">= 1.4.2", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.12"
+gem "image_processing", "~> 2.0"
 
 # Security update
 gem "nokogiri", ">= 1.12.5"
