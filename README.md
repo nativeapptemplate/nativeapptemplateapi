@@ -8,6 +8,8 @@ Extracted from the Rails API backend for [MyTurnTag Creator for iOS](https://app
 
 For more information, visit [nativeapptemplate.com](https://nativeapptemplate.com).
 
+Want a customized backend generated for you? [nativeapptemplate-agent](https://github.com/nativeapptemplate/nativeapptemplate-agent) is a Claude Code agent that turns a one-sentence spec (e.g. *"a walk-in queue for a barbershop"*) into a coherent three-platform implementation — this Rails 8.1 API plus matching [SwiftUI iOS](https://github.com/nativeapptemplate/NativeAppTemplate-Free-iOS) and [Jetpack Compose Android](https://github.com/nativeapptemplate/NativeAppTemplate-Free-Android) apps — renamed and adapted to your domain, with validation built in.
+
 ## API Documentation
 
 [API Documentation](https://nativeapptemplate.com/api-docs/index.html)
