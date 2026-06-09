@@ -52,7 +52,7 @@ gem "acts_as_tenant"
 gem "pagy", "~> 43"
 gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
-gem "madmin", "~> 2.0"
+gem "madmin", "~> 2.3"
 gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
