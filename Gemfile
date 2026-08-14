@@ -41,7 +41,7 @@ gem "ruby-vips"
 # Security update
 gem "nokogiri", ">= 1.12.5"
 
-gem "devise_token_auth", "~> 1.2", ">= 1.2.6"
+gem "devise_token_auth", "~> 1.3"
 gem "jsonapi-serializer"
 gem "pundit"
 gem "aasm"
@@ -52,7 +52,7 @@ gem "acts_as_tenant"
 gem "pagy", "~> 43"
 gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
-gem "madmin", "~> 2.3"
+gem "madmin", "~> 2.4"
 gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
