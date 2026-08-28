@@ -266,7 +266,7 @@ GEM
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.2)
+    net-protocol (0.3.0)
       timeout
     net-smtp (0.5.1)
       net-protocol
@@ -293,7 +293,7 @@ GEM
       childprocess (>= 0.6.3, < 6)
       iniparse (~> 1.4)
       rexml (>= 3.4.2)
-    pagy (43.6.1)
+    pagy (43.6.2)
       json
       uri
       yaml
@@ -376,7 +376,7 @@ GEM
     regexp_parser (2.12.0)
     reline (0.7.0)
       io-console (~> 0.5)
-    resend (1.10.0)
+    resend (1.11.0)
       base64
       httparty (>= 0.22.0)
     responders (3.2.0)
@@ -470,7 +470,7 @@ GEM
     unicode-emoji (4.2.0)
     uri (1.1.1)
     useragent (0.16.11)
-    valid_email2 (7.0.15)
+    valid_email2 (7.1.0)
       activemodel (>= 6.0)
       mail (~> 2.5)
     warden (1.2.9)
