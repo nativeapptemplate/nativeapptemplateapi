@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Rails 8.1 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints. Ruby 4.0.2, PostgreSQL, Solid Queue/Cable/Cache.
+This is a Rails 8.1 API application that serves as the backend for NativeAppTemplate iOS/Android mobile applications. It's a multi-tenant SaaS application with token-based authentication, role-based authorization, and RESTful API endpoints. Ruby 4.0.7, PostgreSQL, Solid Queue/Cable/Cache.
 
 ## Development Commands
 
@@ -103,7 +103,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (205 tests, 402 assertions)
+- Run tests: `bin/rails test` (438 tests, 916 assertions)
 
 ### Development Server Configuration
 - `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
