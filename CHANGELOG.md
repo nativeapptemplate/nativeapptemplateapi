@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Move agent instructions from `CLAUDE.md` to `AGENTS.md` so Claude Code, Codex, and other agents share one file. `CLAUDE.md` now only imports it (`@AGENTS.md`)
 - Update Ruby from 4.0.6 to 4.0.7 (#105)
 - Update gems: Rails 8.1.3.1 → 8.1.4, `acts_as_tenant` 1.0.1 → 2.0.2, `json` 2.21.2 → 3.0.2, plus `noticed`, `solid_cable`, `brakeman`, `rubocop`, `rubocop-rails`, `resend`, `mission_control-jobs`, `pg`, and others. `acts_as_tenant` 2.0 tightens tenant validation: a `belongs_to` pointing at another tenant's record now fails validation even inside `without_tenant`, and ActiveJob resolves the tenant at perform time (#105)
 - Update gems (mission_control-jobs, resend, rubocop, image_processing, valid_email2, bootsnap, httpx, and others). Rename `MaximumRangeSize` to `MaxRangeSize` for `Lint/MissingCopEnableDirective` in `.rubocop.yml` (RuboCop 1.90) (#100)
