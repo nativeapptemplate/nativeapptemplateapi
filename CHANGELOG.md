@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+- Update Ruby from 4.0.6 to 4.0.7 (#105)
+- Update gems: Rails 8.1.3.1 → 8.1.4, `acts_as_tenant` 1.0.1 → 2.0.2, `json` 2.21.2 → 3.0.2, plus `noticed`, `solid_cable`, `brakeman`, `rubocop`, `rubocop-rails`, `resend`, `mission_control-jobs`, `pg`, and others. `acts_as_tenant` 2.0 tightens tenant validation: a `belongs_to` pointing at another tenant's record now fails validation even inside `without_tenant`, and ActiveJob resolves the tenant at perform time (#105)
+- Update gems (mission_control-jobs, resend, rubocop, image_processing, valid_email2, bootsnap, httpx, and others). Rename `MaximumRangeSize` to `MaxRangeSize` for `Lint/MissingCopEnableDirective` in `.rubocop.yml` (RuboCop 1.90) (#100)
+- Update gems (resend, solid_queue 1.7.0, webmock). Solid Queue 1.7's batch tables are not migrated yet (optional until Solid Queue 2.0) (#97)
+- Update gems: `devise` 4.9.4 → 5.0.4, `devise_token_auth` 1.2.6 → 1.3.0, `madmin` 2.3.3 → 2.6.0, `solid_queue` 1.6.0, `brakeman` 8.0.6, and others. Fixes the `scan_ruby` check failing because `bin/brakeman --ensure-latest` exits non-zero when brakeman isn't the latest version (#96)
+- Update Rails to 8.1.3.1 (CVE-2026-66066, Active Storage variant processing) and land the Dependabot `minor-and-patch` group (#93)
+- Bump GitHub Actions `actions/checkout` 6 → 7 (#86) and `actions/cache` 5 → 6 (#88)
+- Update Ruby from 4.0.3 to 4.0.6 and update gems; `faraday` 2.14.3 (CVE-2026-54297), `aasm` 5.5.2 → 6.0.0 (#90)
 - Document push notification setup in CLAUDE.md (detailed) and README (feature lists, marked paid-clients only) (#76)
 - Add test coverage for `google`/FCM device registration and rejection of unsupported `platform` values (#75)
 - Connect to the APNs **sandbox** server in development (`connect_to_development_server: Rails.env.development?`). A Xcode debug build registers a sandbox token; pushing it to the production APNs host returned `400 BadDeviceToken`, which the gem treats as `TokenError` and destroys the device row. Development now matches the sandbox; staging/production keep production (#74)
