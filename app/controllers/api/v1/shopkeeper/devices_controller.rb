@@ -10,15 +10,8 @@ class Api::V1::Shopkeeper::DevicesController < Api::V1::Shopkeeper::BaseControll
   def create
     authorize ApplicationPushDevice
 
-    device = ApplicationPushDevice.find_or_initialize_by(
-      platform: device_params[:platform],
-      token: device_params[:token]
-    )
-    device.owner = current_shopkeeper
-    device.bundle_id = device_params[:bundle_id]
-    device.last_active_at = Time.current
-
-    if device.save
+    device = save_device
+    if device.persisted?
       render json: ApplicationPushDeviceSerializer.new(device).serializable_hash, status: device.previously_new_record? ? :created : :ok
     else
       render_validation_error(device)
@@ -34,6 +27,25 @@ class Api::V1::Shopkeeper::DevicesController < Api::V1::Shopkeeper::BaseControll
   end
 
   private
+
+  # Two first-time registrations of one token can both pass the uniqueness
+  # validation, and the unique index rejects the later INSERT. Retry once: the
+  # lookup then finds the row the other request created and updates it.
+  def save_device(retried: false)
+    device = ApplicationPushDevice.find_or_initialize_by(
+      platform: device_params[:platform],
+      token: device_params[:token]
+    )
+    device.owner = current_shopkeeper
+    device.bundle_id = device_params[:bundle_id]
+    device.last_active_at = Time.current
+    device.save
+    device
+  rescue ActiveRecord::RecordNotUnique
+    raise if retried
+
+    save_device(retried: true)
+  end
 
   def set_device
     @device = current_shopkeeper.application_push_devices.find(params[:id])

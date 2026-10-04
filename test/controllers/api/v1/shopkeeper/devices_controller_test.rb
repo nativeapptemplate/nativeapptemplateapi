@@ -25,6 +25,39 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
     assert_equal "com.nativeapptemplate.example", attrs["bundle_id"]
   end
 
+  # Two first-time registrations of one token can both pass the uniqueness
+  # validation; the unique index then rejects the later INSERT. Simulate the
+  # other request winning: just before this request's INSERT, commit the same
+  # token from a separate connection (outside the test transaction).
+  test "create still succeeds when a concurrent request registered the same token first" do
+    other_request = PG.connect(**ActiveRecord::Base.connection_db_config.configuration_hash.slice(:host, :port, :user, :password).merge(dbname: ActiveRecord::Base.connection_db_config.database).compact)
+    racer_id = shopkeepers(:two).id
+    commit_competing_row = -> {
+      other_request.exec_params(<<~SQL, [racer_id])
+        INSERT INTO action_push_native_devices (platform, token, owner_type, owner_id, last_active_at, created_at, updated_at)
+        VALUES ('apple', 'raced', 'Shopkeeper', $1, now(), now(), now())
+      SQL
+    }
+    ApplicationPushDevice.before_create(commit_competing_row)
+
+    post api_v1_shopkeeper_devices_url,
+      params: {device: {token: "raced", platform: "apple"}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :ok
+    devices = ApplicationPushDevice.where(platform: "apple", token: "raced")
+    assert_equal 1, devices.count
+    assert_equal @shopkeeper, devices.first.owner
+  ensure
+    ApplicationPushDevice.skip_callback(:create, :before, commit_competing_row)
+    # The committed row is locked by this test's transaction until it rolls
+    # back, so delete it from the other connection only after that
+    @after_rollback = -> {
+      other_request&.exec("DELETE FROM action_push_native_devices WHERE platform = 'apple' AND token = 'raced'")
+      other_request&.close
+    }
+  end
+
   test "create registers a google (FCM) device and returns 201" do
     assert_difference -> { ApplicationPushDevice.count }, 1 do
       post api_v1_shopkeeper_devices_url,
@@ -111,5 +144,11 @@ class Api::V1::Shopkeeper::DevicesControllerTest < ActionDispatch::IntegrationTe
         headers: @shopkeeper.create_new_auth_token
     end
     assert_response :not_found
+  end
+
+  # Runs after the fixtures transaction has rolled back
+  def after_teardown
+    super
+    @after_rollback&.call
   end
 end
