@@ -3,11 +3,13 @@ module Madmin
     before_action :authenticate_admin_user
     around_action :without_tenant
 
+    # Check the admin still exists, like AdminConstraint does for /madmin/jobs,
+    # so deleting an admin ends their access
     def authenticate_admin_user
-      # TODO: Add your authentication logic here
+      return if session[:admin_user_id] && AdminUser.exists?(id: session[:admin_user_id])
 
-      # For example, we could redirect if the user isn't an admin
-      redirect_to "/", alert: "Not authorized." if session[:admin_user_id].nil?
+      reset_session
+      redirect_to "/", alert: "Not authorized."
     end
 
     def without_tenant
