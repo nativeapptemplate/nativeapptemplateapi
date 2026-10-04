@@ -1,4 +1,10 @@
 class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::BaseController
+  # Invitation codes are 6 digits, so throttle guessing per shopkeeper
+  rate_limit to: 10, within: 1.minute,
+    name: "accounts_invitations/shopkeeper",
+    by: -> { current_shopkeeper.id },
+    with: -> { render_error(code: 429, message: I18n.t("errors.messages.too_many_requests"), status: :too_many_requests) }
+
   before_action :set_accounts_invitation
 
   def show
@@ -38,7 +44,11 @@ class Api::V1::Shopkeeper::AccountsInvitationsController < Api::V1::Shopkeeper::
   private
 
   def set_accounts_invitation
-    @accounts_invitation = AccountsInvitation.find_by!(token: params[:id])
+    # Only the shopkeeper the invitation was sent to can see, accept or reject it.
+    # Anyone else gets the same 404 as a wrong code, so a guessed code reveals nothing.
+    @accounts_invitation = AccountsInvitation
+      .where("LOWER(email) = ?", current_shopkeeper.email.downcase)
+      .find_by!(token: params[:id])
   rescue ActiveRecord::RecordNotFound
     render_error(code: 404, message: I18n.t("api.shopkeeper.accounts_invitations.not_found"), status: :not_found)
   end
