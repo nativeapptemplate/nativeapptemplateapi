@@ -47,5 +47,11 @@ module Nativeapptemplateapi
 
     require "middleware/account_middleware"
     config.middleware.use AccountMiddleware
+
+    # Mission Control's own HTTP Basic auth is off: AdminConstraint in routes.rb
+    # guards /madmin/jobs. This must be set here, not in config/initializers,
+    # because the engine copies config.mission_control.jobs into its settings
+    # before the app's initializers run.
+    config.mission_control.jobs.http_basic_auth_enabled = false
   end
 end
