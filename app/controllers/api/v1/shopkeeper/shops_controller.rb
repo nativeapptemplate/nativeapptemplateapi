@@ -49,7 +49,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
   def destroy
     authorize @shop
 
-    @shop.destroy
+    @shop.destroy!
     render json: {status: 200}, status: :ok
   end
 

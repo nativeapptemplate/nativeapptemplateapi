@@ -46,7 +46,7 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def destroy
     authorize @item_tag
 
-    @item_tag.destroy
+    @item_tag.destroy!
     render json: {status: 200}, status: :ok
   end
 

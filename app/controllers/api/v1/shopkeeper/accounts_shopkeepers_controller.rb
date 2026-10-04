@@ -43,7 +43,7 @@ class Api::V1::Shopkeeper::AccountsShopkeepersController < Api::V1::Shopkeeper::
   def destroy
     authorize @accounts_shopkeeper
 
-    @accounts_shopkeeper.destroy
+    @accounts_shopkeeper.destroy!
     render json: {status: 200}, status: :ok
   end
 
