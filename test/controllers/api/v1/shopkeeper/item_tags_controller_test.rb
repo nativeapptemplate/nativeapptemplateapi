@@ -42,7 +42,7 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert_response :success
 
     meta = response.parsed_body["meta"]
-    assert_equal Pagy::OPTIONS[:limit], meta["limit"]
+    assert_equal Pagination::DEFAULT_LIMIT, meta["limit"]
     assert_equal 1, meta["current_page"]
   end
 
@@ -53,6 +53,62 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert_empty response.parsed_body["data"]
     meta = response.parsed_body["meta"]
     assert_equal 9999, meta["current_page"]
+  end
+
+  test "index with page param splits items across pages" do
+    create_item_tags(Pagination::DEFAULT_LIMIT + 5 - @shop.item_tags.count)
+
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: 1), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    first_page_ids = response.parsed_body["data"].pluck("id")
+    meta = response.parsed_body["meta"]
+    assert_equal Pagination::DEFAULT_LIMIT, first_page_ids.size
+    assert_equal Pagination::DEFAULT_LIMIT + 5, meta["total_count"]
+    assert_equal 2, meta["total_pages"] # ceil(25 / 20) = 2
+
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: 2), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    second_page_ids = response.parsed_body["data"].pluck("id")
+    assert_equal 5, second_page_ids.size # 25 - 20 = 5 left for page 2
+    assert_equal 2, response.parsed_body["meta"]["current_page"]
+    assert_empty first_page_ids & second_page_ids
+  end
+
+  test "index treats invalid page params as the first page" do
+    create_item_tags(Pagination::DEFAULT_LIMIT + 5 - @shop.item_tags.count)
+
+    # Only a positive whole number selects a page. Pagy read "2abc" as page 2.
+    ["0", "-1", "abc", "2abc", "1.5"].each do |page|
+      get api_v1_shopkeeper_shop_item_tags_url(@shop, page: page), headers: @shopkeeper.create_new_auth_token
+      assert_response :success, "page=#{page}"
+      assert_equal 1, response.parsed_body["meta"]["current_page"], "page=#{page}"
+      assert_equal Pagination::DEFAULT_LIMIT, response.parsed_body["data"].size, "page=#{page}"
+    end
+  end
+
+  test "index treats a nested page param as the first page" do
+    get api_v1_shopkeeper_shop_item_tags_url(@shop), params: {page: {x: "1"}}, headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    assert_equal 1, response.parsed_body["meta"]["current_page"]
+  end
+
+  test "index with a huge page number returns empty data" do
+    # Larger than bigint, so it would overflow OFFSET if it reached the query
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: "9" * 30), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    assert_empty response.parsed_body["data"]
+  end
+
+  test "index with no item_tags reports one empty page" do
+    ActsAsTenant.with_tenant(@account) { @shop.item_tags.destroy_all }
+
+    get api_v1_shopkeeper_shop_item_tags_url(@shop, page: 1), headers: @shopkeeper.create_new_auth_token
+    assert_response :success
+    assert_empty response.parsed_body["data"]
+    meta = response.parsed_body["meta"]
+    assert_equal 0, meta["total_count"]
+    assert_equal 1, meta["total_pages"] # matches Pagy: an empty list is still one page
+    assert_equal 1, meta["current_page"]
   end
 
   test "index requires authentication" do
@@ -172,5 +228,13 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     patch idle_api_v1_shopkeeper_item_tag_url(@item_tag), headers: @shopkeeper.create_new_auth_token
     assert_response :success
     assert @item_tag.reload.idled?
+  end
+
+  private
+
+  def create_item_tags(count)
+    ActsAsTenant.with_tenant(@account) do
+      count.times { |i| @shop.item_tags.create!(name: "Extra #{i}", account: @account) }
+    end
   end
 end

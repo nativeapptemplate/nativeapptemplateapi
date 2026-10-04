@@ -23,7 +23,6 @@ Want a customized backend generated for you? [nativeapptemplate-agent](https://g
 - **[jsonapi-serializer](https://github.com/jsonapi-serializer/jsonapi-serializer)**
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
-- **[pagy](https://github.com/ddnexus/pagy)**
 - **[noticed](https://github.com/excid3/noticed)** + **[action_push_native](https://github.com/basecamp/action_push_native)** (push notifications)
 - **Test** (Minitest)
 

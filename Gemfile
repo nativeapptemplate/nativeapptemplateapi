@@ -46,7 +46,6 @@ gem "aasm"
 gem "after_commit_everywhere", "~> 1.6"
 gem "config"
 gem "acts_as_tenant"
-gem "pagy", "~> 43"
 gem "seed-fu", "~> 2.3"
 gem "whenever", require: false
 gem "madmin", "~> 2.3"
