@@ -58,7 +58,7 @@ bin/rails dbconsole           # Database console
 - Token-based authentication using `devise_token_auth`
 - Separate namespaces for different user types (e.g., `/api/v1/shopkeeper/`)
 - JSON API specification for responses using `jsonapi-serializer`
-- CORS enabled for cross-origin requests
+- No CORS: the API serves native mobile clients only (no rack-cors), so browsers on other origins cannot call it
 
 ### Authentication & Authorization
 - **Authentication**: Devise Token Auth with headers-based token management
@@ -93,7 +93,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 ### Testing Strategy
 - Minitest for all tests (models, controllers, integration, policies)
 - WebMock for stubbing external HTTP requests
-- Parallel test execution supported (10 workers by default)
+- Parallel test execution supported (one worker per processor; `parallelize(workers: :number_of_processors)`)
 - Comprehensive test coverage across all layers:
   - **Model tests**: test/models/ - Validations, associations, callbacks, state machines
   - **Policy tests**: test/policies/ - Authorization rules for all user roles
@@ -103,7 +103,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (454 tests, 1077 assertions)
+- Run tests: `bin/rails test` (468 tests, 1126 assertions)
 
 ### Development Server Configuration
 - `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
