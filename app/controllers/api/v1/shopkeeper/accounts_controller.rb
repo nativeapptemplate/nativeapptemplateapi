@@ -6,9 +6,12 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
   def index
     authorize Account
 
-    accounts = current_shopkeeper.accounts.sorted
+    accounts = current_shopkeeper.accounts.sorted.includes(:owner, :accounts_shopkeepers, :accounts_invitations).to_a
+    # Shop is acts_as_tenant, so count every account's shops outside the
+    # current tenant, in one query
+    shops_counts = ActsAsTenant.without_tenant { Shop.where(account: accounts).group(:account_id).count }
     options = {
-      params: {current_shopkeeper: current_shopkeeper}
+      params: {current_shopkeeper: current_shopkeeper, shops_counts: shops_counts}
     }
 
     created_accounts_count = current_shopkeeper.owned_accounts.size
