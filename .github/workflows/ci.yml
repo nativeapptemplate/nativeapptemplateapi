@@ -5,9 +5,16 @@ on:
   push:
     branches: [ main ]
 
+# A newer push to a pull request makes the run for the older commit pointless,
+# so stop it. Runs on main are left to finish so every merge gets a result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   scan_ruby:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -26,6 +33,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       RUBOCOP_CACHE_ROOT: tmp/rubocop
     steps:
@@ -55,6 +63,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     services:
       postgres:

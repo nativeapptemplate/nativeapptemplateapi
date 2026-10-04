@@ -7,6 +7,10 @@
 # Ignore bundler config.
 /.bundle
 
+# Ignore gems installed into the project, as CI does. Tailwind skips ignored
+# paths, so this also keeps it from scanning every gem for class names.
+/vendor/bundle
+
 # Ignore all environment files (except templates).
 /.env*
 !/.env*.erb
