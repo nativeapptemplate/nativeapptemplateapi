@@ -23,4 +23,8 @@ class ActiveStorage::VariantRecordResource < Madmin::Resource
   # def self.default_sort_column = "created_at"
   #
   # def self.default_sort_direction = "desc"
+
+  # Active Storage creates and purges these. Writing them by hand leaves records
+  # without files, or files without records.
+  def self.readonly? = true
 end

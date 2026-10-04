@@ -19,13 +19,9 @@ namespace :madmin do
   resources :privacy_versions
   resources :app_versions
   namespace :active_storage do
-    resources :variant_records
-  end
-  namespace :active_storage do
     resources :attachments
-  end
-  namespace :active_storage do
-    resources :blobs
+    resources :blobs, only: [:index, :show]
+    resources :variant_records, only: [:index, :show]
   end
   root to: "dashboard#show"
 end

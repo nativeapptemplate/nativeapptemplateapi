@@ -222,9 +222,8 @@ GEM
     loofah (2.25.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    madmin (2.6.0)
+    madmin (3.2.0)
       importmap-rails
-      pagy (>= 3.5)
       rails (>= 7.0.0)
       stimulus-rails
       turbo-rails
@@ -293,10 +292,6 @@ GEM
       childprocess (>= 0.6.3, < 6)
       iniparse (~> 1.4)
       rexml (>= 3.4.2)
-    pagy (43.6.3)
-      json
-      uri
-      yaml
     parallel (2.2.0)
     parser (3.3.12.0)
       ast (~> 2.4.1)
@@ -491,7 +486,6 @@ GEM
       chronic (>= 0.6.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yaml (0.4.0)
     zeitwerk (2.8.3)
 
 PLATFORMS
@@ -519,7 +513,7 @@ DEPENDENCIES
   image_processing (~> 2.0)
   importmap-rails
   jsonapi-serializer
-  madmin (~> 2.3)
+  madmin (~> 3.1)
   mailbin
   minitest-mock
   mission_control-jobs
