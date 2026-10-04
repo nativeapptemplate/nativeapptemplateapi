@@ -8,6 +8,8 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
   before_action :authenticate_shopkeeper!
   after_action :verify_authorized
 
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  rescue_from ActionController::ParameterMissing, with: :parameter_missing
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def pundit_user
@@ -34,5 +36,13 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   def user_not_authorized
     render_error(code: 401, message: I18n.t("unauthorized"), status: :unauthorized)
+  end
+
+  def record_not_found
+    render_error(code: 404, message: I18n.t("not_found"), status: :not_found)
+  end
+
+  def parameter_missing
+    render_error(code: 400, message: I18n.t("bad_request"), status: :bad_request)
   end
 end
