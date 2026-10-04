@@ -1,4 +1,6 @@
 class ShopkeeperAuth::ConfirmationsController < DeviseTokenAuth::ConfirmationsController
+  include SameHostRedirect
+
   protected
 
   def render_create_error_missing_email
@@ -11,11 +13,10 @@ class ShopkeeperAuth::ConfirmationsController < DeviseTokenAuth::ConfirmationsCo
 
   private
 
-  # give redirect value from params priority or fall back to default value if provided
+  # Used for the emailed link and the redirect after confirming. A redirect_url
+  # on another host falls back to the default instead of being followed.
   def redirect_url
-    params.fetch(
-      :redirect_url,
-      shopkeeper_auth_confirmation_result_url
-    )
+    url = params[:redirect_url]
+    same_host_url?(url) ? url : shopkeeper_auth_confirmation_result_url
   end
 end
