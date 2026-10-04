@@ -36,6 +36,8 @@ en:
   change_your_password: "Change your password"
   confirm_new_password: "Confirm new password"
   new_password: "New password"
+  bad_request: "Bad request."
+  not_found: "Not found."
   something_went_wrong: "Something went wrong"
   unauthorized: "You are not authorized to perform this action."
   default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
