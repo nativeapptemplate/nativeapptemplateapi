@@ -57,6 +57,24 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     assert_includes duplicate.errors[:email], I18n.t("activerecord.errors.models.accounts_invitation.attributes.email.invited")
   end
 
+  test "database rejects duplicate email within account when validation is skipped" do
+    AccountsInvitation.create!(
+      account: @account,
+      name: "User 1",
+      email: "same@example.com",
+      member: true
+    )
+
+    duplicate = AccountsInvitation.new(
+      account: @account,
+      name: "User 2",
+      email: "same@example.com",
+      member: true
+    )
+
+    assert_raises(ActiveRecord::RecordNotUnique) { duplicate.save!(validate: false) }
+  end
+
   test "should allow same email in different accounts" do
     other_shopkeeper = shopkeepers(:two)
     account2 = Account.create!(name: "Account 2", owner: other_shopkeeper)

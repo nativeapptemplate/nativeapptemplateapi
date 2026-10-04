@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_10_133742) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -33,6 +33,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_133742) do
     t.jsonb "roles", default: {}, null: false
     t.string "token", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id", "email"], name: "index_accounts_invitations_on_account_id_and_email", unique: true
     t.index ["account_id"], name: "index_accounts_invitations_on_account_id"
     t.index ["invited_by_id"], name: "index_accounts_invitations_on_invited_by_id"
     t.index ["token"], name: "index_accounts_invitations_on_token", unique: true
@@ -44,6 +45,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_10_133742) do
     t.jsonb "roles", default: {}, null: false
     t.uuid "shopkeeper_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id", "shopkeeper_id"], name: "index_accounts_shopkeepers_on_account_id_and_shopkeeper_id", unique: true
     t.index ["account_id"], name: "index_accounts_shopkeepers_on_account_id"
     t.index ["shopkeeper_id"], name: "index_accounts_shopkeepers_on_shopkeeper_id"
   end
