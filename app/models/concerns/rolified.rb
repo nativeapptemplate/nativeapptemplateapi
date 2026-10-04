@@ -29,6 +29,9 @@ module Rolified
     # Store the roles in the roles json column and cast to booleans
     store_accessor :roles, *self::ROLES
 
+    # Authorization and permissions assume at least one role
+    validate { errors.add(:roles, :blank) if active_roles.empty? }
+
     # You can use Postgres' jsonb operators to query the roles jsonb column
     # https://www.postgresql.org/docs/current/functions-json.html
     #
