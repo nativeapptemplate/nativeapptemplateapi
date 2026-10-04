@@ -119,7 +119,8 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - Image processing with Active Storage and `image_processing` gem
 
 ### Deployment
-- Configured for Render.com deployment
+- **This repo itself is never deployed.** It is the template that apps are generated from, so there is no production environment or production data. Don't weigh changes against deploy risk (migration downtime, existing records); do keep the Render config below correct, because generated apps inherit it.
+- Configured for Render.com deployment (for generated apps)
 - Build script: `bin/render-build.sh`
 - Web server: `bin/render-start.sh`
 - Solid Queue runs in Puma via `SOLID_QUEUE_IN_PUMA=true`
