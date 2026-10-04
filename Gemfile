@@ -51,7 +51,6 @@ gem "madmin", "~> 3.1"
 gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
-gem "rack-attack"
 gem "resend"
 
 # Push notifications via APNs (iOS) and FCM (Android). Provider integration
