@@ -84,12 +84,14 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
       shopkeeper: other_shopkeeper,
       member: true
     )
-    old_updated_at = @account.updated_at
+    # Creating the member touches the account too, so take the baseline after it
+    old_updated_at = @account.reload.updated_at
 
-    sleep 0.01
-    accounts_shopkeeper.update!(admin: true)
+    travel 1.minute do
+      accounts_shopkeeper.update!(admin: true)
+    end
 
-    assert @account.reload.updated_at > old_updated_at
+    assert_operator @account.reload.updated_at, :>, old_updated_at
   end
 
   test "account_owner? returns true when shopkeeper is account owner" do
