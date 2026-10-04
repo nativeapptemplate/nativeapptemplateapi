@@ -8,6 +8,5 @@ class Current < ActiveSupport::CurrentAttributes
 
   resets do
     Time.zone = nil
-    @accounts_shopkeeper = nil
   end
 end

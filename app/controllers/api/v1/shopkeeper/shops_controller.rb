@@ -26,7 +26,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
   end
 
   def create
-    shop = Shop.new(shop_params_create.merge(created_by: current_shopkeeper))
+    shop = Shop.new(shop_params.merge(created_by: current_shopkeeper))
     authorize shop
 
     if shop.save
@@ -39,7 +39,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
   def update
     authorize @shop
 
-    if @shop.update(shop_params_update)
+    if @shop.update(shop_params)
       render json: ShopSerializer.new(@shop).serializable_hash
     else
       render_validation_error(@shop)
@@ -59,21 +59,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
     @shop = current_shopkeeper.shops.find(params[:id])
   end
 
-  def shop_params_create
-    params
-      .require(:shop).permit(
-        :name,
-        :description,
-        :time_zone
-      )
-  end
-
-  def shop_params_update
-    params
-      .require(:shop).permit(
-        :name,
-        :description,
-        :time_zone
-      )
+  def shop_params
+    params.require(:shop).permit(:name, :description, :time_zone)
   end
 end
