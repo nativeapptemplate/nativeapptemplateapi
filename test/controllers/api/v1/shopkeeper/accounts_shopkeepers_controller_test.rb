@@ -74,6 +74,26 @@ class Api::V1::Shopkeeper::AccountsShopkeepersControllerTest < ActionDispatch::I
     assert_not accounts_shopkeeper.member?
   end
 
+  # A member with no role fails every admin?/member? check and makes
+  # GET /permissions raise (Role.find_by!(tag: nil)), so one role is required
+  test "update rejects removing every role" do
+    other_shopkeeper = shopkeepers(:two)
+    accounts_shopkeeper = AccountsShopkeeper.create!(
+      account: @team_account,
+      shopkeeper: other_shopkeeper,
+      member: true
+    )
+
+    patch api_v1_shopkeeper_account_accounts_shopkeeper_url(@team_account, accounts_shopkeeper),
+      params: {accounts_shopkeeper: {admin: false, member: false}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal "Roles can't be blank", response.parsed_body["error_message"]
+    assert accounts_shopkeeper.reload.member?
+  end
+
   test "update returns error for personal account" do
     accounts_shopkeeper = @account.accounts_shopkeepers.first
 

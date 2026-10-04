@@ -55,6 +55,28 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     assert_enqueued_emails 1
   end
 
+  test "create rejects an invitation with no role" do
+    assert_no_difference "AccountsInvitation.count" do
+      post api_v1_shopkeeper_account_accounts_invitations_url(@account),
+        params: {accounts_invitation: {name: "New User", email: "newuser@example.com", admin: false, member: false}},
+        headers: @shopkeeper.create_new_auth_token
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal "Roles can't be blank", response.parsed_body["error_message"]
+    assert_no_enqueued_emails
+  end
+
+  test "update rejects removing every role from an invitation" do
+    patch api_v1_shopkeeper_account_accounts_invitation_url(@account, @invitation.token),
+      params: {accounts_invitation: {name: @invitation.name, admin: false, member: false}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert @invitation.reload.member?
+  end
+
   test "create returns error for invalid data" do
     assert_no_difference "AccountsInvitation.count" do
       post api_v1_shopkeeper_account_accounts_invitations_url(@account),
