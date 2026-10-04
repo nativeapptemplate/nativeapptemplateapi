@@ -523,7 +523,6 @@ DEPENDENCIES
   mailbin
   minitest-mock
   mission_control-jobs
-  nokogiri (>= 1.12.5)
   noticed (~> 3.0)
   overcommit
   pagy (~> 43)
