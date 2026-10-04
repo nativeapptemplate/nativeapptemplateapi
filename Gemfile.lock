@@ -525,7 +525,6 @@ DEPENDENCIES
   mission_control-jobs
   noticed (~> 3.0)
   overcommit
-  pagy (~> 43)
   pg
   propshaft (~> 1.0)
   puma (~> 8.0)
