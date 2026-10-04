@@ -1,8 +1,14 @@
 class ShopkeeperAuth::PasswordsController < DeviseTokenAuth::PasswordsController
   include ActionController::MimeResponds
   include ActionController::Flash
+  include SameHostRedirect
 
   protected
+
+  # Checked by devise_token_auth for both the reset request and the emailed link
+  def blacklisted_redirect_url?(redirect_url)
+    !same_host_url?(redirect_url)
+  end
 
   def render_create_error_missing_email
     render json: {code: 401, error_message: I18n.t("devise_token_auth.passwords.missing_email")}, status: :unauthorized

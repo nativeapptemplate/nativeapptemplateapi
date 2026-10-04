@@ -10,16 +10,56 @@ class ShopkeeperAuth::PasswordsControllerTest < ActionDispatch::IntegrationTest
     post shopkeeper_password_url,
       params: {
         email: @email,
-        redirect_url: "http://localhost:3000/reset"
+        redirect_url: "http://www.example.com/reset"
       },
       as: :json
 
     assert_response :success
   end
 
+  # The apps send the API's own base URL. A reset link that redirects elsewhere
+  # would hand the reset token to that site.
+  test "rejects a reset redirect_url on another host and sends no email" do
+    assert_no_enqueued_emails do
+      post shopkeeper_password_url,
+        params: {email: @email, redirect_url: "https://evil.example/reset"},
+        as: :json
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal I18n.t("devise_token_auth.passwords.not_allowed_redirect_url", redirect_url: "https://evil.example/reset"),
+      response.parsed_body["error_message"]
+  end
+
+  test "rejects a host that only starts with the API host" do
+    post shopkeeper_password_url,
+      params: {email: @email, redirect_url: "http://www.example.com.evil.example/reset"},
+      as: :json
+
+    assert_response :unprocessable_entity
+  end
+
+  test "the reset link does not redirect the token to another host" do
+    token = @shopkeeper.send(:set_reset_password_token)
+
+    get edit_shopkeeper_password_url(reset_password_token: token, redirect_url: "https://evil.example/reset")
+
+    assert_response :unprocessable_entity
+  end
+
+  test "the reset link redirects to the API's own host" do
+    token = @shopkeeper.send(:set_reset_password_token)
+
+    get edit_shopkeeper_password_url(reset_password_token: token, redirect_url: "http://www.example.com/reset")
+
+    assert_response :redirect
+    assert_equal "www.example.com", URI(response.location).host
+  end
+
   test "should return error when email is missing" do
     post shopkeeper_password_url,
-      params: {redirect_url: "http://localhost:3000/reset"},
+      params: {redirect_url: "http://www.example.com/reset"},
       as: :json
 
     assert_response :unauthorized
@@ -55,7 +95,7 @@ class ShopkeeperAuth::PasswordsControllerTest < ActionDispatch::IntegrationTest
     post shopkeeper_password_url,
       params: {
         email: "nonexistent@example.com",
-        redirect_url: "http://localhost:3000/reset"
+        redirect_url: "http://www.example.com/reset"
       },
       as: :json
 
