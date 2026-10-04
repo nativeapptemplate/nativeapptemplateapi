@@ -33,10 +33,6 @@ end
 module ActionDispatch
   class IntegrationTest
     include Devise::Test::IntegrationHelpers
-
-    def switch_account(account)
-      patch "/accounts/#{account.id}/switch"
-    end
   end
 end
 
