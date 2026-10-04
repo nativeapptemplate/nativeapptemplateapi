@@ -40,11 +40,4 @@ module ActionDispatch
   end
 end
 
-WebMock.disable_net_connect!({
-  allow_localhost: true,
-  allow: [
-    "chromedriver.storage.googleapis.com",
-    "rails-app",
-    "selenium"
-  ]
-})
+WebMock.disable_net_connect!(allow_localhost: true)

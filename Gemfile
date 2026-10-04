@@ -47,7 +47,6 @@ gem "after_commit_everywhere", "~> 1.6"
 gem "config"
 gem "acts_as_tenant"
 gem "seed-fu", "~> 2.3"
-gem "whenever", require: false
 gem "madmin", "~> 3.1"
 gem "valid_email2"
 gem "importmap-rails"
@@ -96,9 +95,6 @@ group :development do
 end
 
 group :test do
-  # Adds support for Capybara system testing and selenium driver
-  gem "capybara", ">= 3.39"
-  gem "selenium-webdriver", ">= 4.20.1"
   gem "webmock"
 end
 
