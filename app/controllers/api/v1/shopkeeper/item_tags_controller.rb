@@ -87,6 +87,6 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   end
 
   def item_tag_params
-    params.require(:item_tag).permit(:name, :description, :position, :state)
+    params.require(:item_tag).permit(:name, :description, :position)
   end
 end

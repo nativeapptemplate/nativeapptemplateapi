@@ -186,6 +186,33 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert response.parsed_body["error_message"].present?
   end
 
+  # State changes only go through the complete/idle events, which record
+  # completed_by/completed_at and send the notification.
+  test "update ignores state and leaves the state machine in charge" do
+    assert @item_tag.idled?
+
+    assert_no_difference "Noticed::Event.count" do
+      patch api_v1_shopkeeper_item_tag_url(@item_tag),
+        params: {item_tag: {name: "Buy bread", state: "completed"}},
+        headers: @shopkeeper.create_new_auth_token
+    end
+
+    assert_response :success
+    @item_tag.reload
+    assert_equal "Buy bread", @item_tag.name
+    assert @item_tag.idled?
+    assert_nil @item_tag.completed_at
+  end
+
+  test "update with an unknown state is not a server error" do
+    patch api_v1_shopkeeper_item_tag_url(@item_tag),
+      params: {item_tag: {name: "Buy bread", state: "foo"}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :success
+    assert @item_tag.reload.idled?
+  end
+
   # destroy
   test "destroy deletes item_tag" do
     assert_difference "ItemTag.count", -1 do
