@@ -1,7 +1,9 @@
 class Shop < ApplicationRecord
   acts_as_tenant :account
 
-  belongs_to :created_by, class_name: "Shopkeeper"
+  # Nullified when the creator is deleted, but required to create a shop
+  belongs_to :created_by, class_name: "Shopkeeper", optional: true
+  validates :created_by, presence: {message: :required}, on: :create
 
   has_many :item_tags, dependent: :destroy
 
@@ -25,6 +27,8 @@ class Shop < ApplicationRecord
   end
 
   def limit_count
+    return if created_by.nil?
+
     ActsAsTenant.without_tenant do
       limit = ConfigSettings.shop.limit_count
       return if created_by.created_shops.count < limit

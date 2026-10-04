@@ -45,6 +45,41 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     end
   end
 
+  # Owned accounts are destroyed with their shops, but a shop created in a team
+  # someone else owns stays with that team and must outlive its creator.
+  test "delete a shopkeeper who created a shop in another owner's team" do
+    owner = shopkeepers(:two)
+    owner.create_default_account
+    team = Account.create!(name: "Team", owner: owner, personal: false)
+    AccountsShopkeeper.create!(account: team, shopkeeper: owner, admin: true)
+    AccountsShopkeeper.create!(account: team, shopkeeper: shopkeeper, member: true)
+    shop = ActsAsTenant.with_tenant(team) { team.shops.create!(name: "Member's shop", created_by: shopkeeper) }
+
+    assert_difference "Shopkeeper.count", -1 do
+      delete shopkeeper_registration_url, headers: shopkeeper.create_new_auth_token
+      assert_response :success
+    end
+
+    shop = ActsAsTenant.without_tenant { Shop.find(shop.id) }
+    assert_nil shop.created_by_id
+    assert_equal team, shop.account
+
+    # The team can keep editing the orphaned shop (the account prefix selects the team)
+    patch "/#{team.id}/api/v1/shopkeeper/shops/#{shop.id}", params: {shop: {name: "Renamed"}},
+      headers: owner.create_new_auth_token
+    assert_response :success
+    assert_equal "Renamed", ActsAsTenant.without_tenant { shop.reload.name }
+  end
+
+  test "a shop still needs a creator when it is created" do
+    account = Account.create!(name: "Solo", owner: shopkeeper, personal: false)
+
+    shop = ActsAsTenant.with_tenant(account) { account.shops.new(name: "No creator") }
+
+    assert_not shop.valid?
+    assert_includes shop.errors[:created_by], "must exist"
+  end
+
   def shopkeeper
     @shopkeeper ||= shopkeepers(:one)
   end
