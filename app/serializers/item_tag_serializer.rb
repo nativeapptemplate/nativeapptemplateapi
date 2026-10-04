@@ -1,6 +1,7 @@
 class ItemTagSerializer
   include JSONAPI::Serializer
-  cache_options store: Rails.cache, namespace: "jsonapi-serializer", expires_in: 1.hour
+  # Not cached: shop_name comes from the shop, and the cache key only tracks
+  # the item tag, so renaming the shop served the old name for up to an hour
 
   attributes :shop_id,
     :name,

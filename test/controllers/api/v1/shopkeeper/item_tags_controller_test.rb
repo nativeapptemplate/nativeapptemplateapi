@@ -123,6 +123,22 @@ class Api::V1::Shopkeeper::ItemTagsControllerTest < ActionDispatch::IntegrationT
     assert_equal response.parsed_body["data"]["attributes"]["name"], @item_tag.name
   end
 
+  # shop_name comes from the shop, so a cached item tag must not keep the old name
+  test "show and index reflect a renamed shop right away" do
+    headers = @shopkeeper.create_new_auth_token
+    get api_v1_shopkeeper_item_tag_url(@item_tag), headers: headers
+    get api_v1_shopkeeper_shop_item_tags_url(@shop), headers: headers
+    assert_equal @shop.name, response.parsed_body["data"].first["attributes"]["shop_name"]
+
+    patch api_v1_shopkeeper_shop_url(@shop), params: {shop: {name: "Renamed shop"}}, headers: headers
+    assert_response :success
+
+    get api_v1_shopkeeper_item_tag_url(@item_tag), headers: headers
+    assert_equal "Renamed shop", response.parsed_body["data"]["attributes"]["shop_name"]
+    get api_v1_shopkeeper_shop_item_tags_url(@shop), headers: headers
+    assert_equal ["Renamed shop"], response.parsed_body["data"].map { _1["attributes"]["shop_name"] }.uniq
+  end
+
   test "show returns 404 for nonexistent item_tag" do
     get api_v1_shopkeeper_item_tag_url(id: "nonexistent-uuid"),
       headers: @shopkeeper.create_new_auth_token
