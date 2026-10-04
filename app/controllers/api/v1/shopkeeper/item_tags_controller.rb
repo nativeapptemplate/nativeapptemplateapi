@@ -53,11 +53,7 @@ class Api::V1::Shopkeeper::ItemTagsController < Api::V1::Shopkeeper::BaseControl
   def complete
     authorize @item_tag
 
-    if @item_tag.may_complete?
-      @item_tag.completed_by = current_shopkeeper
-      @item_tag.completed_at = Time.current
-      @item_tag.complete!
-    end
+    @item_tag.complete_by!(current_shopkeeper)
 
     options = {}
     options[:include] = [:shop]

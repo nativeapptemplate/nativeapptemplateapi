@@ -28,6 +28,19 @@ class ItemTag < ApplicationRecord
     end
   end
 
+  # with_lock reloads the row under SELECT ... FOR UPDATE, so of two
+  # concurrent requests the second waits and then sees the tag completed.
+  # The notification still fires once, after the outer commit.
+  def complete_by!(shopkeeper)
+    with_lock do
+      next unless may_complete?
+
+      self.completed_by = shopkeeper
+      self.completed_at = Time.current
+      complete!
+    end
+  end
+
   private
 
   def notify_completed

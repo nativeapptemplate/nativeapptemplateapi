@@ -166,6 +166,44 @@ class ItemTagTest < ActiveSupport::TestCase
     end
   end
 
+  test "complete_by! records who completed it and notifies once" do
+    ActsAsTenant.with_tenant(@account) do
+      other = shopkeepers(:two)
+      AccountsShopkeeper.create!(account: @account, shopkeeper: other, roles: {member: true})
+      item_tag = @shop.item_tags.first
+
+      assert_difference -> { Noticed::Event.count }, 1 do
+        item_tag.complete_by!(@shopkeeper)
+      end
+
+      item_tag.reload
+      assert item_tag.completed?
+      assert_equal @shopkeeper, item_tag.completed_by
+      assert_not_nil item_tag.completed_at
+    end
+  end
+
+  # Two taps on "complete" arrive as two requests that both loaded the tag
+  # while it was still idled. The second must see the first's commit.
+  test "complete_by! on a stale copy does not complete or notify again" do
+    ActsAsTenant.with_tenant(@account) do
+      other = shopkeepers(:two)
+      AccountsShopkeeper.create!(account: @account, shopkeeper: other, roles: {member: true})
+      first_tap = @shop.item_tags.first
+      second_tap = ItemTag.find(first_tap.id)
+      assert second_tap.idled?
+
+      first_tap.complete_by!(@shopkeeper)
+
+      assert_no_difference -> { Noticed::Event.count } do
+        second_tap.complete_by!(other)
+      end
+
+      assert_equal @shopkeeper, first_tap.reload.completed_by
+      assert second_tap.completed?, "the stale copy should reflect the committed state"
+    end
+  end
+
   test "idle! does not fire ItemTagNotifier" do
     ActsAsTenant.with_tenant(@account) do
       item_tag = @shop.item_tags.first
