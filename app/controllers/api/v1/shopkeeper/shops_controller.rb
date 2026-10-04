@@ -15,7 +15,7 @@ class Api::V1::Shopkeeper::ShopsController < Api::V1::Shopkeeper::BaseController
       created_shops_count: created_shops_count
     }
 
-    shops = current_shopkeeper.shops.order(name: :asc)
+    shops = current_shopkeeper.shops.order(name: :asc).includes(:item_tags)
     render json: ShopSerializer.new(shops, options).serializable_hash
   end
 
