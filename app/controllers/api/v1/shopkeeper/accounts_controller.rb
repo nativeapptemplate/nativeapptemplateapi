@@ -72,7 +72,7 @@ class Api::V1::Shopkeeper::AccountsController < Api::V1::Shopkeeper::BaseControl
     authorize @account
 
     ActsAsTenant.without_tenant do
-      @account.destroy
+      @account.destroy!
     end
 
     render json: {status: 200}, status: :ok

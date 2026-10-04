@@ -9,6 +9,7 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
   after_action :verify_authorized
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+  rescue_from ActiveRecord::RecordNotDestroyed, with: :record_not_destroyed
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -40,6 +41,12 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   def record_not_found
     render_error(code: 404, message: I18n.t("not_found"), status: :not_found)
+  end
+
+  # destroy! raises this when a before_destroy callback halts the destroy
+  def record_not_destroyed(error)
+    message = error.record.errors.full_messages.to_sentence.presence || I18n.t("not_destroyed")
+    render_error(code: 422, message: message, status: :unprocessable_entity)
   end
 
   def parameter_missing

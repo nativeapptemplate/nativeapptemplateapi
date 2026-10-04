@@ -37,6 +37,7 @@ en:
   confirm_new_password: "Confirm new password"
   new_password: "New password"
   bad_request: "Bad request."
+  not_destroyed: "Could not be deleted."
   not_found: "Not found."
   something_went_wrong: "Something went wrong"
   unauthorized: "You are not authorized to perform this action."

@@ -29,7 +29,7 @@ class Api::V1::Shopkeeper::DevicesController < Api::V1::Shopkeeper::BaseControll
   def destroy
     authorize @device
 
-    @device.destroy
+    @device.destroy!
     head :no_content
   end
 
