@@ -187,3 +187,12 @@ bin/rails test
 ## Testing Policy
 
 Create test passing all of path including unhappy path. Creating and updating that test is must.
+
+- **Fix bugs test-first. No exceptions.** Write a test that reproduces the bug before fixing it. Every fix commit includes that reproducing test.
+- **Record where each expected value comes from, in the code.** Cite the relevant part of the spec, a hand calculation, or a known oracle. Never take whatever the implementation outputs and paste it in as the expected value.
+
+      # floor(10000 * 31 / 71) = 4366   ← state the basis like this
+
+- **See it fail at least once before calling it done.** For every new test — especially guards and configuration — deliberately break the code under test and confirm the test fails. A test that can't fail verifies nothing.
+- **Passing tests alone don't mean done.** Actually start the app and exercise the change.
+- **Put the implementation and its tests in the same commit.** "I'll write the tests later" never happens.
