@@ -62,7 +62,6 @@ class AccountsInvitation < ApplicationRecord
   end
 
   def random_token
-    random_seed = "0123456789"
-    Array.new(6) { random_seed.chars.sample }.join
+    format("%06d", SecureRandom.random_number(1_000_000))
   end
 end
