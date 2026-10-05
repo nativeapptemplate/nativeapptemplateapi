@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Apply Solid Queue 1.7's batch migrations (`db/queue_migrate`): adds `solid_queue_jobs.batch_id`, `solid_queue_batches` and `solid_queue_batch_executions`, which removes the boot warning about pending migrations required after Solid Queue 2.0 (#139)
 - Align `bin/ci` with GitHub CI: `bin/ci` now runs `erb_lint`, GitHub CI now runs the `db:seed_fu` smoke test, and the CI Postgres service is pinned to `postgres:18` (#137)
 - Fix `/madmin/jobs` answering 401 to signed-in admins: Mission Control's HTTP Basic auth was disabled in `config/initializers`, which runs after the engine copies its config, so it never took effect. The setting now lives in `config/application.rb`. Add tests for `AccountMiddleware` (account prefix, unknown ids, non-members get 401) and `AdminConstraint` (#136)
 - Fix `POST /devices` returning 500 when two first-time registrations of the same token race: retry once and update the row the other request created (#135)
