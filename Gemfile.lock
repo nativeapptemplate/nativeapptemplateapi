@@ -123,7 +123,7 @@ GEM
       rexml
     crass (1.0.7)
     csv (3.3.6)
-    date (3.5.1)
+    date (3.6.0)
     debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -212,7 +212,7 @@ GEM
     loofah (2.25.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    madmin (3.2.0)
+    madmin (3.3.0)
       importmap-rails
       rails (>= 7.0.0)
       stimulus-rails
@@ -292,7 +292,7 @@ GEM
     pg (1.7.0-x86_64-linux)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
+    prettyprint (0.2.1)
     prism (1.9.0)
     propshaft (1.3.2)
       actionpack (>= 7.0.0)
@@ -443,7 +443,7 @@ GEM
     unicode-display_width (3.3.0)
       unicode-emoji (~> 4.3)
     unicode-emoji (4.3.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     valid_email2 (7.1.0)
       activemodel (>= 6.0)
@@ -488,7 +488,7 @@ DEPENDENCIES
   image_processing (~> 2.0)
   importmap-rails
   jsonapi-serializer
-  madmin (~> 3.1)
+  madmin (~> 3.3)
   mailbin
   minitest-mock
   mission_control-jobs
