@@ -3,11 +3,11 @@ class ErrorsController < NonApiApplicationController
   API_PATH = %r{\A/api/}
 
   def not_found
-    render_error(404, "Not found.")
+    render_error(404, t("not_found"))
   end
 
   def internal_server_error
-    render_error(500, "Internal server error.")
+    render_error(500, t("internal_server_error"))
   end
 
   private

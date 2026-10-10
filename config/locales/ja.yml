@@ -1,0 +1,183 @@
+# Japanese for the app's own messages. Keep the keys in step with en.yml:
+# test/i18n/locale_files_test.rb fails when a key is missing here.
+#
+# Rails' validation messages are in rails.ja.yml and Devise's in devise.ja.yml.
+# devise_token_auth ships its own ja.yml; the keys below override it where
+# en.yml overrides the English.
+
+ja:
+  hello_email: "%{email} 様"
+  welcome_email: "%{email} 様、ようこそ。"
+  change_my_password: "パスワードを変更する"
+  change_your_password: "パスワードの変更"
+  confirm_new_password: "新しいパスワード（確認）"
+  new_password: "新しいパスワード"
+  bad_request: "リクエストが正しくありません。"
+  not_destroyed: "削除できませんでした。"
+  not_found: "見つかりませんでした。"
+  something_went_wrong: "問題が発生しました"
+  internal_server_error: "サーバーでエラーが発生しました。"
+  unauthorized: "この操作を行う権限がありません。"
+  default_shop_description: "これはサンプルのショップです。\n編集や削除ができます。"
+
+  sample_item_tag:
+    name: "サンプル"
+    description: "これはサンプルです。編集や削除ができます。"
+
+  error_pages:
+    not_found:
+      title: "ページが見つかりません"
+      message: "お探しのページは見つかりませんでした。"
+    internal_server_error:
+      title: "サーバーエラー"
+      message: "ページの読み込み中に問題が発生しました。"
+
+  notifiers:
+    item_tag:
+      title: "%{shop}"
+      body: "%{name}"
+
+  api:
+    shopkeeper:
+      accounts:
+        personal:
+          cannot_delete: "個人の組織は削除できません。"
+      accounts_invitations:
+        not_found: "招待が見つかりませんでした。組織の管理者に新しい招待を依頼してください。"
+        expired: "この招待は有効期限が切れています。組織の管理者に招待の再送を依頼してください。"
+      accounts_shopkeepers:
+        require_non_personal_account: "個人の組織では利用できません。"
+      item_tags:
+        not_found: "アイテムタグが見つかりませんでした。"
+
+  shopkeeper:
+    notification_mailer:
+      invited:
+        subject: "%{inviter}さんから%{account}への招待が届いています"
+        header_html: "%{inviter}さんが<strong>%{account}</strong>にあなたを招待しました。"
+        you_can_accept_or_decline: "この招待は承認することも、辞退することもできます。"
+        enter_your_invitation_code_in_the_mobile_app_html: "モバイルアプリ<strong>%{mobile_app}</strong>で、下記の招待コードを入力してください。"
+        instructions: "手順"
+        open_mobile_app_html: "<strong>%{mobile_app}</strong>を開きます。"
+        create_account_or_sign_in_with_html: "<strong>%{email}</strong>でアカウントを作成するか、サインインします。"
+        select_organization_tab: "「組織」タブを選びます。"
+        tap_join_button: "「参加」ボタンをタップします。"
+        enter_your_invitation_code: "下記の招待コードを入力します。"
+        if_you_accepted_invitation_switch_to_organization: "招待を承認したら、その組織に切り替えます（組織 > [組織名] > 切り替え）。"
+        expires_in: "この招待の有効期限は%{expires_in}時間です。"
+      reset_password_instructions:
+        subject: "パスワード再設定のご案内"
+        request_reset_link_msg: "パスワード変更のリクエストを受け付けました。下記のリンクからパスワードを変更できます。"
+        password_change_link: "パスワードを変更する"
+        ignore_mail_msg: "このリクエストに心当たりがない場合は、このメールを無視してください。"
+        no_changes_msg: "上記のリンクから新しいパスワードを設定するまで、パスワードは変わりません。"
+      confirmation_instructions:
+        subject: "メールアドレス確認のご案内"
+        confirm_link_msg: "下記のリンクから、アカウントのメールアドレスを確認できます。"
+        confirm_account_link: "メールアドレスを確認する"
+
+  devise_token_auth:
+    sessions:
+      not_confirmed: "'%{email}' に確認メールを送信しました。アカウントを有効にするには、メールの案内に従ってください。"
+      bad_credentials: "メールアドレスまたはパスワードが正しくありません。もう一度お試しください。"
+      user_not_found: "ユーザーが見つからないか、サインインしていません。"
+    passwords:
+      missing_email: "メールアドレスを入力してください。"
+      missing_redirect_url: "リダイレクト URL が指定されていません。"
+      not_allowed_redirect_url: "'%{redirect_url}' へのリダイレクトは許可されていません。"
+      sended: "'%{email}' にパスワード再設定の案内を送信しました。"
+      sended_paranoid: "メールアドレスが登録されている場合、数分以内にパスワード再設定用のリンクをお送りします。"
+      user_not_found: "メールアドレス '%{email}' のユーザーが見つかりません。"
+      missing_passwords: "「パスワード」と「パスワード（確認）」を入力してください。"
+      successfully_updated: "パスワードを更新しました。"
+    confirmations:
+      successfully_confirmed: "メールアドレスを確認しました。"
+
+  layouts:
+    mailer:
+      copyright_html: "&copy; %{year} %{business_name} All rights reserved."
+
+  activerecord:
+    models:
+      account: "組織"
+      accounts_invitation: "招待"
+      accounts_shopkeeper: "メンバー"
+      application_push_device: "デバイス"
+      item_tag: "アイテムタグ"
+      shop: "ショップ"
+      shopkeeper: "ユーザー"
+
+    attributes:
+      account:
+        name: "組織名"
+        owner: "オーナー"
+      accounts_invitation:
+        account: "組織"
+        email: "メールアドレス"
+        invited_by: "招待者"
+        name: "名前"
+        roles: "権限"
+      accounts_shopkeeper:
+        account: "組織"
+        admin: "管理者"
+        member: "メンバー"
+        roles: "権限"
+        shopkeeper: "ユーザー"
+        shopkeeper_id: "ユーザー"
+      application_push_device:
+        bundle_id: "バンドル ID"
+        owner: "所有者"
+        platform: "プラットフォーム"
+        token: "トークン"
+      item_tag:
+        name: "名前"
+        description: "説明"
+        position: "表示順"
+        shop: "ショップ"
+      shop:
+        created_by: "作成者"
+        description: "説明"
+        name: "店舗名"
+        time_zone: "タイムゾーン"
+      shopkeeper:
+        current_password: "現在のパスワード"
+        current_platform: "プラットフォーム"
+        email: "メールアドレス"
+        name: "名前"
+        password: "パスワード"
+        password_confirmation: "パスワード（確認）"
+        time_zone: "タイムゾーン"
+        unconfirmed_email: "確認待ちのメールアドレス"
+
+    errors:
+      models:
+        account:
+          attributes:
+            organizations:
+              limit_count: "は%{limit_count}件まで作成できます。"
+        accounts_invitation:
+          attributes:
+            email:
+              invited: "はすでに招待されています"
+        accounts_shopkeeper:
+          attributes:
+            admin:
+              cannot_be_removed: "の権限は組織のオーナーから外せません"
+        shopkeeper:
+          attributes:
+            # spam protection
+            current_platform:
+              format: "%{message}"
+              blank: "入力データが正しくありません。"
+
+  errors:
+    messages:
+      validate_sign_up_params: "リクエストボディに正しい新規登録データを指定してください。"
+      validate_account_update_params: "リクエストボディに正しいアカウント更新データを指定してください。"
+      limit_count_account: "組織は%{limit_count}件まで作成できます。"
+      limit_count_shop: "ショップはすべての組織で合わせて%{limit_count}件まで作成できます。"
+      limit_count_accounts_shopkeeper: "組織のメンバーは%{limit_count}人まで追加できます。組織の管理者またはオーナーにお問い合わせください。"
+      limit_count_item_tag: "アイテムタグは%{limit_count}件まで作成できます。"
+      too_many_signups: "新規登録の試行回数が多すぎます。しばらくしてからもう一度お試しください。"
+      too_many_logins: "サインインの試行回数が多すぎます。しばらくしてからもう一度お試しください。"
+      too_many_requests: "リクエストが多すぎます。しばらくしてからもう一度お試しください。"

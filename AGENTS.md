@@ -103,7 +103,14 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (540 tests, 1342 assertions)
+- Run tests: `bin/rails test` (561 tests, 1398 assertions)
+
+### Internationalization
+- Responses are in English (default) or Japanese, picked per request from `Accept-Language` by the `SetLocale` concern (included in `ApplicationController` and `NonApiApplicationController`). It wraps `process_action`, not `around_action`, so `rescue_from` handlers and `rate_limit` responses are localized too. Mails queued during a request keep its locale (Active Job stores it).
+- iOS sends `Accept-Language` from the device's preferred languages automatically; an Android client must add it (e.g. an OkHttp interceptor), or it gets English.
+- Locale files: `config/locales/en.yml` / `ja.yml` (app messages and attribute names), `rails.ja.yml` (Active Model/Record validation messages), `devise.ja.yml`. devise_token_auth ships its own `ja.yml`. No `rails-i18n` or `devise-i18n` gem.
+- When you add or change a key in `en.yml`, add it to `ja.yml`: `test/i18n/locale_files_test.rb` fails on any missing Japanese key or Japanese-only `%{variable}`.
+- User-facing text belongs in the locale files, not in Ruby or views (model defaults such as the sample item tag included). The admin area (`/madmin`, `/admin_auth`) stays English.
 
 ### Development Server Configuration
 - `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.

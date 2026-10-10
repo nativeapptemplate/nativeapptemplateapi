@@ -30,8 +30,8 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "hello"
-  welcome: "welcome"
+  hello_email: "Hello %{email}!"
+  welcome_email: "Welcome %{email}!"
   change_my_password: "Change my password"
   change_your_password: "Change your password"
   confirm_new_password: "Confirm new password"
@@ -40,8 +40,21 @@ en:
   not_destroyed: "Could not be deleted."
   not_found: "Not found."
   something_went_wrong: "Something went wrong"
+  internal_server_error: "Internal server error."
   unauthorized: "You are not authorized to perform this action."
   default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
+
+  sample_item_tag:
+    name: "Sample"
+    description: "This is a sample. You can update or delete it."
+
+  error_pages:
+    not_found:
+      title: "Page not found"
+      message: "Sorry, we couldn’t find the page you’re looking for."
+    internal_server_error:
+      title: "Internal server error"
+      message: "Sorry, we had a problem loading this page."
 
   notifiers:
     item_tag:

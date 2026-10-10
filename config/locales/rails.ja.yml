@@ -1,0 +1,51 @@
+# Japanese for the Active Model and Active Record messages (their en.yml ships
+# with Rails). Attribute names live in ja.yml. A full message joins the two with
+# no space: "店舗名" + "を入力してください".
+#
+# Pluralized messages keep both "one" and "other": the default I18n
+# pluralization looks up "one" when count is 1.
+
+ja:
+  errors:
+    format: "%{attribute}%{message}"
+    messages:
+      model_invalid: "バリデーションに失敗しました: %{errors}"
+      inclusion: "は一覧にありません"
+      exclusion: "は予約されています"
+      invalid: "は不正な値です"
+      confirmation: "と%{attribute}の入力が一致しません"
+      accepted: "を受諾してください"
+      empty: "を入力してください"
+      blank: "を入力してください"
+      present: "は入力しないでください"
+      too_long:
+        one: "は%{count}文字以内で入力してください"
+        other: "は%{count}文字以内で入力してください"
+      password_too_long: "が長すぎます"
+      too_short:
+        one: "は%{count}文字以上で入力してください"
+        other: "は%{count}文字以上で入力してください"
+      wrong_length:
+        one: "は%{count}文字で入力してください"
+        other: "は%{count}文字で入力してください"
+      not_a_number: "は数値で入力してください"
+      not_an_integer: "は整数で入力してください"
+      greater_than: "は%{count}より大きい値にしてください"
+      greater_than_or_equal_to: "は%{count}以上の値にしてください"
+      equal_to: "は%{count}にしてください"
+      less_than: "は%{count}より小さい値にしてください"
+      less_than_or_equal_to: "は%{count}以下の値にしてください"
+      other_than: "は%{count}以外の値にしてください"
+      in: "は%{count}の範囲で指定してください"
+      odd: "は奇数にしてください"
+      even: "は偶数にしてください"
+      required: "を入力してください"
+      taken: "はすでに存在します"
+
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "%{record}が存在するため削除できません"
+          has_many: "%{record}が存在するため削除できません"

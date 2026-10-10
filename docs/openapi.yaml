@@ -1,7 +1,10 @@
 openapi: 3.1.0
 info:
   title: NativeAppTemplate API
-  description: REST API for multi-tenant SaaS backend serving NativeAppTemplate iOS/Android mobile applications. Shopkeepers authenticate via token-based auth to manage shops and item tags.
+  description: |
+    REST API for multi-tenant SaaS backend serving NativeAppTemplate iOS/Android mobile applications. Shopkeepers authenticate via token-based auth to manage shops and item tags.
+
+    Messages (`error_message`, validation errors, emails) are in English or Japanese, chosen from the `Accept-Language` request header (e.g. `ja-JP, en-JP;q=0.9`). Unsupported or missing languages get English. Emails sent because of a request use that request's language.
   version: 1.0.0
 
 servers:
