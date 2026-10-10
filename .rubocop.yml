@@ -1126,9 +1126,6 @@ Style/Documentation:
 Style/DocumentationMethod:
   Enabled: false
 
-Style/DoubleCopDisableDirective:
-  Enabled: false
-
 Style/DoubleNegation:
   Enabled: false
 

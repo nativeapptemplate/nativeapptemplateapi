@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Fix a failed sign-in saving the `source` header as `current_platform`: anyone knowing an email could set it to any string, after which that shopkeeper's profile updates returned 422. Only successful sign-ins write it, and only `ios` or `android`. Fix resending an invitation whose inviter was deleted (the mail job raised on `nil.name`); the mail names the app instead. Rename `.erb-lint.yml` to `.erb_lint.yml` and drop a removed RuboCop cop from `.rubocop.yml` (#149)
 - Deploy with Kamal 2 to GitHub Container Registry instead of Render: add `Dockerfile`, `.dockerignore`, `config/deploy.yml` (kamal-proxy serving a Cloudflare Origin Certificate with `forward_headers: true` and `ssl_redirect: false`, Postgres 18 as the `db` accessory on the private Docker network, Solid Queue in Puma, Active Storage volume, amd64 builder), `.kamal/secrets`, `bin/kamal` and `bin/thrust`. Add the missing `GET /up` health check route and `assume_ssl = true` so kamal-proxy's health check passes. Add Cloudflare's ranges to `trusted_proxies` (`config/cloudflare_ips.yml`) so `rate_limit` keys on the caller rather than the edge. Remove `render.yaml`, `bin/render-*.sh` and the staging environment, which only served Render PR previews. New tests: `test/config/deploy_config_test.rb`, `test/integration/health_check_test.rb`, `test/integration/trusted_proxies_test.rb` (#144)
 - Point the `SOLID_QUEUE_IN_PUMA` comment in `.env.sample` at `config/deploy.yml`; it still referred to the removed `render.yaml` (#147)
 - Require `devise_token_auth ~> 1.3` in the Gemfile (the lockfile already resolved 1.3.0) so `bundle update` cannot step back to 1.2.x (#142)
@@ -23,7 +24,7 @@
 - API change: members and invitations must have at least one role (422 "Roles can't be blank"). A role-less member made `GET /permissions` raise (#121)
 - API change: password reset and confirmation `redirect_url` must be on the API's own host. Other hosts get 422 for resets and fall back to the default page for confirmations (#120)
 - Harden admin sign-in: rate limit by IP and email, `reset_session` on sign-in and sign-out, and Madmin now rejects a deleted admin's session (#119)
-- AGENTS.md: correct the CORS and test-worker notes, and keep the test count current (#118, #127, #132, #147)
+- AGENTS.md: correct the CORS and test-worker notes, and keep the test count current (#118, #127, #132, #147, #149)
 - Clear finished Solid Queue jobs every hour via `config/recurring.yml` (#117)
 - API change: `item_tags#update` no longer accepts `state`. Completion goes through the `complete`/`idle` events, and an unknown state no longer returns 500 (#116)
 - API change: API errors are always JSON `{code, error_message}`, including missing records (404), missing parameters (400), unknown API routes and 500s; before, they were HTML unless the request sent a JSON Content-Type (#115)
