@@ -1,0 +1,67 @@
+# Japanese for Devise's own messages (Devise ships only en.yml). Most API
+# responses use devise_token_auth's keys instead; these still reach clients,
+# e.g. devise.failure.unauthenticated on a request without a valid token.
+
+ja:
+  devise:
+    confirmations:
+      confirmed: "メールアドレスを確認しました。"
+      send_instructions: "メールアドレスの確認方法を記載したメールを、数分以内にお送りします。"
+      send_paranoid_instructions: "メールアドレスが登録されている場合、メールアドレスの確認方法を記載したメールを数分以内にお送りします。"
+    failure:
+      already_authenticated: "すでにサインインしています。"
+      inactive: "アカウントがまだ有効になっていません。"
+      invalid: "%{authentication_keys}またはパスワードが正しくありません。"
+      locked: "アカウントはロックされています。"
+      last_attempt: "あと1回失敗すると、アカウントがロックされます。"
+      not_found_in_database: "%{authentication_keys}またはパスワードが正しくありません。"
+      timeout: "セッションの有効期限が切れました。もう一度サインインしてください。"
+      unauthenticated: "サインインまたは新規登録してから続けてください。"
+      unconfirmed: "メールアドレスを確認してから続けてください。"
+    mailer:
+      confirmation_instructions:
+        subject: "メールアドレス確認のご案内"
+      reset_password_instructions:
+        subject: "パスワード再設定のご案内"
+      unlock_instructions:
+        subject: "アカウントのロック解除のご案内"
+      email_changed:
+        subject: "メールアドレス変更のお知らせ"
+      password_change:
+        subject: "パスワード変更のお知らせ"
+    omniauth_callbacks:
+      failure: "%{kind} での認証に失敗しました。理由: \"%{reason}\""
+      success: "%{kind} アカウントで認証しました。"
+    passwords:
+      no_token: "このページには、パスワード再設定メールのリンクからのみアクセスできます。メールのリンクから来た場合は、URL 全体を使っているか確認してください。"
+      send_instructions: "パスワードの再設定方法を記載したメールを、数分以内にお送りします。"
+      send_paranoid_instructions: "メールアドレスが登録されている場合、パスワード再設定用のリンクを数分以内にお送りします。"
+      updated: "パスワードを変更しました。サインインしました。"
+      updated_not_active: "パスワードを変更しました。"
+    registrations:
+      destroyed: "アカウントを削除しました。ご利用ありがとうございました。"
+      signed_up: "新規登録が完了しました。"
+      signed_up_but_inactive: "新規登録が完了しました。ただし、アカウントが有効になっていないため、サインインできませんでした。"
+      signed_up_but_locked: "新規登録が完了しました。ただし、アカウントがロックされているため、サインインできませんでした。"
+      signed_up_but_unconfirmed: "確認用のリンクを記載したメールを送信しました。リンクを開いてアカウントを有効にしてください。"
+      update_needs_confirmation: "アカウントを更新しました。新しいメールアドレスの確認が必要です。メールに記載された確認用のリンクを開いてください。"
+      updated: "アカウントを更新しました。"
+      updated_but_not_signed_in: "アカウントを更新しました。パスワードが変わったため、もう一度サインインしてください。"
+    sessions:
+      signed_in: "サインインしました。"
+      signed_out: "サインアウトしました。"
+      already_signed_out: "サインアウトしました。"
+    unlocks:
+      send_instructions: "アカウントのロック解除方法を記載したメールを、数分以内にお送りします。"
+      send_paranoid_instructions: "アカウントが存在する場合、ロック解除方法を記載したメールを数分以内にお送りします。"
+      unlocked: "アカウントのロックを解除しました。続けるにはサインインしてください。"
+  errors:
+    messages:
+      already_confirmed: "はすでに確認済みです。サインインしてください"
+      confirmation_period_expired: "の確認期限（%{period}）が過ぎました。もう一度リクエストしてください"
+      expired: "の有効期限が切れました。もう一度リクエストしてください"
+      not_found: "が見つかりません"
+      not_locked: "はロックされていません"
+      not_saved:
+        one: "エラーが%{count}件あるため、%{resource}を保存できませんでした："
+        other: "エラーが%{count}件あるため、%{resource}を保存できませんでした："

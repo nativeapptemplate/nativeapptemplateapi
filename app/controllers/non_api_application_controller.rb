@@ -1,4 +1,6 @@
 class NonApiApplicationController < ActionController::Base
+  include SetLocale
+
   allow_browser versions: :modern
   protect_from_forgery with: :exception
 

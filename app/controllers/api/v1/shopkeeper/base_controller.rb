@@ -6,6 +6,7 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
   include Pagination
 
   before_action :authenticate_shopkeeper!
+  before_action -> { use_locale_of(current_shopkeeper) }
   after_action :verify_authorized
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found

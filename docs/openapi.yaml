@@ -1,7 +1,10 @@
 openapi: 3.1.0
 info:
   title: NativeAppTemplate API
-  description: REST API for multi-tenant SaaS backend serving NativeAppTemplate iOS/Android mobile applications. Shopkeepers authenticate via token-based auth to manage shops and item tags.
+  description: |
+    REST API for multi-tenant SaaS backend serving NativeAppTemplate iOS/Android mobile applications. Shopkeepers authenticate via token-based auth to manage shops and item tags.
+
+    Messages (`error_message`, validation errors, emails) are in English or Japanese. A signed-in shopkeeper gets their stored `locale` (sent at sign-up, changed with `PATCH /shopkeeper_auth`). Other requests use the `Accept-Language` request header (e.g. `ja-JP, en-JP;q=0.9`); unsupported or missing languages get English. Emails to a shopkeeper use their `locale`; an invitation to an email with no account uses the inviter's.
   version: 1.0.0
 
 servers:
@@ -604,6 +607,10 @@ components:
         current_platform:
           type: string
           enum: [ios, android]
+        locale:
+          type: string
+          description: The device's language (`ja`, `ja-JP`, `en`...). A language the API does not offer, or none, falls back to the `Accept-Language` header, then English.
+          example: ja
 
     SignInRequest:
       type: object
@@ -625,6 +632,10 @@ components:
           format: email
         time_zone:
           type: string
+        locale:
+          type: string
+          enum: [en, ja]
+          description: Any other value gets 422.
 
     ConfirmationRequest:
       type: object

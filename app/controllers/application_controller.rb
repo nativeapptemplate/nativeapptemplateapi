@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  include SetLocale
+
   # Per-IP cap on every API and auth request, shared with the HTML pages
   # through the scope. Sign-in, sign-up and invitation lookups add tighter
   # limits of their own.

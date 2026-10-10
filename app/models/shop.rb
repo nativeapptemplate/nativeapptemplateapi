@@ -17,8 +17,8 @@ class Shop < ApplicationRecord
   def create_sample_item_tag
     item_tags.create!(
       account: account,
-      name: "Sample",
-      description: "This is a sample. You can update or delete it.",
+      name: I18n.t("sample_item_tag.name"),
+      description: I18n.t("sample_item_tag.description"),
       position: 1,
       created_by: created_by
     )

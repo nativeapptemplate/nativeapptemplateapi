@@ -32,7 +32,7 @@ module Nativeapptemplateapi
     config.i18n.load_path += Dir[Rails.root.join("config/locales/**/*.{rb,yml}")]
 
     # Permitted locales available for the application
-    config.i18n.available_locales = [:en]
+    config.i18n.available_locales = [:en, :ja]
 
     # Set default locale
     config.i18n.default_locale = :en

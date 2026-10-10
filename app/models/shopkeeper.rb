@@ -29,6 +29,8 @@ class Shopkeeper < ApplicationRecord
     presence: true,
     inclusion: {in: CURRENT_PLATFORMS}
 
+  validates :locale, inclusion: {in: ->(_) { I18n.available_locales.map(&:to_s) }}
+
   # override devise method to include additional info as opts hash
   def send_confirmation_instructions(opts = {})
     generate_confirmation_token! unless @raw_confirmation_token
@@ -38,7 +40,9 @@ class Shopkeeper < ApplicationRecord
     opts[:to] = unconfirmed_email if pending_reconfirmation?
     opts[:redirect_url] ||= DeviseTokenAuth.default_confirm_success_url
 
-    Shopkeeper::NotificationMailer.with(resource: self, token: @raw_confirmation_token, opts: opts).confirmation_instructions.deliver_later
+    I18n.with_locale(locale) do
+      Shopkeeper::NotificationMailer.with(resource: self, token: @raw_confirmation_token, opts: opts).confirmation_instructions.deliver_later
+    end
   end
 
   # override devise method to include additional info as opts hash
@@ -48,7 +52,9 @@ class Shopkeeper < ApplicationRecord
     # fall back to "default" config name
     opts[:client_config] ||= "default"
 
-    Shopkeeper::NotificationMailer.with(resource: self, token: token, opts: opts).reset_password_instructions.deliver_later
+    I18n.with_locale(locale) do
+      Shopkeeper::NotificationMailer.with(resource: self, token: token, opts: opts).reset_password_instructions.deliver_later
+    end
 
     token
   end

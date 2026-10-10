@@ -30,18 +30,33 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "hello"
-  welcome: "welcome"
+  hello_email: "Hello %{email}!"
+  welcome_email: "Welcome %{email}!"
   change_my_password: "Change my password"
   change_your_password: "Change your password"
   confirm_new_password: "Confirm new password"
   new_password: "New password"
+  password_minimum_length: "(%{count} characters minimum)"
+  password_placeholder: "password"
   bad_request: "Bad request."
   not_destroyed: "Could not be deleted."
   not_found: "Not found."
   something_went_wrong: "Something went wrong"
+  internal_server_error: "Internal server error."
   unauthorized: "You are not authorized to perform this action."
   default_shop_description: "This is a sample shop.\nYou can update or remove this shop."
+
+  sample_item_tag:
+    name: "Sample"
+    description: "This is a sample. You can update or delete it."
+
+  error_pages:
+    not_found:
+      title: "Page not found"
+      message: "Sorry, we couldn’t find the page you’re looking for."
+    internal_server_error:
+      title: "Internal server error"
+      message: "Sorry, we had a problem loading this page."
 
   notifiers:
     item_tag:
@@ -68,7 +83,7 @@ en:
         header_html: "%{inviter} has invited you to collaborate on <strong>%{account}</strong>."
         you_can_accept_or_decline: "You can accept or decline this invitation."
         enter_your_invitation_code_in_the_mobile_app_html: "Enter your invitation code in the mobile app <strong>%{mobile_app}</strong> below."
-        instructions: "instructions"
+        instructions_heading: "Instructions:"
         open_mobile_app_html: "Open <strong>%{mobile_app}</strong>."
         create_account_or_sign_in_with_html: "Create account or sign in with <strong>%{email}</strong>."
         select_organization_tab: "Select Organizations tab."
@@ -117,6 +132,8 @@ en:
       accounts_shopkeeper:
         shopkeeper: "User"
         shopkeeper_id: "User"
+      shopkeeper:
+        locale: "Language"
 
     errors:
       models:
@@ -132,12 +149,15 @@ en:
           attributes:
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
+            shopkeeper_id:
+              taken: "is already a member of this organization"
         shopkeeper:
           attributes:
             # spam protection
             current_platform:
               format: "%{message}"
-              blank: "Your input data is wrong."         
+              blank: "Your input data is wrong."
+              inclusion: "Your input data is wrong."         
   errors:
     messages:
       validate_sign_up_params: "Please submit proper sign up data in request body."

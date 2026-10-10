@@ -6,13 +6,22 @@ class ShopkeeperAuth::RegistrationsController < DeviseTokenAuth::RegistrationsCo
     }
 
   before_action :set_confirm_success_url, only: %i[create]
-  before_action :configure_permitted_parameters
+  prepend_before_action :configure_permitted_parameters
+  # devise_token_auth's set_user_by_token runs first and sets @resource
+  before_action -> { use_locale_of(@resource) }, only: %i[update destroy]
 
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[name email password time_zone current_platform])
-    devise_parameter_sanitizer.permit(:account_update, keys: %i[name email time_zone])
+    devise_parameter_sanitizer.permit(:account_update, keys: %i[name email time_zone locale])
+  end
+
+  # The app sends the device's language. Without one the app supports, the
+  # shopkeeper gets the request's language rather than a failed sign-up.
+  def build_resource
+    super
+    @resource.locale = supported_locale(params[:locale]) || I18n.locale
   end
 
   def render_create_success

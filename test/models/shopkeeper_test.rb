@@ -51,7 +51,8 @@ class ShopkeeperTest < ActiveSupport::TestCase
       current_platform: "windows"
     )
     assert_not shopkeeper.valid?
-    assert_includes shopkeeper.errors[:current_platform], "is not included in the list"
+    # Same message as blank (en.yml): current_platform errors are spam protection
+    assert_includes shopkeeper.errors[:current_platform], "Your input data is wrong."
   end
 
   test "should accept ios as current_platform" do
@@ -64,6 +65,24 @@ class ShopkeeperTest < ActiveSupport::TestCase
     shopkeeper = shopkeepers(:one)
     shopkeeper.current_platform = "android"
     assert shopkeeper.valid?
+  end
+
+  # config.i18n.available_locales is [:en, :ja]
+  test "should accept every available locale" do
+    shopkeeper = shopkeepers(:one)
+    %w[en ja].each do |locale|
+      shopkeeper.locale = locale
+      assert shopkeeper.valid?, locale
+    end
+  end
+
+  test "should reject a locale the app does not offer" do
+    shopkeeper = shopkeepers(:one)
+    ["fr", "ja-JP", ""].each do |locale|
+      shopkeeper.locale = locale
+      assert_not shopkeeper.valid?, locale
+      assert_includes shopkeeper.errors[:locale], "is not included in the list"
+    end
   end
 
   test "should have many shops through accounts" do
