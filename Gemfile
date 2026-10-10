@@ -38,7 +38,7 @@ gem "image_processing", "~> 2.0"
 # is Active Storage's default variant processor, so require it explicitly.
 gem "ruby-vips"
 
-gem "devise_token_auth", "~> 1.2", ">= 1.2.6"
+gem "devise_token_auth", "~> 1.3"
 gem "jsonapi-serializer"
 gem "pundit"
 gem "aasm"
