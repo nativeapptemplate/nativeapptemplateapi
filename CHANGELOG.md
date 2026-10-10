@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Deploy with Kamal 2 to GitHub Container Registry instead of Render: add `Dockerfile`, `.dockerignore`, `config/deploy.yml` (kamal-proxy serving a Cloudflare Origin Certificate with `forward_headers: true` and `ssl_redirect: false`, Postgres 18 as the `db` accessory on the private Docker network, Solid Queue in Puma, Active Storage volume, amd64 builder), `.kamal/secrets`, `bin/kamal` and `bin/thrust`. Add the missing `GET /up` health check route and `assume_ssl = true` so kamal-proxy's health check passes. Add Cloudflare's ranges to `trusted_proxies` (`config/cloudflare_ips.yml`) so `rate_limit` keys on the caller rather than the edge. Remove `render.yaml`, `bin/render-*.sh` and the staging environment, which only served Render PR previews. New tests: `test/config/deploy_config_test.rb`, `test/integration/health_check_test.rb`, `test/integration/trusted_proxies_test.rb` (#144)
 - Require `devise_token_auth ~> 1.3` in the Gemfile (the lockfile already resolved 1.3.0) so `bundle update` cannot step back to 1.2.x (#142)
 - Apply Solid Queue 1.7's batch migrations (`db/queue_migrate`): adds `solid_queue_jobs.batch_id`, `solid_queue_batches` and `solid_queue_batch_executions`, which removes the boot warning about pending migrations required after Solid Queue 2.0 (#139)
 - Align `bin/ci` with GitHub CI: `bin/ci` now runs `erb_lint`, GitHub CI now runs the `db:seed_fu` smoke test, and the CI Postgres service is pinned to `postgres:18` (#137)
