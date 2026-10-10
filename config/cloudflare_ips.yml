@@ -1,0 +1,47 @@
+# Cloudflare's published edge ranges, the proxy in front of this origin.
+#
+# Fetched 2026-10-10 from https://www.cloudflare.com/ips-v4 and
+# https://www.cloudflare.com/ips-v6, verbatim. Re-fetch rather than edit by hand.
+#
+# config/application.rb adds these to config.action_dispatch.trusted_proxies so
+# request.remote_ip resolves past the Cloudflare hop to the caller. Rails'
+# rate_limit keys on remote_ip: without this, every caller behind one edge
+# shares a single bucket (the API answers 429 to people who sent one request),
+# and the sign-in limit stops being brute force protection (an attacker's
+# attempts are spread across edges and never reach the limit).
+#
+# This is half of the fix. proxy.forward_headers: true in config/deploy.yml is
+# the other half: kamal-proxy drops Cloudflare's X-Forwarded-For when ssl: is
+# set, leaving no hop to resolve past. test/integration/trusted_proxies_test.rb
+# asserts both halves.
+#
+# Why a list rather than CF-Connecting-IP: a header is only safe to trust if
+# nothing but Cloudflare can reach the origin, and a request that does arrive
+# directly is then attributed to its own address by this list (RemoteIp drops the
+# trusted hops and keeps the rightmost untrusted one), not to whatever the sender
+# wrote. Note 172.64.0.0/13 (172.64 to 172.71) is outside the private range
+# 172.16.0.0/12 that Rails already trusts.
+v4:
+  - 173.245.48.0/20
+  - 103.21.244.0/22
+  - 103.22.200.0/22
+  - 103.31.4.0/22
+  - 141.101.64.0/18
+  - 108.162.192.0/18
+  - 190.93.240.0/20
+  - 188.114.96.0/20
+  - 197.234.240.0/22
+  - 198.41.128.0/17
+  - 162.158.0.0/15
+  - 104.16.0.0/13
+  - 104.24.0.0/14
+  - 172.64.0.0/13
+  - 131.0.72.0/22
+v6:
+  - 2400:cb00::/32
+  - 2606:4700::/32
+  - 2803:f800::/32
+  - 2405:b500::/32
+  - 2405:8100::/32
+  - 2a06:98c0::/29
+  - 2c0f:f248::/32

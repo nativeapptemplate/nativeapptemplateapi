@@ -45,6 +45,15 @@ module Nativeapptemplateapi
     # https://github.com/heartcombo/devise/issues/4825
     config.wrap_parameters = false
 
+    # Cloudflare fronts the origin, so request.remote_ip must resolve past its
+    # edge to the caller (config/cloudflare_ips.yml explains what reads it and
+    # why: Rails' rate_limit keys on remote_ip). `+`, not `=`: assigning would
+    # drop the loopback and private ranges Rails trusts by default, and
+    # kamal-proxy reaches the container over exactly such an address.
+    config.action_dispatch.trusted_proxies =
+      ActionDispatch::RemoteIp::TRUSTED_PROXIES +
+      YAML.load_file(Rails.root.join("config/cloudflare_ips.yml")).values.flatten.map { |range| IPAddr.new(range) }
+
     require "middleware/account_middleware"
     config.middleware.use AccountMiddleware
 

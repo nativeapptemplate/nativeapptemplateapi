@@ -496,7 +496,7 @@ The Rails API uses a custom fixture system in `db/fixtures/<env>/` (not standard
 
 ### 8.4 What to watch for (common pitfalls)
 
-- Fixture files exist per-environment (`db/fixtures/{development,test,staging,production}/`). Changes must apply to all 4.
+- Fixture files exist per-environment (`db/fixtures/{development,test,production}/`). Changes must apply to all 3.
 - `rolified.rb` concern may hard-code role tags — check before changing roles.
 - Shop model may reference ItemTag via `has_many` and instance methods (`reset!`, `latest_completed_item_tag`, `create_default_item_tags!`). Remove cleanly.
 - `full_reload_entire_page` on Shop uses `turbo_stream` — check all callers before removing.

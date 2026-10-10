@@ -553,7 +553,7 @@ git commit -m "Update madmin resource for new ItemTag schema"
 
 ### 12.1 Edit fixture files
 
-For each environment (`development`, `test`, `staging`, `production`):
+For each environment (`development`, `test`, `production`):
 
 **`db/fixtures/<env>/01_permissions.rb`** — replace with:
 

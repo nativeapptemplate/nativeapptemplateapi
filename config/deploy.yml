@@ -1,0 +1,132 @@
+# Name of your application. Used to uniquely configure containers.
+service: nativeapptemplateapi
+
+# Name of the container image: <GitHub user or org>/<repo>. With the registry
+# below the full name is ghcr.io/nativeapptemplate/nativeapptemplateapi.
+image: nativeapptemplate/nativeapptemplateapi
+
+# Deploy to these servers.
+servers:
+  web:
+    - 192.168.0.1
+  # Jobs run inside Puma (SOLID_QUEUE_IN_PUMA below). When you outgrow one box,
+  # move them to a dedicated host and set SOLID_QUEUE_IN_PUMA: false.
+  # job:
+  #   hosts:
+  #     - 192.168.0.1
+  #   cmd: bin/jobs
+
+# TLS between Cloudflare and this origin uses a Cloudflare Origin Certificate
+# (Cloudflare dashboard: SSL/TLS -> Origin Server -> Create Certificate; set the
+# zone's SSL/TLS mode to "Full (strict)"). It is trusted only by Cloudflare,
+# which is the point: the server's firewall should admit 443 from Cloudflare's
+# ranges only, so nothing else ever reaches this origin. Nothing is validated to
+# issue it and it is valid for up to 15 years, so there is no renewal to break.
+#
+# These settings are per app, not per proxy: several apps on one server each
+# bring their own certificate and kamal-proxy routes by host.
+#
+# Without Cloudflare, use Let's Encrypt instead. It needs port 80 open to the
+# world at issue time and at every 60-day renewal:
+#   proxy:
+#     ssl: true
+#     host: api.nativeapptemplate.com
+proxy:
+  ssl:
+    # Both read from PEM files by .kamal/secrets.
+    certificate_pem: NATIVEAPPTEMPLATEAPI_ORIGIN_CERT
+    private_key_pem: NATIVEAPPTEMPLATEAPI_ORIGIN_KEY
+  host: api.nativeapptemplate.com
+
+  # With ssl set, kamal-proxy stops forwarding X-Forwarded-For unless told to.
+  # Rails' rate_limit keys on request.remote_ip; without this every caller would
+  # look like the Cloudflare edge and share one bucket. config/cloudflare_ips.yml
+  # (trusted_proxies) is the other half: it lets Rails resolve past the edge.
+  forward_headers: true
+
+  # kamal-proxy would otherwise answer every plain-HTTP request with a redirect,
+  # which loops while Cloudflare still reaches the origin over :80 (SSL/TLS mode
+  # "Flexible", or the few :80 requests "Full (strict)" still sends). Rails'
+  # force_ssl redirects on the scheme the visitor used (X-Forwarded-Proto), which
+  # kamal-proxy cannot see.
+  ssl_redirect: false
+
+# Credentials for your image host.
+registry:
+  # GitHub Container Registry.
+  server: ghcr.io
+  username: nativeapptemplate
+
+  # A GitHub Personal Access Token (classic) with the write:packages scope.
+  # Pulled from .kamal/secrets (never hard-code it here).
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  # x86 servers (most VPS plans). From an Apple Silicon Mac this is a QEMU build,
+  # several times slower than native; the Dockerfile's `bootsnap precompile -j 1`
+  # works around a QEMU bug. ARM servers (Hetzner CAX, AWS Graviton) take
+  # `arm64`, which Apple Silicon builds natively.
+  arch: amd64
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+  clear:
+    # Run the Solid Queue supervisor inside Puma, including the recurring tasks in
+    # config/recurring.yml. No separate job container or cron.
+    SOLID_QUEUE_IN_PUMA: true
+
+    # One Puma worker (RAILS_MAX_THREADS threads). Raise it on a box with spare cores.
+    WEB_CONCURRENCY: 1
+
+    # Postgres runs as the "db" accessory below. The app reaches it by container
+    # name ("<service>-<accessory>") over the private "kamal" Docker network, not
+    # the public IP, so the database is never exposed to the internet.
+    # config/database.yml reads this.
+    DB_HOST: nativeapptemplateapi-db
+
+# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
+# "bin/kamal logs -r job" will tail logs from the first server in the job section.
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+# Use a persistent storage volume for local Active Storage files.
+volumes:
+  - "nativeapptemplateapi_storage:/rails/storage"
+
+# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
+# hitting 404 on in-flight requests. Combines all files from new and old
+# version inside the asset_path.
+asset_path: /rails/public/assets
+
+# Use accessory services (secrets come from .kamal/secrets).
+accessories:
+  db:
+    # Same major as the CI service in .github/workflows/ci.yml.
+    image: postgres:18
+    # Same server as the app.
+    host: 192.168.0.1
+    # Publish only on the host's loopback interface, for server-side admin work
+    # (psql, pg_dump). The app does not use this; it connects over the Docker
+    # network (DB_HOST above). Without the 127.0.0.1 prefix Kamal would publish
+    # on 0.0.0.0 and expose Postgres publicly. Pick another host port if several
+    # apps with their own db accessory share one server.
+    port: "127.0.0.1:5432:5432"
+    env:
+      clear:
+        # Must match config/database.yml production: username + primary database.
+        # The cache/queue/cable databases are created by db:prepare on first boot.
+        POSTGRES_USER: nativeapptemplateapi
+        POSTGRES_DB: nativeapptemplateapi_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      # postgres:18 images keep PGDATA under /var/lib/postgresql (not .../data).
+      - data:/var/lib/postgresql

@@ -10,14 +10,12 @@ require "fugit"
 class RecurringTasksTest < ActiveSupport::TestCase
   CONFIG = ActiveSupport::ConfigurationFile.parse(Rails.root.join("config/recurring.yml"))
 
-  %w[production staging].each do |env|
-    test "#{env} clears finished Solid Queue jobs" do
-      options = CONFIG.dig(env, "clear_solid_queue_finished_jobs")
-      assert options, "config/recurring.yml has no clear_solid_queue_finished_jobs task for #{env}"
+  test "production clears finished Solid Queue jobs" do
+    options = CONFIG.dig("production", "clear_solid_queue_finished_jobs")
+    assert options, "config/recurring.yml has no clear_solid_queue_finished_jobs task for production"
 
-      assert_equal "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)", options["command"]
-      assert_includes SolidQueue::Job.method(:clear_finished_in_batches).parameters, [:key, :sleep_between_batches]
-    end
+    assert_equal "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)", options["command"]
+    assert_includes SolidQueue::Job.method(:clear_finished_in_batches).parameters, [:key, :sleep_between_batches]
   end
 
   test "every recurring task has a command and a supported schedule" do
