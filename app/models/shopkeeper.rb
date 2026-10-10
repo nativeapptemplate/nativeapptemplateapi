@@ -1,4 +1,6 @@
 class Shopkeeper < ApplicationRecord
+  CURRENT_PLATFORMS = %w[ios android].freeze
+
   extend Devise::Models
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -25,7 +27,7 @@ class Shopkeeper < ApplicationRecord
 
   validates :current_platform,
     presence: true,
-    inclusion: {in: %w[ios android]}
+    inclusion: {in: CURRENT_PLATFORMS}
 
   # override devise method to include additional info as opts hash
   def send_confirmation_instructions(opts = {})

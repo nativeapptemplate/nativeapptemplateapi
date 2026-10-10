@@ -29,6 +29,25 @@ class Shopkeeper::NotificationMailerTest < ActionMailer::TestCase
     assert_match @account.name, mail.body.encoded
   end
 
+  # Bug: deleting the inviter nullifies invited_by, and resending such an
+  # invitation raised NoMethodError on nil.name inside the mail job. The mail
+  # now names the app instead (config/settings.yml mobile_app.name).
+  test "invited names the app when the inviter has been deleted" do
+    @invitation.update!(invited_by: nil)
+
+    mail = Shopkeeper::NotificationMailer.with(accounts_invitation: @invitation).invited
+
+    expected_subject = I18n.t(
+      "shopkeeper.notification_mailer.invited.subject",
+      inviter: ConfigSettings.mobile_app.name,
+      account: @account.name
+    )
+    assert_equal expected_subject, mail.subject
+    assert_equal [@invitation.email], mail.to
+    assert_match @invitation.token, mail.body.encoded
+    assert_match "#{ConfigSettings.mobile_app.name} has invited you", mail.text_part.body.decoded
+  end
+
   test "confirmation_instructions renders the expected subject, recipient, and body" do
     mail = Shopkeeper::NotificationMailer.with(
       resource: @shopkeeper,

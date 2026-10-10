@@ -15,20 +15,13 @@ class ShopkeeperAuth::SessionsController < DeviseTokenAuth::SessionsController
     if: -> { params[:email].present? },
     with: RENDER_LOGIN_THROTTLED
 
-  def create
-    super
-    return if @resource.blank?
-
-    source = request.headers["source"]
-    return if source.blank?
-
-    @resource.current_platform = source
-    @resource.save!(validate: false)
-  end
-
   protected
 
+  # devise_token_auth calls this only after the password checks out, so a
+  # failed sign-in never writes the platform
   def render_create_success
+    update_current_platform
+
     @resource.token = @token.token
     @resource.client = @token.client
     @resource.expiry = @token.expiry
@@ -51,5 +44,15 @@ class ShopkeeperAuth::SessionsController < DeviseTokenAuth::SessionsController
 
   def render_destroy_error
     render json: {code: 404, error_message: I18n.t("devise_token_auth.sessions.user_not_found")}, status: :not_found
+  end
+
+  private
+
+  # The apps send "ios" or "android"; anything else keeps the stored value
+  def update_current_platform
+    source = request.headers["source"]
+    return unless Shopkeeper::CURRENT_PLATFORMS.include?(source)
+
+    @resource.update_column(:current_platform, source)
   end
 end

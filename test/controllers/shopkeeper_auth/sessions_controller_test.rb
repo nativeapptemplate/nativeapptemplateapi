@@ -53,4 +53,37 @@ class ShopkeeperAuth::SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "ios", shopkeeper.reload.current_platform
   end
+
+  # Bug: devise_token_auth finds the shopkeeper by email before checking the
+  # password, so the source header used to be saved on a failed sign-in too.
+  # Anyone knowing an email could set current_platform to any string, which
+  # then failed the inclusion validation and broke that shopkeeper's updates.
+  test "failed sign-in does not change current_platform" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    shopkeeper.update_column(:current_platform, "ios")
+
+    post shopkeeper_session_url,
+      params: {email: shopkeeper.email, password: "wrong-password"},
+      headers: {source: "android"}
+
+    assert_response :unauthorized
+    assert_equal "ios", shopkeeper.reload.current_platform
+  end
+
+  # Shopkeeper validates current_platform against ios/android
+  # (Shopkeeper::CURRENT_PLATFORMS); a sign-in must not store anything else.
+  test "successful sign-in with an unsupported source header preserves the existing current_platform" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.create_default_account
+    shopkeeper.update_column(:current_platform, "ios")
+
+    post shopkeeper_session_url,
+      params: {email: shopkeeper.email, password: "password"},
+      headers: {source: "hacked"}
+
+    assert_response :success
+    assert_equal "ios", shopkeeper.reload.current_platform
+    assert shopkeeper.valid?, shopkeeper.errors.full_messages.to_sentence
+  end
 end
