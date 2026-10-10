@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # Health check for kamal-proxy (and load balancers): 200 while the app boots
+  # and reaches the database, 500 otherwise. Exempt from host authorization and
+  # request logging in config/environments/production.rb.
+  get "up", to: "rails/health#show", as: :rails_health_check
+
   draw :madmin
 
   require "admin_constraint"

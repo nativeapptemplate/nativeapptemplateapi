@@ -36,8 +36,10 @@ Rails.application.configure do
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  # Can be used together with config.force_ssl for Strict-Transport-Security and secure cookies.
-  # config.assume_ssl = true
+  # kamal-proxy terminates TLS and reaches the container over plain HTTP, so
+  # without this force_ssl would answer every request (including kamal-proxy's
+  # /up health check) with a redirect to https.
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -79,13 +81,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # Render automatically sets RENDER_EXTERNAL_HOSTNAME to the service's hostname
-  # (e.g. nativeapptemplateapi.onrender.com). No manual configuration needed.
-  # APP_HOST is for the custom domain (set in Render env vars).
+  # The API domain is app.domain in config/settings.yml (also proxy.host in
+  # config/deploy.yml). APP_HOST admits one more hostname without a code change,
+  # e.g. while moving domains.
   config.hosts = [
-    ENV["RENDER_EXTERNAL_HOSTNAME"],
+    ConfigSettings.app.domain,
     ENV["APP_HOST"]
-  ].compact
+  ].compact.uniq
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = {exclude: ->(request) { request.path == "/up" }}
 end

@@ -99,6 +99,20 @@ bin/dev
 
 This starts up Overmind running the processes defined in `Procfile.dev`. We've configured this to run the Rails server out of the box.
 
+## Deployment
+
+The API deploys with [Kamal 2](https://kamal-deploy.org) to any Linux server with SSH access: `Dockerfile` builds the image, `config/deploy.yml` describes the server, and images are pushed to GitHub Container Registry (ghcr.io). PostgreSQL runs on the same server as a Kamal accessory, and Solid Queue runs inside Puma, so one small VPS is enough.
+
+1. Edit `config/deploy.yml`: the server IP (`servers` and `accessories.db.host`), `image` and `registry.username` (your GitHub user or org), and `proxy.host` (also `app.domain` in `config/settings.yml`).
+2. Export the secrets `.kamal/secrets` reads: `KAMAL_REGISTRY_PASSWORD` (a GitHub token with `write:packages`) and `NATIVEAPPTEMPLATEAPI_POSTGRES_PASSWORD`. `RAILS_MASTER_KEY` comes from `config/credentials/production.key`.
+3. First deploy:
+
+```bash
+bin/kamal setup
+```
+
+Later deploys are `bin/kamal deploy`; `bin/kamal console`, `bin/kamal logs` and `bin/kamal dbc` are defined as aliases.
+
 ## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on reporting issues, proposing changes, and submitting pull requests.

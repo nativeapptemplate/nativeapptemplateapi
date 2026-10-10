@@ -77,7 +77,7 @@ bin/rails dbconsole           # Database console
 ### Background Processing
 - Solid Queue for background jobs (database-backed, no Redis needed)
 - Solid Cable for Action Cable (database-backed)
-- Solid Cache for caching in production/staging
+- Solid Cache for caching in production
 - Monitor jobs at `/madmin/jobs` (Mission Control)
 
 ### Push Notifications
@@ -88,7 +88,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - **Device registration**: `POST /api/v1/shopkeeper/devices` is idempotent on `(platform, token)` — re-POST updates `last_active_at`; a token bound to another shopkeeper is reassigned.
 - **Notifiers**: subclass `ApplicationNotifier` (`Noticed::Event`). `ItemTagNotifier` fires from the AASM `complete` event. In `deliver_by :action_push_native`, the `with_apple`, `with_google`, and `with_data` options must each return a **Hash** (use `{}` when empty) — passing `nil` raises `TypeError: no implicit conversion of nil into Hash`.
 - **Config & secrets**: `config/push.yml` reads everything from credentials (`bin/rails credentials:edit --environment <env>`) under `action_push_native:apns:{key_id, team_id, topic, encryption_key}` and `action_push_native:fcm:{project_id, encryption_key}`. APNs `encryption_key` is the full `.p8` PEM; FCM `encryption_key` is the entire service-account JSON. `topic` stays in credentials (not source) because the agent's rename pipeline would otherwise desync the bundle id.
-- **APNs sandbox vs production**: `connect_to_development_server: <%= Rails.env.development? %>`. The token's environment is fixed at iOS build time — Xcode debug builds get **sandbox** tokens, TestFlight/App Store get **production**. They must match the server: test Xcode debug builds against a **local development** server; use TestFlight to test against Render. A mismatch returns APNs `400 BadDeviceToken`, which the gem treats as `TokenError` and **destroys the device row** (the default `rescue_from`). FCM has no such split.
+- **APNs sandbox vs production**: `connect_to_development_server: <%= Rails.env.development? %>`. The token's environment is fixed at iOS build time — Xcode debug builds get **sandbox** tokens, TestFlight/App Store get **production**. They must match the server: test Xcode debug builds against a **local development** server; use TestFlight to test against the deployed server. A mismatch returns APNs `400 BadDeviceToken`, which the gem treats as `TokenError` and **destroys the device row** (the default `rescue_from`). FCM has no such split.
 
 ### Testing Strategy
 - Minitest for all tests (models, controllers, integration, policies)
@@ -119,11 +119,11 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - Image processing with Active Storage and `image_processing` gem
 
 ### Deployment
-- **This repo itself is never deployed.** It is the template that apps are generated from, so there is no production environment or production data. Don't weigh changes against deploy risk (migration downtime, existing records); do keep the Render config below correct, because generated apps inherit it.
-- Configured for Render.com deployment (for generated apps)
-- Build script: `bin/render-build.sh`
-- Web server: `bin/render-start.sh`
-- Solid Queue runs in Puma via `SOLID_QUEUE_IN_PUMA=true`
+- **This repo itself is never deployed.** It is the template that apps are generated from, so there is no production environment or production data. Don't weigh changes against deploy risk (migration downtime, existing records); do keep the Kamal config below correct, because generated apps inherit it.
+- Deployed with [Kamal 2](https://kamal-deploy.org) (`bin/kamal`): `Dockerfile` builds the image, `config/deploy.yml` describes the server, and `.kamal/secrets` reads secrets from the environment and `config/credentials/production.key`. Images go to GitHub Container Registry (`ghcr.io`).
+- One server runs everything: the app (Puma behind Thruster on port 80, fronted by kamal-proxy with Let's Encrypt), and PostgreSQL as the `db` accessory on the private Docker network (`DB_HOST=<service>-db`; never published to the internet). Solid Queue runs inside Puma via `SOLID_QUEUE_IN_PUMA=true`, so there is no separate job server.
+- Everything named `nativeapptemplateapi` in `config/deploy.yml`, `.kamal/secrets` and `config/database.yml` is renamed together by the agent; the accessory's `POSTGRES_USER`/`POSTGRES_DB` must keep matching `database.yml`'s production `username`/`database` (`test/config/deploy_config_test.rb` checks this).
+- The only environments are `development`, `test` and `production`. There is no staging: Render PR previews were the only thing that used it.
 
 ## Code Quality Checks Before Committing
 

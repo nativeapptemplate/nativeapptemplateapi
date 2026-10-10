@@ -1,0 +1,111 @@
+# Name of your application. Used to uniquely configure containers.
+service: nativeapptemplateapi
+
+# Name of the container image: <GitHub user or org>/<repo>. With the registry
+# below the full name is ghcr.io/nativeapptemplate/nativeapptemplateapi.
+image: nativeapptemplate/nativeapptemplateapi
+
+# Deploy to these servers.
+servers:
+  web:
+    - 192.168.0.1
+  # Jobs run inside Puma (SOLID_QUEUE_IN_PUMA below). When you outgrow one box,
+  # move them to a dedicated host and set SOLID_QUEUE_IN_PUMA: false.
+  # job:
+  #   hosts:
+  #     - 192.168.0.1
+  #   cmd: bin/jobs
+
+# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
+# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+#
+# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
+# Let's Encrypt needs port 80 reachable at issue time and at every renewal; if a
+# firewall admits only Cloudflare, use a Cloudflare Origin Certificate instead:
+#   ssl:
+#     certificate_pem: ORIGIN_CERT   # add both to .kamal/secrets, read from files
+#     private_key_pem: ORIGIN_KEY
+#   forward_headers: true            # ssl: stops forwarding X-Forwarded-For otherwise,
+#                                    # and every caller would look like Cloudflare to rate_limit
+#   ssl_redirect: false              # Rails force_ssl already redirects on X-Forwarded-Proto
+proxy:
+  ssl: true
+  host: api.nativeapptemplate.com
+
+# Credentials for your image host.
+registry:
+  # GitHub Container Registry.
+  server: ghcr.io
+  username: nativeapptemplate
+
+  # A GitHub Personal Access Token (classic) with the write:packages scope.
+  # Pulled from .kamal/secrets (never hard-code it here).
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+  # ARM servers (e.g. Hetzner CAX, AWS Graviton) build natively on Apple Silicon.
+  # Use amd64 for x86 servers.
+  arch: arm64
+
+# Inject ENV variables into containers (secrets come from .kamal/secrets).
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+  clear:
+    # Run the Solid Queue supervisor inside Puma, including the recurring tasks in
+    # config/recurring.yml. No separate job container or cron.
+    SOLID_QUEUE_IN_PUMA: true
+
+    # One Puma worker (RAILS_MAX_THREADS threads). Raise it on a box with spare cores.
+    WEB_CONCURRENCY: 1
+
+    # Postgres runs as the "db" accessory below. The app reaches it by container
+    # name ("<service>-<accessory>") over the private "kamal" Docker network, not
+    # the public IP, so the database is never exposed to the internet.
+    # config/database.yml reads this.
+    DB_HOST: nativeapptemplateapi-db
+
+# Aliases are triggered with "bin/kamal <alias>". You can overwrite arguments on invocation:
+# "bin/kamal logs -r job" will tail logs from the first server in the job section.
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+# Use a persistent storage volume for local Active Storage files.
+volumes:
+  - "nativeapptemplateapi_storage:/rails/storage"
+
+# Bridge fingerprinted assets, like JS and CSS, between versions to avoid
+# hitting 404 on in-flight requests. Combines all files from new and old
+# version inside the asset_path.
+asset_path: /rails/public/assets
+
+# Use accessory services (secrets come from .kamal/secrets).
+accessories:
+  db:
+    # Same major as the CI service in .github/workflows/ci.yml.
+    image: postgres:18
+    # Same server as the app.
+    host: 192.168.0.1
+    # Publish only on the host's loopback interface, for server-side admin work
+    # (psql, pg_dump). The app does not use this; it connects over the Docker
+    # network (DB_HOST above). Without the 127.0.0.1 prefix Kamal would publish
+    # on 0.0.0.0 and expose Postgres publicly. Pick another host port if several
+    # apps with their own db accessory share one server.
+    port: "127.0.0.1:5432:5432"
+    env:
+      clear:
+        # Must match config/database.yml production: username + primary database.
+        # The cache/queue/cable databases are created by db:prepare on first boot.
+        POSTGRES_USER: nativeapptemplateapi
+        POSTGRES_DB: nativeapptemplateapi_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      # postgres:18 images keep PGDATA under /var/lib/postgresql (not .../data).
+      - data:/var/lib/postgresql
