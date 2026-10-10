@@ -73,6 +73,13 @@ class DeployConfigTest < ActiveSupport::TestCase
     assert_match %r{\A127\.0\.0\.1:\d+:5432\z}, DEPLOY.dig("accessories", "db", "port")
   end
 
+  # The image must match the server's CPU, or the container dies with "exec
+  # format error" after a successful push. Kamal's default and most VPS plans are
+  # x86; a deliberate change to arm64 for an ARM box should update this too.
+  test "image is built for x86 servers" do
+    assert_equal "amd64", DEPLOY.dig("builder", "arch")
+  end
+
   test "Dockerfile builds the Ruby in .ruby-version" do
     ruby_version = Rails.root.join(".ruby-version").read.strip
     dockerfile = Rails.root.join("Dockerfile").read

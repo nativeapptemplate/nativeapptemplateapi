@@ -64,9 +64,11 @@ registry:
 
 # Configure builder setup.
 builder:
-  # ARM servers (e.g. Hetzner CAX, AWS Graviton) build natively on Apple Silicon.
-  # Use amd64 for x86 servers.
-  arch: arm64
+  # x86 servers (most VPS plans). From an Apple Silicon Mac this is a QEMU build,
+  # several times slower than native; the Dockerfile's `bootsnap precompile -j 1`
+  # works around a QEMU bug. ARM servers (Hetzner CAX, AWS Graviton) take
+  # `arm64`, which Apple Silicon builds natively.
+  arch: amd64
 
 # Inject ENV variables into containers (secrets come from .kamal/secrets).
 env:
