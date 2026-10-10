@@ -51,7 +51,8 @@ class ShopkeeperTest < ActiveSupport::TestCase
       current_platform: "windows"
     )
     assert_not shopkeeper.valid?
-    assert_includes shopkeeper.errors[:current_platform], "is not included in the list"
+    # Same message as blank (en.yml): current_platform errors are spam protection
+    assert_includes shopkeeper.errors[:current_platform], "Your input data is wrong."
   end
 
   test "should accept ios as current_platform" do

@@ -4,8 +4,9 @@ require "test_helper"
 # a missing Japanese key silently answers in English, so this compares the
 # loaded translations directly instead of going through I18n.t.
 class LocaleFilesTest < ActiveSupport::TestCase
-  # Scopes the gems contribute (Active Model/Record, Devise, devise_token_auth)
-  GEM_SCOPES = %i[errors activerecord devise devise_token_auth].freeze
+  # Scopes the gems contribute (Active Model/Record, Devise, devise_token_auth,
+  # and Active Support's to_sentence connectors)
+  GEM_SCOPES = %i[errors activerecord devise devise_token_auth support].freeze
 
   def translations(locale)
     I18n.backend.send(:init_translations) unless I18n.backend.initialized?

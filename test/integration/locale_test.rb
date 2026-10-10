@@ -94,6 +94,26 @@ class LocaleTest < ActionDispatch::IntegrationTest
     assert_equal "店舗名を入力してください", response.parsed_body["error_message"]
   end
 
+  test "several sign-up errors are joined with Japanese commas" do
+    post shopkeeper_registration_url,
+      params: {email: "not-an-email", password: "short", name: "", time_zone: "Tokyo", current_platform: "ios"},
+      headers: {"Accept-Language" => "ja"}
+
+    assert_response :unprocessable_entity
+    message = response.parsed_body["error_message"]
+    assert_includes message, "、"
+    assert_no_match(/, and |, /, message)
+  end
+
+  # ConfigSettings.minimum_password_length is 8
+  test "the password reset form is fully Japanese" do
+    get edit_shopkeeper_auth_reset_password_url(reset_password_token: "x"), headers: {"Accept-Language" => "ja"}
+
+    assert_response :success
+    assert_includes response.body, "（8文字以上）"
+    assert_not_includes response.body, "characters minimum"
+  end
+
   test "an unauthenticated API request answers in Japanese" do
     get api_v1_shopkeeper_shops_url, headers: {"Accept-Language" => "ja"}
 

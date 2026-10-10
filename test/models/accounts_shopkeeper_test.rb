@@ -38,7 +38,7 @@ class AccountsShopkeeperTest < ActiveSupport::TestCase
     )
 
     assert_not duplicate.valid?
-    assert_includes duplicate.errors[:shopkeeper_id], "has already been taken"
+    assert_includes duplicate.errors[:shopkeeper_id], "is already a member of this organization"
   end
 
   test "database rejects duplicate shopkeeper within account when validation is skipped" do

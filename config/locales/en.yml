@@ -36,6 +36,8 @@ en:
   change_your_password: "Change your password"
   confirm_new_password: "Confirm new password"
   new_password: "New password"
+  password_minimum_length: "(%{count} characters minimum)"
+  password_placeholder: "password"
   bad_request: "Bad request."
   not_destroyed: "Could not be deleted."
   not_found: "Not found."
@@ -81,7 +83,7 @@ en:
         header_html: "%{inviter} has invited you to collaborate on <strong>%{account}</strong>."
         you_can_accept_or_decline: "You can accept or decline this invitation."
         enter_your_invitation_code_in_the_mobile_app_html: "Enter your invitation code in the mobile app <strong>%{mobile_app}</strong> below."
-        instructions: "instructions"
+        instructions_heading: "Instructions:"
         open_mobile_app_html: "Open <strong>%{mobile_app}</strong>."
         create_account_or_sign_in_with_html: "Create account or sign in with <strong>%{email}</strong>."
         select_organization_tab: "Select Organizations tab."
@@ -145,12 +147,15 @@ en:
           attributes:
             admin:
               cannot_be_removed: "role cannot be removed for the account owner"
+            shopkeeper_id:
+              taken: "is already a member of this organization"
         shopkeeper:
           attributes:
             # spam protection
             current_platform:
               format: "%{message}"
-              blank: "Your input data is wrong."         
+              blank: "Your input data is wrong."
+              inclusion: "Your input data is wrong."         
   errors:
     messages:
       validate_sign_up_params: "Please submit proper sign up data in request body."

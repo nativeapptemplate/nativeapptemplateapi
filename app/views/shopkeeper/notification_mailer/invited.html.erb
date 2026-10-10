@@ -8,7 +8,7 @@
   <%= t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
 </p>
 
-<p><%= t(".instructions").capitalize %>:</p>
+<p><%= t(".instructions_heading") %></p>
 <p>1. <%= t(".open_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %></p>
 <p>2. <%= t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %></p>
 <p>3. <%= t(".select_organization_tab") %></p>

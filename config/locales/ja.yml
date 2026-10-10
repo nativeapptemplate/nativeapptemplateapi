@@ -7,15 +7,17 @@
 
 ja:
   hello_email: "%{email} 様"
-  welcome_email: "%{email} 様、ようこそ。"
+  welcome_email: "%{email} 様、ご登録ありがとうございます。"
   change_my_password: "パスワードを変更する"
   change_your_password: "パスワードの変更"
   confirm_new_password: "新しいパスワード（確認）"
   new_password: "新しいパスワード"
+  password_minimum_length: "（%{count}文字以上）"
+  password_placeholder: "パスワード"
   bad_request: "リクエストが正しくありません。"
   not_destroyed: "削除できませんでした。"
   not_found: "見つかりませんでした。"
-  something_went_wrong: "問題が発生しました"
+  something_went_wrong: "問題が発生しました。"
   internal_server_error: "サーバーでエラーが発生しました。"
   unauthorized: "この操作を行う権限がありません。"
   default_shop_description: "これはサンプルのショップです。\n編集や削除ができます。"
@@ -41,12 +43,12 @@ ja:
     shopkeeper:
       accounts:
         personal:
-          cannot_delete: "個人の組織は削除できません。"
+          cannot_delete: "個人用の組織は削除できません。"
       accounts_invitations:
         not_found: "招待が見つかりませんでした。組織の管理者に新しい招待を依頼してください。"
         expired: "この招待は有効期限が切れています。組織の管理者に招待の再送を依頼してください。"
       accounts_shopkeepers:
-        require_non_personal_account: "個人の組織では利用できません。"
+        require_non_personal_account: "個人用の組織では利用できません。"
       item_tags:
         not_found: "アイテムタグが見つかりませんでした。"
 
@@ -57,7 +59,7 @@ ja:
         header_html: "%{inviter}さんが<strong>%{account}</strong>にあなたを招待しました。"
         you_can_accept_or_decline: "この招待は承認することも、辞退することもできます。"
         enter_your_invitation_code_in_the_mobile_app_html: "モバイルアプリ<strong>%{mobile_app}</strong>で、下記の招待コードを入力してください。"
-        instructions: "手順"
+        instructions_heading: "手順："
         open_mobile_app_html: "<strong>%{mobile_app}</strong>を開きます。"
         create_account_or_sign_in_with_html: "<strong>%{email}</strong>でアカウントを作成するか、サインインします。"
         select_organization_tab: "「組織」タブを選びます。"
@@ -78,20 +80,35 @@ ja:
 
   devise_token_auth:
     sessions:
-      not_confirmed: "'%{email}' に確認メールを送信しました。アカウントを有効にするには、メールの案内に従ってください。"
+      not_confirmed: "「%{email}」に確認メールを送信しました。アカウントを有効にするには、メールの案内に従ってください。"
       bad_credentials: "メールアドレスまたはパスワードが正しくありません。もう一度お試しください。"
+      not_supported: "/sign_in への GET は使えません。POST を使ってください。"
       user_not_found: "ユーザーが見つからないか、サインインしていません。"
+    token_validations:
+      invalid: "認証情報が正しくありません。もう一度サインインしてください。"
+    registrations:
+      missing_confirm_success_url: "confirm_success_url パラメーターが指定されていません。"
+      redirect_url_not_allowed: "「%{redirect_url}」へのリダイレクトは許可されていません。"
+      email_already_exists: "「%{email}」のアカウントはすでに存在します。"
+      account_with_uid_destroyed: "「%{uid}」のアカウントを削除しました。"
+      account_to_destroy_not_found: "削除するアカウントが見つかりません。"
+      user_not_found: "ユーザーが見つかりません。"
     passwords:
       missing_email: "メールアドレスを入力してください。"
       missing_redirect_url: "リダイレクト URL が指定されていません。"
-      not_allowed_redirect_url: "'%{redirect_url}' へのリダイレクトは許可されていません。"
-      sended: "'%{email}' にパスワード再設定の案内を送信しました。"
+      not_allowed_redirect_url: "「%{redirect_url}」へのリダイレクトは許可されていません。"
+      sended: "「%{email}」にパスワード再設定の案内を送信しました。"
       sended_paranoid: "メールアドレスが登録されている場合、数分以内にパスワード再設定用のリンクをお送りします。"
-      user_not_found: "メールアドレス '%{email}' のユーザーが見つかりません。"
+      user_not_found: "メールアドレス「%{email}」のユーザーが見つかりません。"
+      password_not_required: "このアカウントにはパスワードがありません。%{provider} でサインインしてください。"
       missing_passwords: "「パスワード」と「パスワード（確認）」を入力してください。"
       successfully_updated: "パスワードを更新しました。"
     confirmations:
       successfully_confirmed: "メールアドレスを確認しました。"
+      sended: "「%{email}」にメールアドレスの確認方法を送信しました。"
+      sended_paranoid: "メールアドレスが登録されている場合、数分以内にメールアドレスの確認方法をお送りします。"
+      user_not_found: "メールアドレス「%{email}」のユーザーが見つかりません。"
+      missing_email: "メールアドレスを入力してください。"
 
   layouts:
     mailer:
@@ -147,6 +164,7 @@ ja:
         password: "パスワード"
         password_confirmation: "パスワード（確認）"
         time_zone: "タイムゾーン"
+        reset_password_token: "パスワード再設定用のリンク"
         unconfirmed_email: "確認待ちのメールアドレス"
 
     errors:
@@ -159,19 +177,29 @@ ja:
           attributes:
             email:
               invited: "はすでに招待されています"
+            roles:
+              blank: "を選択してください"
         accounts_shopkeeper:
           attributes:
             admin:
               cannot_be_removed: "の権限は組織のオーナーから外せません"
+            roles:
+              blank: "を選択してください"
+            shopkeeper_id:
+              taken: "はすでにこの組織のメンバーです"
         shopkeeper:
           attributes:
             # spam protection
             current_platform:
               format: "%{message}"
               blank: "入力データが正しくありません。"
+              inclusion: "入力データが正しくありません。"
+            reset_password_token:
+              invalid: "が無効か、有効期限が切れています。もう一度パスワードの再設定をリクエストしてください"
 
   errors:
     messages:
+      not_email: "の形式が正しくありません"
       validate_sign_up_params: "リクエストボディに正しい新規登録データを指定してください。"
       validate_account_update_params: "リクエストボディに正しいアカウント更新データを指定してください。"
       limit_count_account: "組織は%{limit_count}件まで作成できます。"

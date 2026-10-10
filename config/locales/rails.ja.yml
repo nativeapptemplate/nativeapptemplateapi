@@ -6,13 +6,20 @@
 # pluralization looks up "one" when count is 1.
 
 ja:
+  # Array#to_sentence, used to join several error messages into one
+  support:
+    array:
+      words_connector: "、"
+      two_words_connector: "、"
+      last_word_connector: "、"
+
   errors:
     format: "%{attribute}%{message}"
     messages:
       model_invalid: "バリデーションに失敗しました: %{errors}"
-      inclusion: "は一覧にありません"
+      inclusion: "は一覧から選択してください"
       exclusion: "は予約されています"
-      invalid: "は不正な値です"
+      invalid: "は正しくありません"
       confirmation: "と%{attribute}の入力が一致しません"
       accepted: "を受諾してください"
       empty: "を入力してください"
@@ -40,7 +47,7 @@ ja:
       odd: "は奇数にしてください"
       even: "は偶数にしてください"
       required: "を入力してください"
-      taken: "はすでに存在します"
+      taken: "はすでに使われています"
 
   activerecord:
     errors:

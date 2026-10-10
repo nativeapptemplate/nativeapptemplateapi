@@ -4,7 +4,7 @@
 
 <%= strip_tags t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
 
-<%= t(".instructions").capitalize %>:
+<%= t(".instructions_heading") %>
 1. <%= strip_tags t(".open_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
 2. <%= strip_tags t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %>
 3. <%= t(".select_organization_tab") %>
