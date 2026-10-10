@@ -23,6 +23,16 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     assert response.parsed_body["data"]
   end
 
+  # devise_token_auth checks account_update_params in a before_action declared
+  # before ours, so the extra keys must be permitted ahead of it
+  test "updates a profile field without resending the email" do
+    shopkeeper.create_default_account
+    patch shopkeeper_registration_url, params: {time_zone: "Osaka"}, headers: shopkeeper.create_new_auth_token
+
+    assert_response :success
+    assert_equal "Osaka", shopkeeper.reload.time_zone
+  end
+
   test "delete current shopkeeper" do
     assert_difference "Shopkeeper.count", -1 do
       delete shopkeeper_registration_url, headers: shopkeeper.create_new_auth_token

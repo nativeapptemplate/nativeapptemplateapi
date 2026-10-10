@@ -132,6 +132,8 @@ en:
       accounts_shopkeeper:
         shopkeeper: "User"
         shopkeeper_id: "User"
+      shopkeeper:
+        locale: "Language"
 
     errors:
       models:

@@ -67,6 +67,24 @@ class ShopkeeperTest < ActiveSupport::TestCase
     assert shopkeeper.valid?
   end
 
+  # config.i18n.available_locales is [:en, :ja]
+  test "should accept every available locale" do
+    shopkeeper = shopkeepers(:one)
+    %w[en ja].each do |locale|
+      shopkeeper.locale = locale
+      assert shopkeeper.valid?, locale
+    end
+  end
+
+  test "should reject a locale the app does not offer" do
+    shopkeeper = shopkeepers(:one)
+    ["fr", "ja-JP", ""].each do |locale|
+      shopkeeper.locale = locale
+      assert_not shopkeeper.valid?, locale
+      assert_includes shopkeeper.errors[:locale], "is not included in the list"
+    end
+  end
+
   test "should have many shops through accounts" do
     shopkeeper = shopkeepers(:one)
     shopkeeper.create_default_account

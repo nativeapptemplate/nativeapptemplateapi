@@ -160,6 +160,7 @@ ja:
         current_password: "現在のパスワード"
         current_platform: "プラットフォーム"
         email: "メールアドレス"
+        locale: "言語"
         name: "名前"
         password: "パスワード"
         password_confirmation: "パスワード（確認）"

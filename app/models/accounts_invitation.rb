@@ -20,8 +20,13 @@ class AccountsInvitation < ApplicationRecord
     save && send_invite
   end
 
+  # Written in the invitee's language when they already have an account,
+  # otherwise in the inviter's (the request's locale)
   def send_invite
-    Shopkeeper::NotificationMailer.with(accounts_invitation: self).invited.deliver_later
+    locale = Shopkeeper.find_by(email: email.to_s.strip.downcase)&.locale || I18n.locale
+    I18n.with_locale(locale) do
+      Shopkeeper::NotificationMailer.with(accounts_invitation: self).invited.deliver_later
+    end
   end
 
   def resend_invite
