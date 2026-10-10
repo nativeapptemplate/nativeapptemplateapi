@@ -101,11 +101,26 @@ This starts up Overmind running the processes defined in `Procfile.dev`. We've c
 
 ## Deployment
 
-The API deploys with [Kamal 2](https://kamal-deploy.org) to any Linux server with SSH access: `Dockerfile` builds the image, `config/deploy.yml` describes the server, and images are pushed to GitHub Container Registry (ghcr.io). PostgreSQL runs on the same server as a Kamal accessory, and Solid Queue runs inside Puma, so one small VPS is enough.
+The API deploys with [Kamal 2](https://kamal-deploy.org) to any Linux server with SSH access: `Dockerfile` builds the image, `config/deploy.yml` describes the server, and images are pushed to GitHub Container Registry (ghcr.io). PostgreSQL runs on the same server as a Kamal accessory, and Solid Queue runs inside Puma, so one small VPS is enough. The server sits behind Cloudflare: the zone's SSL/TLS mode is "Full (strict)", kamal-proxy serves a Cloudflare Origin Certificate, and the server firewall admits port 443 from [Cloudflare's ranges](https://www.cloudflare.com/ips/) only. (Without Cloudflare, switch `proxy` in `config/deploy.yml` to the Let's Encrypt variant shown in its comment.)
 
 1. Edit `config/deploy.yml`: the server IP (`servers` and `accessories.db.host`), `image` and `registry.username` (your GitHub user or org), and `proxy.host` (also `app.domain` in `config/settings.yml`).
 2. Export the secrets `.kamal/secrets` reads: `KAMAL_REGISTRY_PASSWORD` (a GitHub token with `write:packages`) and `NATIVEAPPTEMPLATEAPI_POSTGRES_PASSWORD`. `RAILS_MASTER_KEY` comes from `config/credentials/production.key`.
-3. First deploy:
+3. Create an Origin Certificate in the Cloudflare dashboard (SSL/TLS → Origin Server) and save both halves outside the repo. Copying from the dashboard can lose the line breaks, so rewrap while saving:
+
+```bash
+pem() { ruby -e '
+  s = STDIN.read
+  m = s.match(/-----BEGIN ([A-Z ]+)-----(.*?)-----END \1-----/m) or abort "not a PEM"
+  puts "-----BEGIN #{m[1]}-----", m[2].gsub(/\s+/, "").scan(/.{1,64}/), "-----END #{m[1]}-----"
+' ; }
+mkdir -p ~/.config/nativeapptemplateapi && chmod 700 ~/.config/nativeapptemplateapi
+pbpaste | pem > ~/.config/nativeapptemplateapi/origin-cert.pem   # "Origin Certificate" copied
+pbpaste | pem > ~/.config/nativeapptemplateapi/origin-key.pem    # "Private Key" copied
+chmod 600 ~/.config/nativeapptemplateapi/origin-*.pem
+openssl x509 -in ~/.config/nativeapptemplateapi/origin-cert.pem -noout -subject -enddate
+```
+
+4. First deploy:
 
 ```bash
 bin/kamal setup

@@ -16,21 +16,40 @@ servers:
   #     - 192.168.0.1
   #   cmd: bin/jobs
 
-# Enable SSL auto certification via Let's Encrypt and allow for multiple apps on a single web server.
-# Remove this section when using multiple web servers and ensure you terminate SSL at your load balancer.
+# TLS between Cloudflare and this origin uses a Cloudflare Origin Certificate
+# (Cloudflare dashboard: SSL/TLS -> Origin Server -> Create Certificate; set the
+# zone's SSL/TLS mode to "Full (strict)"). It is trusted only by Cloudflare,
+# which is the point: the server's firewall should admit 443 from Cloudflare's
+# ranges only, so nothing else ever reaches this origin. Nothing is validated to
+# issue it and it is valid for up to 15 years, so there is no renewal to break.
 #
-# Note: If using Cloudflare, set encryption mode in SSL/TLS setting to "Full" to enable CF-to-app encryption.
-# Let's Encrypt needs port 80 reachable at issue time and at every renewal; if a
-# firewall admits only Cloudflare, use a Cloudflare Origin Certificate instead:
-#   ssl:
-#     certificate_pem: ORIGIN_CERT   # add both to .kamal/secrets, read from files
-#     private_key_pem: ORIGIN_KEY
-#   forward_headers: true            # ssl: stops forwarding X-Forwarded-For otherwise,
-#                                    # and every caller would look like Cloudflare to rate_limit
-#   ssl_redirect: false              # Rails force_ssl already redirects on X-Forwarded-Proto
+# These settings are per app, not per proxy: several apps on one server each
+# bring their own certificate and kamal-proxy routes by host.
+#
+# Without Cloudflare, use Let's Encrypt instead. It needs port 80 open to the
+# world at issue time and at every 60-day renewal:
+#   proxy:
+#     ssl: true
+#     host: api.nativeapptemplate.com
 proxy:
-  ssl: true
+  ssl:
+    # Both read from PEM files by .kamal/secrets.
+    certificate_pem: NATIVEAPPTEMPLATEAPI_ORIGIN_CERT
+    private_key_pem: NATIVEAPPTEMPLATEAPI_ORIGIN_KEY
   host: api.nativeapptemplate.com
+
+  # With ssl set, kamal-proxy stops forwarding X-Forwarded-For unless told to.
+  # Rails' rate_limit keys on request.remote_ip; without this every caller would
+  # look like the Cloudflare edge and share one bucket. config/cloudflare_ips.yml
+  # (trusted_proxies) is the other half: it lets Rails resolve past the edge.
+  forward_headers: true
+
+  # kamal-proxy would otherwise answer every plain-HTTP request with a redirect,
+  # which loops while Cloudflare still reaches the origin over :80 (SSL/TLS mode
+  # "Flexible", or the few :80 requests "Full (strict)" still sends). Rails'
+  # force_ssl redirects on the scheme the visitor used (X-Forwarded-Proto), which
+  # kamal-proxy cannot see.
+  ssl_redirect: false
 
 # Credentials for your image host.
 registry:

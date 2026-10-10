@@ -37,7 +37,8 @@ class DeployConfigTest < ActiveSupport::TestCase
   # .kamal/secrets; an unknown name aborts the deploy.
   test ".kamal/secrets defines every secret deploy.yml references" do
     defined = File.readlines(Rails.root.join(".kamal/secrets")).filter_map { |line| line[/\A([A-Z0-9_]+)=/, 1] }
-    referenced = DEPLOY.dig("env", "secret") + DEPLOY.dig("registry", "password") + DEPLOY.dig("accessories", "db", "env", "secret")
+    referenced = DEPLOY.dig("env", "secret") + DEPLOY.dig("registry", "password") +
+      DEPLOY.dig("accessories", "db", "env", "secret") + DEPLOY.dig("proxy", "ssl").values
 
     assert_empty referenced - defined
   end
