@@ -20,7 +20,7 @@ ja:
   something_went_wrong: "問題が発生しました。"
   internal_server_error: "サーバーでエラーが発生しました。"
   unauthorized: "この操作を行う権限がありません。"
-  default_shop_description: "これはサンプルのショップです。\n編集や削除ができます。"
+  default_shop_description: "これはサンプルの店舗です。\n編集や削除ができます。"
 
   sample_item_tag:
     name: "サンプル"
@@ -121,7 +121,7 @@ ja:
       accounts_shopkeeper: "メンバー"
       application_push_device: "デバイス"
       item_tag: "アイテムタグ"
-      shop: "ショップ"
+      shop: "店舗"
       shopkeeper: "ユーザー"
 
     attributes:
@@ -150,7 +150,7 @@ ja:
         name: "名前"
         description: "説明"
         position: "表示順"
-        shop: "ショップ"
+        shop: "店舗"
       shop:
         created_by: "作成者"
         description: "説明"
@@ -204,7 +204,7 @@ ja:
       validate_sign_up_params: "リクエストボディに正しい新規登録データを指定してください。"
       validate_account_update_params: "リクエストボディに正しいアカウント更新データを指定してください。"
       limit_count_account: "組織は%{limit_count}件まで作成できます。"
-      limit_count_shop: "ショップはすべての組織で合わせて%{limit_count}件まで作成できます。"
+      limit_count_shop: "店舗はすべての組織で合わせて%{limit_count}件まで作成できます。"
       limit_count_accounts_shopkeeper: "組織のメンバーは%{limit_count}人まで追加できます。組織の管理者またはオーナーにお問い合わせください。"
       limit_count_item_tag: "アイテムタグは%{limit_count}件まで作成できます。"
       too_many_signups: "新規登録の試行回数が多すぎます。しばらくしてからもう一度お試しください。"

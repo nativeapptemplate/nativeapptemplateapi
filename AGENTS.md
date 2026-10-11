@@ -103,7 +103,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (583 tests, 1454 assertions)
+- Run tests: `bin/rails test` (584 tests, 1458 assertions)
 
 ### Internationalization
 - Responses are in English (default) or Japanese, picked by the `SetLocale` concern (included in `ApplicationController` and `NonApiApplicationController`). It wraps `process_action`, not `around_action`, so `rescue_from` handlers and `rate_limit` responses are localized too.
