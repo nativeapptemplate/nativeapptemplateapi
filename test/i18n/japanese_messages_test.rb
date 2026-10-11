@@ -54,4 +54,14 @@ class JapaneseMessagesTest < ActiveSupport::TestCase
     ja { invitation.valid? }
     assert_equal ["権限を選択してください"], ja { invitation.errors.full_messages_for(:roles) }
   end
+
+  # The shop's name attribute is 店舗名, so the model and the messages that
+  # name a shop say 店舗 too, as in MyTurnTag
+  test "a shop is called 店舗, never ショップ" do
+    ja_values = I18n.backend.send(:translations).fetch(:ja).to_s
+    assert_not_includes ja_values, "ショップ"
+    assert_equal "店舗", I18n.t("activerecord.models.shop", locale: :ja)
+    assert_equal "店舗はすべての組織で合わせて3件まで作成できます。",
+      I18n.t("errors.messages.limit_count_shop", limit_count: 3, locale: :ja)
+  end
 end
