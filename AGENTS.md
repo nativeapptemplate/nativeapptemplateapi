@@ -115,7 +115,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - User-facing text belongs in the locale files, not in Ruby or views (model defaults such as the sample item tag included). The admin area (`/madmin`, `/admin_auth`) stays English.
 
 ### Development Server Configuration
-- `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS scheme and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
+- `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS app's `API.local.xcconfig` (or `API.xcconfig`) and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
 - Mailbin for email testing at `/mailbin`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem
