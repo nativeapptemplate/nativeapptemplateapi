@@ -7,6 +7,7 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   before_action :authenticate_shopkeeper!
   before_action -> { use_locale_of(current_shopkeeper) }
+  before_action :require_account_membership
   after_action :verify_authorized
 
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
@@ -34,6 +35,16 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
 
   def render_error(code:, message:, status:)
     render json: {code: code, error_message: message}, status: status
+  end
+
+  # The organization in the URL exists, but the shopkeeper is no longer one of
+  # its members (removed, or left). Not a Pundit denial: the app switches to
+  # the personal organization on this error_code instead of signing out.
+  def require_account_membership
+    return if current_account.nil? || current_accounts_shopkeeper
+
+    render json: {code: 403, error_code: "not_account_member", error_message: I18n.t("api.shopkeeper.not_account_member")},
+      status: :forbidden
   end
 
   def user_not_authorized

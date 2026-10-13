@@ -37,8 +37,18 @@ class AccountMiddlewareTest < ActiveSupport::TestCase
     assert_equal "/api/v1/shopkeeper/shops", @seen[:path_info]
   end
 
-  test "an unknown account id redirects to the root" do
-    status, headers, = call("/00000000-0000-0000-0000-000000000000/api/v1/shopkeeper/shops")
+  # The organization was deleted: the apps need JSON to switch organizations
+  test "an unknown account id in an API path answers 404 account_not_found JSON" do
+    status, headers, body = call("/00000000-0000-0000-0000-000000000000/api/v1/shopkeeper/shops")
+
+    assert_equal 404, status
+    assert_match %r{\Aapplication/json}, headers["content-type"]
+    assert_equal "account_not_found", JSON.parse(body.each.to_a.join)["error_code"]
+    assert_empty @seen, "the app must not be called"
+  end
+
+  test "an unknown account id outside the API redirects to the root" do
+    status, headers, = call("/00000000-0000-0000-0000-000000000000/shopkeeper_auth/confirmation_result")
 
     assert_equal 302, status
     assert_equal "/", headers["Location"]

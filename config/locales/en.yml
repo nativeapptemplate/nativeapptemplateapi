@@ -65,6 +65,8 @@ en:
 
   api:
     shopkeeper:
+      account_not_found: "This organization no longer exists."
+      not_account_member: "You are no longer a member of this organization."
       accounts:
         personal:
           cannot_delete: "You cannot delete your personal account."

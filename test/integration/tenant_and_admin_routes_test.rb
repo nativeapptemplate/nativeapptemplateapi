@@ -2,8 +2,9 @@ require "test_helper"
 
 class TenantAndAdminRoutesTest < ActionDispatch::IntegrationTest
   # AccountMiddleware selects any existing account from the URL without
-  # checking membership; Pundit then refuses a shopkeeper who isn't a member.
-  test "another tenant's account id in the URL gets 401 and no data" do
+  # checking membership; Api::V1::Shopkeeper::BaseController then refuses a
+  # shopkeeper who isn't a member (403 not_account_member).
+  test "another tenant's account id in the URL gets 403 and no data" do
     outsider = shopkeepers(:one)
     outsider.create_default_account
     owner = shopkeepers(:two)
@@ -12,8 +13,9 @@ class TenantAndAdminRoutesTest < ActionDispatch::IntegrationTest
 
     get "/#{other_account.id}/api/v1/shopkeeper/shops", headers: outsider.create_new_auth_token
 
-    assert_response :unauthorized
-    assert_equal 401, response.parsed_body["code"]
+    assert_response :forbidden
+    assert_equal 403, response.parsed_body["code"]
+    assert_equal "not_account_member", response.parsed_body["error_code"]
     assert_nil response.parsed_body["data"]
   end
 

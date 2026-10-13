@@ -65,6 +65,7 @@ bin/rails dbconsole           # Database console
 - **Authorization**: Pundit policies for resource-level permissions
 - **Multi-tenancy**: acts_as_tenant for complete data isolation between accounts
 - **RBAC**: Role and Permission models for fine-grained access control
+- **Organization errors**: an `/<account uuid>/api/...` request for a deleted account gets `404 {code, error_code: "account_not_found", error_message}` from `AccountMiddleware` (via `Api::V1::Shopkeeper::AccountNotFoundController`, JSON whatever the request headers); a signed-in shopkeeper who is not a member gets `403 {code, error_code: "not_account_member", error_message}` from `Api::V1::Shopkeeper::BaseController`. The apps switch to the personal organization on these instead of signing out. Pundit denials stay `401 {code, error_message}`; devise_token_auth's invalid-token 401 is `{errors: [...]}`. Non-API paths with an unknown account id still redirect to `/`.
 
 ### Key Models & Relationships
 - `Account` - Top-level tenant/organization
@@ -103,7 +104,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (584 tests, 1458 assertions)
+- Run tests: `bin/rails test` (602 tests, 1514 assertions)
 
 ### Internationalization
 - Responses are in English (default) or Japanese, picked by the `SetLocale` concern (included in `ApplicationController` and `NonApiApplicationController`). It wraps `process_action`, not `around_action`, so `rescue_from` handlers and `rate_limit` responses are localized too.
