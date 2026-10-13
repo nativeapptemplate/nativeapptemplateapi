@@ -20,6 +20,10 @@ class AccountMiddleware
     if UUID_MATCHER.match?(account_id)
       if (account = Account.find_by(id: account_id))
         Current.account = account
+      elsif request_path.to_s.start_with?("api/")
+        # The organization was deleted: answer in JSON so the app can switch
+        # to the shopkeeper's personal organization
+        return Api::V1::Shopkeeper::AccountNotFoundController.action(:show).call(env)
       else
         return [302, {"Location" => "/"}, []]
       end

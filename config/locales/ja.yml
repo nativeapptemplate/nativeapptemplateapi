@@ -41,6 +41,8 @@ ja:
 
   api:
     shopkeeper:
+      account_not_found: "この組織は削除されました。"
+      not_account_member: "この組織のメンバーではなくなりました。"
       accounts:
         personal:
           cannot_delete: "個人用の組織は削除できません。"
