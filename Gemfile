@@ -58,6 +58,9 @@ gem "valid_email2"
 gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
 gem "resend"
+# Error monitoring. Initialised only when SENTRY_DSN is set (config/initializers/sentry.rb)
+gem "sentry-ruby", "~> 7.1"
+gem "sentry-rails", "~> 7.1"
 
 # Push notifications via APNs (iOS) and FCM (Android). Provider integration
 # (apnotic + googleauth + initializer with credentials) lands in a follow-up

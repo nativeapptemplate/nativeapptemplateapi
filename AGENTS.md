@@ -91,6 +91,12 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - **Config & secrets**: `config/push.yml` reads everything from credentials (`bin/rails credentials:edit --environment <env>`) under `action_push_native:apns:{key_id, team_id, topic, encryption_key}` and `action_push_native:fcm:{project_id, encryption_key}`. APNs `encryption_key` is the full `.p8` PEM; FCM `encryption_key` is the entire service-account JSON. `topic` stays in credentials (not source) because the agent's rename pipeline would otherwise desync the bundle id.
 - **APNs sandbox vs production**: `connect_to_development_server: <%= Rails.env.development? %>`. The token's environment is fixed at iOS build time — Xcode debug builds get **sandbox** tokens, TestFlight/App Store get **production**. They must match the server: test Xcode debug builds against a **local development** server; use TestFlight to test against the deployed server. A mismatch returns APNs `400 BadDeviceToken`, which the gem treats as `TokenError` and **destroys the device row** (the default `rescue_from`). FCM has no such split.
 
+### Error Monitoring
+- Optional Sentry (`sentry-ruby` + `sentry-rails`), configured in `config/initializers/sentry.rb` (`NativeapptemplateSentry`). Off unless `SENTRY_DSN` is set; events are sent only from production. README "Error monitoring (Sentry)" has what is sent and how to turn it on. Never commit a DSN: this repo is public.
+- Only real bugs: 4xx answers (`rescue_from` handlers, `RecordInvalid`, Pundit denials) are not sent. Add a new expected exception to `NativeapptemplateSentry::EXPECTED_EXCEPTIONS` rather than letting it reach Sentry.
+- Personal data stays out: the Sentry user is the shopkeeper's ID only and `account_id` is a tag (`SetCurrentRequestDetails`); `before_send` drops the devise_token_auth headers, masks email addresses and applies `filter_parameters`. Never pass an email or name to `Sentry.set_user`, `set_extras` or `capture_message`.
+- `Sentry`, `sentry-ruby`, `sentry-rails`, `SENTRY_DSN` and `sentry/test_helper` are third-party names; the agent's rename must not touch them.
+
 ### Testing Strategy
 - Minitest for all tests (models, controllers, integration, policies)
 - WebMock for stubbing external HTTP requests
@@ -104,7 +110,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (602 tests, 1514 assertions)
+- Run tests: `bin/rails test` (614 tests, 1594 assertions)
 
 ### Internationalization
 - Responses are in English (default) or Japanese, picked by the `SetLocale` concern (included in `ApplicationController` and `NonApiApplicationController`). It wraps `process_action`, not `around_action`, so `rescue_from` handlers and `rate_limit` responses are localized too.
@@ -133,6 +139,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 - Deployed with [Kamal 2](https://kamal-deploy.org) (`bin/kamal`): `Dockerfile` builds the image, `config/deploy.yml` describes the server, and `.kamal/secrets` reads secrets from the environment and `config/credentials/production.key`. Images go to GitHub Container Registry (`ghcr.io`).
 - One server runs everything: the app (Puma behind Thruster on port 80, fronted by kamal-proxy serving a Cloudflare Origin Certificate with `forward_headers: true` and `ssl_redirect: false`; Cloudflare's ranges are in `config.action_dispatch.trusted_proxies` via `config/cloudflare_ips.yml` so `rate_limit` sees the caller, not the edge), and PostgreSQL as the `db` accessory on the private Docker network (`DB_HOST=<service>-db`; never published to the internet). Solid Queue runs inside Puma via `SOLID_QUEUE_IN_PUMA=true`, so there is no separate job server.
 - Everything named `nativeapptemplateapi` in `config/deploy.yml`, `.kamal/secrets` and `config/database.yml` is renamed together by the agent; the accessory's `POSTGRES_USER`/`POSTGRES_DB` must keep matching `database.yml`'s production `username`/`database` (`test/config/deploy_config_test.rb` checks this).
+- `SENTRY_DSN` is an optional `env.secret`, read by `.kamal/secrets` from `NATIVEAPPTEMPLATEAPI_SENTRY_DSN`; unset, the container gets an empty value and Sentry stays off.
 - The only environments are `development`, `test` and `production`. There is no staging: Render PR previews were the only thing that used it.
 
 ## Code Quality Checks Before Committing

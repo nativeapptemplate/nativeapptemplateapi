@@ -24,6 +24,7 @@ Want a customized backend generated for you? [nativeapptemplate-agent](https://g
 - **[pundit](https://github.com/varvet/pundit)**
 - **[acts_as_tenant](https://github.com/ErwinM/acts_as_tenant)**
 - **[noticed](https://github.com/excid3/noticed)** + **[action_push_native](https://github.com/basecamp/action_push_native)** (push notifications)
+- **[sentry-ruby](https://github.com/getsentry/sentry-ruby)** (optional error monitoring, off unless `SENTRY_DSN` is set)
 - **Test** (Minitest)
 
 ### Included Features
@@ -42,6 +43,7 @@ Want a customized backend generated for you? [nativeapptemplate-agent](https://g
 - Force Privacy Policy Version Update
 - Force Terms of Use Version Update
 - Push Notifications (APNs for iOS, FCM for Android) — paid clients only
+- Optional Error Monitoring with Sentry (no personal data sent)
 - And more!
 
 ## Related Repositories
@@ -104,7 +106,7 @@ This starts up Overmind running the processes defined in `Procfile.dev`. We've c
 The API deploys with [Kamal 2](https://kamal-deploy.org) to any Linux server with SSH access: `Dockerfile` builds the image, `config/deploy.yml` describes the server, and images are pushed to GitHub Container Registry (ghcr.io). PostgreSQL runs on the same server as a Kamal accessory, and Solid Queue runs inside Puma, so one small VPS is enough. The server sits behind Cloudflare: the zone's SSL/TLS mode is "Full (strict)", kamal-proxy serves a Cloudflare Origin Certificate, and the server firewall admits port 443 from [Cloudflare's ranges](https://www.cloudflare.com/ips/) only. (Without Cloudflare, switch `proxy` in `config/deploy.yml` to the Let's Encrypt variant shown in its comment.)
 
 1. Edit `config/deploy.yml`: the server IP (`servers` and `accessories.db.host`), `image` and `registry.username` (your GitHub user or org), and `proxy.host` (also `app.domain` in `config/settings.yml`).
-2. Export the secrets `.kamal/secrets` reads: `KAMAL_REGISTRY_PASSWORD` (a GitHub token with `write:packages`) and `NATIVEAPPTEMPLATEAPI_POSTGRES_PASSWORD`. `RAILS_MASTER_KEY` comes from `config/credentials/production.key`.
+2. Export the secrets `.kamal/secrets` reads: `KAMAL_REGISTRY_PASSWORD` (a GitHub token with `write:packages`) and `NATIVEAPPTEMPLATEAPI_POSTGRES_PASSWORD`. `RAILS_MASTER_KEY` comes from `config/credentials/production.key`. Optionally `NATIVEAPPTEMPLATEAPI_SENTRY_DSN` (see [Error monitoring (Sentry)](#error-monitoring-sentry)).
 3. Create an Origin Certificate in the Cloudflare dashboard (SSL/TLS → Origin Server) and save both halves outside the repo. Copying from the dashboard can lose the line breaks, so rewrap while saving:
 
 ```bash
@@ -127,6 +129,51 @@ bin/kamal setup
 ```
 
 Later deploys are `bin/kamal deploy`; `bin/kamal console`, `bin/kamal logs` and `bin/kamal dbc` are defined as aliases.
+
+## Error monitoring (Sentry)
+
+The API can report unexpected errors to [Sentry](https://sentry.io) through `sentry-ruby` and `sentry-rails` (`config/initializers/sentry.rb`). It is optional and off by default.
+
+### Turning it on
+
+Sentry is off unless `SENTRY_DSN` is set. Without it the SDK is never initialised and the app behaves exactly as if the gems were not there, which is how development and test run.
+
+In production the DSN is a Kamal secret: `config/deploy.yml` lists `SENTRY_DSN` under `env.secret`, and `.kamal/secrets` reads it from `NATIVEAPPTEMPLATEAPI_SENTRY_DSN` on the deploying machine. To turn it on:
+
+1. Create a Ruby on Rails project in Sentry and copy its DSN (Project Settings → Client Keys).
+2. Export it where you export the other deploy secrets: `export NATIVEAPPTEMPLATEAPI_SENTRY_DSN=https://...`. Keep it out of the repo.
+3. `bin/kamal deploy`.
+
+To turn it off again, unset the variable and redeploy: the container gets an empty `SENTRY_DSN`. Without Kamal, set `SENTRY_DSN` in the app's environment however your platform does it.
+
+Events are sent only from the `production` environment; any other environment with a DSN initialises the SDK but sends nothing. The release is the deployed git SHA (`KAMAL_VERSION`, set by Kamal in the container).
+
+### What is sent
+
+Sentry's free plan allows 5,000 errors a month, so only real bugs are sent: unhandled exceptions in requests (500s) and in Active Job / Solid Queue jobs (covered by sentry-rails). Not sent:
+
+- Anything the API answers with a 4xx through `rescue_from` in `Api::V1::Shopkeeper::BaseController` (not found, Pundit denials, missing parameters, failed destroys), and the `account_not_found` / `not_account_member` organization errors.
+- Exceptions Rails turns into 4xx responses: sentry-rails' defaults (`ActiveRecord::RecordNotFound`, `ActionController::RoutingError`, `ActionController::ParameterMissing`, ...) plus `ActiveRecord::RecordInvalid`, `ActiveRecord::RecordNotDestroyed` and `Pundit::NotAuthorizedError` (`NativeapptemplateSentry::EXPECTED_EXCEPTIONS`; add your own expected exceptions there).
+- Errors the code rescues and logs itself, such as a failure to create a new shop's sample item tag.
+- Performance traces, profiles and breadcrumbs (all disabled).
+
+### Privacy
+
+- The user on an event is the shopkeeper's ID only, and the event is tagged with the current account's ID (`SetCurrentRequestDetails`). No email, name or IP address.
+- `send_default_pii` is off: request bodies, query strings, cookies and the client IP are not collected.
+- `before_send` drops the `devise_token_auth` headers (`Authorization`, `access-token`, `client`, `uid`, `expiry`, `token-type`), replaces anything that looks like an email address in exception messages and the URL with `[FILTERED EMAIL]`, and applies `Rails.application.config.filter_parameters` to any request data and extras.
+- Never pass an email or a name to `Sentry.set_user`, `Sentry.set_extras` or `Sentry.capture_message`.
+
+`test/config/sentry_test.rb` and `test/integration/sentry_context_test.rb` cover these rules.
+
+### Recommended Sentry settings
+
+Sentry still derives the user's IP address and location from the connection on its side. Turn that off in **Organization Settings → Security & Privacy**:
+
+- Enable **Prevent Storing of IP Addresses**.
+- Under **Advanced Data Scrubbing**, add a rule: Method **Remove**, Data Type **Anything**, Source `$user.geo.**`. The IP setting alone does not drop the location Sentry computes from the IP, so this rule is needed as well.
+
+If your users are in the EU, also pick the EU data region when you create the Sentry organization.
 
 ## Contributing
 

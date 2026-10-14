@@ -33,6 +33,17 @@ class DeployConfigTest < ActiveSupport::TestCase
     assert_includes DEPLOY.dig("accessories", "db", "env", "secret"), "POSTGRES_PASSWORD"
   end
 
+  # config/initializers/sentry.rb reads SENTRY_DSN. It comes from an
+  # app-prefixed variable (like the Postgres password) so another app's DSN in
+  # the same shell can't leak in, and it must stay optional: no $(cat ...) or
+  # other command that would fail the deploy when the variable is unset.
+  test "the app receives an optional Sentry DSN from an app-specific variable" do
+    assert_includes DEPLOY.dig("env", "secret"), "SENTRY_DSN"
+
+    line = File.readlines(Rails.root.join(".kamal/secrets")).find { |l| l.start_with?("SENTRY_DSN=") }
+    assert_equal "SENTRY_DSN=$#{SERVICE.upcase}_SENTRY_DSN", line&.strip
+  end
+
   # Kamal resolves every env.secret, registry password and accessory secret from
   # .kamal/secrets; an unknown name aborts the deploy.
   test ".kamal/secrets defines every secret deploy.yml references" do
