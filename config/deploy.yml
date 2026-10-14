@@ -75,6 +75,9 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - POSTGRES_PASSWORD
+    # Optional. Empty leaves Sentry off (config/initializers/sentry.rb,
+    # .kamal/secrets, README "Error monitoring (Sentry)").
+    - SENTRY_DSN
   clear:
     # Run the Solid Queue supervisor inside Puma, including the recurring tasks in
     # config/recurring.yml. No separate job container or cron.

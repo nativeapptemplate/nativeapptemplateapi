@@ -17,6 +17,16 @@ module SetCurrentRequestDetails
       end
 
       set_current_tenant(Current.account)
+      set_sentry_context
     end
+  end
+
+  private
+
+  # IDs only: no email or name goes to Sentry (config/initializers/sentry.rb).
+  # Both calls are no-ops when Sentry is not initialised.
+  def set_sentry_context
+    Sentry.set_user(id: current_shopkeeper.id) if current_shopkeeper
+    Sentry.set_tags(account_id: Current.account.id) if Current.account
   end
 end
