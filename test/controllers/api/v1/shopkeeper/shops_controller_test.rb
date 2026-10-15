@@ -84,6 +84,17 @@ class Api::V1::Shopkeeper::ShopsControllerTest < ActionDispatch::IntegrationTest
     assert_equal ["Open late", "Osaka"], [@shop.description, @shop.time_zone]
   end
 
+  test "update rejects an unknown time zone with 422" do
+    patch api_v1_shopkeeper_shop_url(@shop),
+      params: {shop: {time_zone: "Bogus"}},
+      headers: @shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal "Time zone is not included in the list", response.parsed_body["error_message"]
+    assert_equal "Tokyo", @shop.reload.time_zone
+  end
+
   test "update returns validation error with blank name" do
     patch api_v1_shopkeeper_shop_url(@shop),
       params: {shop: {name: ""}},

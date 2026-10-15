@@ -85,6 +85,26 @@ class ShopkeeperTest < ActiveSupport::TestCase
     end
   end
 
+  # The apps send Rails time zone names (ActiveSupport::TimeZone#name)
+  test "should accept every Rails time zone name" do
+    shopkeeper = shopkeepers(:one)
+    ActiveSupport::TimeZone.all.map(&:name).each do |time_zone|
+      shopkeeper.time_zone = time_zone
+      assert shopkeeper.valid?, time_zone
+    end
+  end
+
+  # ActiveSupport::TimeZone["Asia/Tokyo"] finds a zone, but "Asia/Tokyo" is an
+  # IANA id, not one of the Rails names the apps send and list, so reject it
+  test "should reject a time zone that is not a Rails time zone name" do
+    shopkeeper = shopkeepers(:one)
+    ["Bogus", "", "Asia/Tokyo"].each do |time_zone|
+      shopkeeper.time_zone = time_zone
+      assert_not shopkeeper.valid?, time_zone
+      assert_includes shopkeeper.errors[:time_zone], "is not included in the list"
+    end
+  end
+
   test "should have many shops through accounts" do
     shopkeeper = shopkeepers(:one)
     shopkeeper.create_default_account

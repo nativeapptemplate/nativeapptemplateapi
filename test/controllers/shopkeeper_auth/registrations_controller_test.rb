@@ -33,6 +33,25 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     assert_equal "Osaka", shopkeeper.reload.time_zone
   end
 
+  test "rejects an unknown time zone on update with 422" do
+    shopkeeper.create_default_account
+    patch shopkeeper_registration_url, params: {time_zone: "Bogus"}, headers: shopkeeper.create_new_auth_token
+
+    assert_response :unprocessable_entity
+    assert_equal 422, response.parsed_body["code"]
+    assert_equal "Time zone is not included in the list", response.parsed_body["error_message"]
+    assert_equal "Tokyo", shopkeeper.reload.time_zone
+  end
+
+  test "rejects an unknown time zone on sign up with 422" do
+    assert_no_difference ["Shopkeeper.count", "Account.count", "Shop.count"] do
+      post shopkeeper_registration_url, params: {email: "bogus-zone@example.com", name: "Bogus Zone", password: "password", time_zone: "Bogus", current_platform: "ios"}
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "Time zone is not included in the list", response.parsed_body["error_message"]
+  end
+
   test "delete current shopkeeper" do
     assert_difference "Shopkeeper.count", -1 do
       delete shopkeeper_registration_url, headers: shopkeeper.create_new_auth_token
