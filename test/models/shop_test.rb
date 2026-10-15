@@ -89,4 +89,12 @@ class ShopTest < ActiveSupport::TestCase
       assert_includes shop.errors[:time_zone], "is not included in the list"
     end
   end
+
+  # A stored zone that is not a Rails name must not block unrelated updates
+  test "should not revalidate an unchanged time zone" do
+    shop = @account.shops.create!(name: "Test Shop", created_by: @shopkeeper)
+    shop.update_column(:time_zone, "Asia/Tokyo")
+    shop.name = "Renamed"
+    assert shop.valid?
+  end
 end

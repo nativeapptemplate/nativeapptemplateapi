@@ -9,8 +9,11 @@ class Shop < ApplicationRecord
 
   validates :name, presence: true
   # Rails time zone names only (the apps send ActiveSupport::TimeZone#name);
-  # IANA ids such as "Asia/Tokyo" are rejected
-  validates :time_zone, inclusion: {in: ->(_) { ActiveSupport::TimeZone.all.map(&:name) }}
+  # IANA ids such as "Asia/Tokyo" are rejected. Checked only on change so a
+  # legacy value does not block unrelated updates
+  validates :time_zone,
+    inclusion: {in: ->(_) { ActiveSupport::TimeZone.all.map(&:name) }},
+    if: :will_save_change_to_time_zone?
   validate :limit_count, on: :create
 
   after_create :create_sample_item_tag

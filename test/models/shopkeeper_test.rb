@@ -307,4 +307,12 @@ class ShopkeeperTest < ActiveSupport::TestCase
       assert_nil item_tag.created_by_id
     end
   end
+
+  # A stored zone that is not a Rails name must not block unrelated updates
+  test "should not revalidate an unchanged time zone" do
+    shopkeeper = shopkeepers(:one)
+    shopkeeper.update_column(:time_zone, "Asia/Tokyo")
+    shopkeeper.name = "Renamed"
+    assert shopkeeper.valid?
+  end
 end
