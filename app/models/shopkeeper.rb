@@ -31,6 +31,13 @@ class Shopkeeper < ApplicationRecord
 
   validates :locale, inclusion: {in: ->(_) { I18n.available_locales.map(&:to_s) }}
 
+  # Rails time zone names only (the apps send ActiveSupport::TimeZone#name);
+  # IANA ids such as "Asia/Tokyo" are rejected. Checked only on change so a
+  # legacy value does not block unrelated updates
+  validates :time_zone,
+    inclusion: {in: ->(_) { ActiveSupport::TimeZone.all.map(&:name) }},
+    if: :will_save_change_to_time_zone?
+
   # override devise method to include additional info as opts hash
   def send_confirmation_instructions(opts = {})
     generate_confirmation_token! unless @raw_confirmation_token
