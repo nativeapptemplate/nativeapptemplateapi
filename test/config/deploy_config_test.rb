@@ -100,6 +100,18 @@ class DeployConfigTest < ActiveSupport::TestCase
 
   # bin/setup and CI install gems into vendor/bundle for the host platform; copying
   # them into the image breaks `bundle install` there and bloats the image.
+  # The public demo deploys this repo with `bin/kamal deploy -d demo`, which
+  # merges config/deploy.demo.yml over deploy.yml and reads .kamal/secrets.demo
+  # instead of .kamal/secrets (Kamal::Secrets#secrets_filenames). The demo file
+  # holds the real server IP; committing it would publish the origin behind
+  # Cloudflare in this public repo and hand it to every generated app.
+  test "demo destination files stay out of git" do
+    %w[config/deploy.demo.yml .kamal/secrets.demo].each do |path|
+      assert system("git", "check-ignore", "--quiet", "--no-index", path, chdir: Rails.root.to_s),
+        "#{path} must be gitignored"
+    end
+  end
+
   test "Docker build context excludes vendor/bundle" do
     assert_includes Rails.root.join(".dockerignore").readlines.map(&:strip), "/vendor/bundle"
   end

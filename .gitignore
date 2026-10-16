@@ -43,6 +43,11 @@
 /config/credentials/development.key
 /config/credentials/production.key
 
+# Kamal "demo" destination for the public demo of this template. It holds the
+# real server IP, which must not reach this public repo or generated apps.
+/config/deploy.demo.yml
+/.kamal/secrets.demo
+
 # Ignore other files
 .byebug_history
 .DS_Store
