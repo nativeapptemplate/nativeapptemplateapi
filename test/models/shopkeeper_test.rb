@@ -315,4 +315,17 @@ class ShopkeeperTest < ActiveSupport::TestCase
     shopkeeper.name = "Renamed"
     assert shopkeeper.valid?
   end
+
+  # A token column must never be normalized: normalization also runs on finder values,
+  # so turning "" into nil would make where(reset_password_token: "") match every
+  # shopkeeper with no token (WHERE reset_password_token IS NULL)
+  test "a blank token finds no shopkeeper" do
+    shopkeepers(:one).update_columns(reset_password_token: nil, confirmation_token: nil)
+
+    # where, as Devise's lookups do (orm_adapter's find_first); find_by binds nil as
+    # "= NULL" instead and would match nothing either way
+    assert_not Shopkeeper.where(reset_password_token: "").exists?
+    assert_not Shopkeeper.where(confirmation_token: "").exists?
+    assert_nil Shopkeeper.with_reset_password_token("")
+  end
 end

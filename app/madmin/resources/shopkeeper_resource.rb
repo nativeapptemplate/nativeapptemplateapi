@@ -4,11 +4,13 @@ class ShopkeeperResource < Madmin::Resource
   attribute :provider
   attribute :uid
   attribute :encrypted_password
-  attribute :reset_password_token
+  # Read only: the form would send "" for an empty token, which breaks its unique index
+  attribute :reset_password_token, form: false
   attribute :reset_password_sent_at
   attribute :allow_password_change
   attribute :remember_created_at
-  attribute :confirmation_token
+  # Read only: the form would send "" for an empty token, which breaks its unique index
+  attribute :confirmation_token, form: false
   attribute :confirmed_at
   attribute :confirmation_sent_at
   attribute :unconfirmed_email
