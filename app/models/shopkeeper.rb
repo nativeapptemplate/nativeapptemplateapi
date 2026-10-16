@@ -17,6 +17,11 @@ class Shopkeeper < ApplicationRecord
   has_many :application_push_devices, as: :owner, class_name: "ApplicationPushDevice", dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 
+  # No `normalizes` on the token columns: it also rewrites finder values, and
+  # turning "" into nil makes where(reset_password_token: "") match every
+  # shopkeeper without a token. madmin keeps the tokens out of its edit form
+  # instead (ShopkeeperResource), so it never writes "" into their unique indexes.
+
   attribute :token, :string
   attribute :client, :string
   attribute :expiry, :string
