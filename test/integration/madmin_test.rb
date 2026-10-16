@@ -61,6 +61,30 @@ class MadminTest < ActionDispatch::IntegrationTest
     assert_equal "Renamed by admin", @shop.reload.name
   end
 
+  # The edit form sends every field it shows, not just the one the admin changed, so
+  # empty token fields arrive as "". Ported from myturntagapi, where in production
+  # (2026-10-17) saving a shopkeeper whose reset_password_token was nil failed with
+  # PG::UniqueViolation on index_shopkeepers_on_reset_password_token,
+  # "Key (reset_password_token)=() already exists", because an earlier save had
+  # stored "" on another shopkeeper.
+  test "saves the shopkeeper edit form as the browser submits it" do
+    shopkeepers(:two).update_columns(reset_password_token: "", confirmation_token: "")
+    @shopkeeper.update_columns(reset_password_token: nil, confirmation_token: nil)
+    sign_in_admin
+    get ShopkeeperResource.edit_path(@shopkeeper)
+    assert_response :success
+
+    form = Nokogiri::HTML(response.body).at_css("form[action$='/shopkeepers/#{@shopkeeper.id}']")
+    fields = form_fields(form).map do |name, value|
+      (name == "shopkeeper[name]") ? [name, "Renamed by admin"] : [name, value]
+    end
+
+    patch madmin_shopkeeper_path(@shopkeeper), params: URI.encode_www_form(fields),
+      headers: {"CONTENT_TYPE" => "application/x-www-form-urlencoded"}
+    assert_redirected_to madmin_shopkeeper_path(@shopkeeper)
+    assert_equal "Renamed by admin", @shopkeeper.reload.name
+  end
+
   test "blobs and variant records hide write actions" do
     sign_in_admin
 
@@ -98,6 +122,23 @@ class MadminTest < ActionDispatch::IntegrationTest
   end
 
   private
+
+  # [name, value] pairs a browser sends for the form: filled inputs and textareas,
+  # checked boxes and the selected options of each select
+  def form_fields(form)
+    form.css("input, textarea, select").flat_map do |field|
+      name = field["name"]
+      next [] if name.blank? || field["disabled"] || %w[submit button].include?(field["type"])
+
+      case field.name
+      when "select" then field.css("option[selected]").map { |option| [name, option["value"] || option.text] }
+      when "textarea" then [[name, field.text]]
+      else
+        next [] if %w[checkbox radio].include?(field["type"]) && !field["checked"]
+        [[name, field["value"].to_s]]
+      end
+    end
+  end
 
   def sign_in_admin
     post admin_session_path, params: {email: @admin_user.email, password: "password"}
