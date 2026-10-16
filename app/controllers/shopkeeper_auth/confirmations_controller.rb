@@ -1,5 +1,6 @@
 class ShopkeeperAuth::ConfirmationsController < DeviseTokenAuth::ConfirmationsController
   include SameHostRedirect
+  include ThrottleMailRequests
 
   protected
 

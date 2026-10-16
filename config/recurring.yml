@@ -10,3 +10,7 @@ default: &default
 
 production:
   <<: *default
+  # Does nothing unless DEMO_PURGE_INACTIVE_DAYS is set (public demo only).
+  purge_inactive_demo_shopkeepers:
+    class: PurgeInactiveDemoShopkeepersJob
+    schedule: every day at 4:30
