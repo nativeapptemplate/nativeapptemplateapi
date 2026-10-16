@@ -112,6 +112,14 @@ class DeployConfigTest < ActiveSupport::TestCase
     end
   end
 
+  # PurgeInactiveDemoShopkeepersJob deletes shopkeepers when this is set. It
+  # belongs in config/deploy.demo.yml only; here every generated app would
+  # inherit it and delete its real users.
+  test "the committed deploy config never enables the demo purge" do
+    assert_not DEPLOY.dig("env", "clear").key?("DEMO_PURGE_INACTIVE_DAYS")
+    assert_not_includes DEPLOY.dig("env", "secret"), "DEMO_PURGE_INACTIVE_DAYS"
+  end
+
   test "Docker build context excludes vendor/bundle" do
     assert_includes Rails.root.join(".dockerignore").readlines.map(&:strip), "/vendor/bundle"
   end

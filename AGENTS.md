@@ -111,7 +111,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
   - `json_response` for parsing JSON API responses
   - `create_new_auth_token` for generating auth headers (Devise Token Auth)
   - Fixtures in test/fixtures/ and seed data in db/fixtures/test/
-- Run tests: `bin/rails test` (630 tests, 1997 assertions)
+- Run tests: `bin/rails test` (635 tests, 2016 assertions)
 
 ### Internationalization
 - Responses are in English (default) or Japanese, picked by the `SetLocale` concern (included in `ApplicationController` and `NonApiApplicationController`). It wraps `process_action`, not `around_action`, so `rescue_from` handlers and `rate_limit` responses are localized too.
@@ -138,6 +138,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 ### Deployment
 - **This repo runs as a public demo** at `api.nativeapptemplate.com`, deployed with the Kamal `demo` destination (`bin/kamal deploy -d demo`). Its data is disposable: anyone can sign up and it may be reset at any time, so don't preserve records or plan for zero downtime. But a migration must still run on a populated database (`db:prepare` on deploy), and every change ships to the demo. Generated apps inherit the Kamal config below, so keep it correct.
 - Demo-only settings live in `config/deploy.demo.yml` (the real server IP in `servers` and `accessories.db.host`) and `.kamal/secrets.demo`. A destination reads `.kamal/secrets.demo` *instead of* `.kamal/secrets`, so make it a symlink: `ln -s secrets .kamal/secrets.demo`. Both are gitignored (`test/config/deploy_config_test.rb` checks this); the committed `deploy.yml` keeps the `192.168.0.1` placeholder for generated apps.
+- The demo sets `DEMO_PURGE_INACTIVE_DAYS: 30` in `deploy.demo.yml`, so `PurgeInactiveDemoShopkeepersJob` (daily, `config/recurring.yml`) deletes shopkeepers whose last sign-in, or sign-up if they never signed in, is older than that, with their owned accounts. Unset, the job does nothing; never put the variable in `deploy.yml`, or every generated app would delete its real users (`deploy_config_test.rb` checks this).
 - Deployed with [Kamal 2](https://kamal-deploy.org) (`bin/kamal`): `Dockerfile` builds the image, `config/deploy.yml` describes the server, and `.kamal/secrets` reads secrets from the environment and `config/credentials/production.key`. Images go to GitHub Container Registry (`ghcr.io`).
 - One server runs everything: the app (Puma behind Thruster on port 80, fronted by kamal-proxy serving a Cloudflare Origin Certificate with `forward_headers: true` and `ssl_redirect: false`; Cloudflare's ranges are in `config.action_dispatch.trusted_proxies` via `config/cloudflare_ips.yml` so `rate_limit` sees the caller, not the edge), and PostgreSQL as the `db` accessory on the private Docker network (`DB_HOST=<service>-db`; never published to the internet). Solid Queue runs inside Puma via `SOLID_QUEUE_IN_PUMA=true`, so there is no separate job server.
 - Everything named `nativeapptemplateapi` in `config/deploy.yml`, `.kamal/secrets` and `config/database.yml` is renamed together by the agent; the accessory's `POSTGRES_USER`/`POSTGRES_DB` must keep matching `database.yml`'s production `username`/`database` (`test/config/deploy_config_test.rb` checks this).

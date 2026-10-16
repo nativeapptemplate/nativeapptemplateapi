@@ -18,6 +18,13 @@ class RecurringTasksTest < ActiveSupport::TestCase
     assert_includes SolidQueue::Job.method(:clear_finished_in_batches).parameters, [:key, :sleep_between_batches]
   end
 
+  test "production runs the demo purge, which is a no-op outside the demo" do
+    options = CONFIG.dig("production", "purge_inactive_demo_shopkeepers")
+    assert options, "config/recurring.yml has no purge_inactive_demo_shopkeepers task for production"
+
+    assert_equal "PurgeInactiveDemoShopkeepersJob", options["class"]
+  end
+
   test "every recurring task has a command and a supported schedule" do
     CONFIG.each do |env, tasks|
       tasks.each do |key, options|
