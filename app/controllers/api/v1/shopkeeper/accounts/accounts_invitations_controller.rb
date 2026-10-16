@@ -1,4 +1,10 @@
 class Api::V1::Shopkeeper::Accounts::AccountsInvitationsController < Api::V1::Shopkeeper::BaseController
+  # Each create or resend emails an address the caller chooses
+  rate_limit to: 20, within: 1.hour, only: %i[create resend],
+    name: "invitation_mails/shopkeeper",
+    by: -> { current_shopkeeper.id },
+    with: -> { render_error(code: 429, message: I18n.t("errors.messages.too_many_requests"), status: :too_many_requests) }
+
   before_action :set_account
   before_action :set_accounts_invitation, only: %i[show update destroy resend]
 

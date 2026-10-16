@@ -2,6 +2,7 @@ class ShopkeeperAuth::PasswordsController < DeviseTokenAuth::PasswordsController
   include ActionController::MimeResponds
   include ActionController::Flash
   include SameHostRedirect
+  include ThrottleMailRequests
 
   protected
 
