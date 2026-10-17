@@ -25,6 +25,26 @@ class AccountSerializerTest < ActiveSupport::TestCase
     assert_equal @account.owner.name, attributes[:owner_name]
   end
 
+  # The apps unlock paid features in an account when its owner has the override
+  test "should serialize owner_feature_access_state from the owner" do
+    attributes = AccountSerializer.new(@account).serializable_hash[:data][:attributes]
+    # Fixture one is normal_feature_access
+    assert_equal "normal_feature_access", attributes[:owner_feature_access_state]
+
+    @shopkeeper.all_feature_access!
+    attributes = AccountSerializer.new(@account.reload).serializable_hash[:data][:attributes]
+    assert_equal "all_feature_access", attributes[:owner_feature_access_state]
+  end
+
+  test "should serialize owner_feature_access_state of the owner, not the viewing member" do
+    owner = shopkeepers(:two) # fixture: all_feature_access
+    team = Account.create!(name: "Team", owner: owner, personal: false)
+    AccountsShopkeeper.create!(account: team, shopkeeper: @shopkeeper, member: true)
+
+    attributes = AccountSerializer.new(team, params: {current_shopkeeper: @shopkeeper}).serializable_hash[:data][:attributes]
+    assert_equal "all_feature_access", attributes[:owner_feature_access_state]
+  end
+
   test "should serialize accounts_shopkeepers_count" do
     AccountsShopkeeper.create!(
       account: @account,

@@ -17,6 +17,11 @@ class Shopkeeper < ApplicationRecord
   has_many :application_push_devices, as: :owner, class_name: "ApplicationPushDevice", dependent: :destroy
   has_many :notifications, as: :recipient, dependent: :destroy, class_name: "Noticed::Notification"
 
+  # Admin-set override: all_feature_access unlocks every paid feature in the
+  # accounts this shopkeeper owns, without a purchase. Changed only in /madmin;
+  # never permit it in sign-up or account update (RegistrationsController)
+  enum :feature_access_state, {normal_feature_access: 1, all_feature_access: 2}
+
   # No `normalizes` on the token columns: it also rewrites finder values, and
   # turning "" into nil makes where(reset_password_token: "") match every
   # shopkeeper without a token. madmin keeps the tokens out of its edit form

@@ -33,6 +33,30 @@ class ShopkeeperAuth::RegistrationsControllerTest < ActionDispatch::IntegrationT
     assert_equal "Osaka", shopkeeper.reload.time_zone
   end
 
+  # feature_access_state unlocks paid features, so only /madmin may change it
+  test "sign up ignores feature_access_state" do
+    post shopkeeper_registration_url, params: {email: "sneaky@example.com", name: "Sneaky", password: "password",
+                                               time_zone: "Tokyo", current_platform: "ios", feature_access_state: "all_feature_access"}
+    assert_response :success
+
+    # The column default (migration) is normal_feature_access
+    assert_predicate Shopkeeper.find_by!(email: "sneaky@example.com"), :normal_feature_access?
+    assert_equal "normal_feature_access", response.parsed_body.dig("data", "attributes", "feature_access_state")
+  end
+
+  test "update ignores feature_access_state" do
+    shopkeeper.create_default_account
+    assert_predicate shopkeeper, :normal_feature_access?
+
+    patch shopkeeper_registration_url, params: {name: "Renamed", feature_access_state: "all_feature_access"},
+      headers: shopkeeper.create_new_auth_token
+
+    assert_response :success
+    shopkeeper.reload
+    assert_equal "Renamed", shopkeeper.name, "the permitted field in the same request is applied"
+    assert_predicate shopkeeper, :normal_feature_access?
+  end
+
   test "rejects an unknown time zone on update with 422" do
     shopkeeper.create_default_account
     patch shopkeeper_registration_url, params: {time_zone: "Bogus"}, headers: shopkeeper.create_new_auth_token

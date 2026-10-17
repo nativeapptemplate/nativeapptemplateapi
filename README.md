@@ -43,6 +43,7 @@ Want a customized backend generated for you? [nativeapptemplate-agent](https://g
 - Force Privacy Policy Version Update
 - Force Terms of Use Version Update
 - Push Notifications (APNs for iOS, FCM for Android) — paid clients only
+- Admin-Set Full Feature Access Override for subscriptions — paid clients only
 - Optional Error Monitoring with Sentry (no personal data sent)
 - And more!
 
@@ -129,6 +130,18 @@ bin/kamal setup
 ```
 
 Later deploys are `bin/kamal deploy`; `bin/kamal console`, `bin/kamal logs` and `bin/kamal dbc` are defined as aliases.
+
+## Full feature access override
+
+The paid clients sell a subscription through RevenueCat and check the entitlement in the app; this API keeps no subscription state. To unlock every paid feature for a shopkeeper without a purchase, open the shopkeeper in `/madmin` and set **Feature access state** to `all_feature_access`. Every account that shopkeeper owns is unlocked, for its members too. The apps pick it up on the next sign-in or organization switch. Use it for:
+
+- testing paid features on production without buying,
+- staff, partner and complimentary accounts,
+- the demo account you give App Review.
+
+The apps cannot set it: sign-up and `PATCH /shopkeeper_auth` ignore `feature_access_state`. The API returns it as `feature_access_state` and `account_owner_feature_access_state` on sign-in and `owner_feature_access_state` on accounts.
+
+The no-code alternative is a promotional entitlement, granted on the customer page of the RevenueCat dashboard. It works only with billing on, and it goes on the RevenueCat customer whose app user ID is the account owner's shopkeeper ID, not the member's.
 
 ## Error monitoring (Sentry)
 

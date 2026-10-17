@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_17_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -209,6 +209,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_000000) do
     t.inet "current_sign_in_ip"
     t.string "email"
     t.string "encrypted_password", default: "", null: false
+    t.integer "feature_access_state", default: 1, null: false
     t.string "image"
     t.datetime "last_sign_in_at", precision: nil
     t.inet "last_sign_in_ip"
@@ -227,6 +228,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_000000) do
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_shopkeepers_on_confirmation_token", unique: true
     t.index ["email"], name: "index_shopkeepers_on_email", unique: true
+    t.index ["feature_access_state"], name: "index_shopkeepers_on_feature_access_state"
     t.index ["reset_password_token"], name: "index_shopkeepers_on_reset_password_token", unique: true
     t.index ["uid", "provider"], name: "index_shopkeepers_on_uid_and_provider", unique: true
   end
