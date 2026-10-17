@@ -29,6 +29,7 @@ class ShopkeeperResource < Madmin::Resource
   attribute :created_at, form: false
   attribute :updated_at, form: false
   attribute :current_platform
+  attribute :feature_access_state
   attribute :confirmed_privacy_version
   attribute :confirmed_terms_version
   attribute :token, index: false

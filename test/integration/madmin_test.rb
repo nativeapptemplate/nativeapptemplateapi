@@ -85,6 +85,26 @@ class MadminTest < ActionDispatch::IntegrationTest
     assert_equal "Renamed by admin", @shopkeeper.reload.name
   end
 
+  # The only way to grant the full feature access override; the apps cannot set it
+  test "sets feature_access_state from the shopkeeper edit form" do
+    assert_predicate @shopkeeper, :normal_feature_access?
+    sign_in_admin
+    get ShopkeeperResource.edit_path(@shopkeeper)
+    assert_response :success
+
+    form = Nokogiri::HTML(response.body).at_css("form[action$='/shopkeepers/#{@shopkeeper.id}']")
+    fields = form_fields(form)
+    assert fields.any? { |name, _| name == "shopkeeper[feature_access_state]" }, "the edit form has no feature_access_state field"
+    fields = fields.map do |name, value|
+      (name == "shopkeeper[feature_access_state]") ? [name, "all_feature_access"] : [name, value]
+    end
+
+    patch madmin_shopkeeper_path(@shopkeeper), params: URI.encode_www_form(fields),
+      headers: {"CONTENT_TYPE" => "application/x-www-form-urlencoded"}
+    assert_redirected_to madmin_shopkeeper_path(@shopkeeper)
+    assert_predicate @shopkeeper.reload, :all_feature_access?
+  end
+
   test "blobs and variant records hide write actions" do
     sign_in_admin
 

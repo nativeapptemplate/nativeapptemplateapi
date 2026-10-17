@@ -13,6 +13,10 @@ class AccountSerializer
     account.owner.name
   end
 
+  attribute :owner_feature_access_state do |account|
+    account.owner.feature_access_state
+  end
+
   attribute :accounts_shopkeepers_count do |account|
     account.accounts_shopkeepers.size
   end

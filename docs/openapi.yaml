@@ -146,6 +146,10 @@ components:
           type: boolean
         owner_name:
           type: string
+        owner_feature_access_state:
+          type: string
+          enum: [normal_feature_access, all_feature_access]
+          description: The owner's admin-set override. `all_feature_access` unlocks every paid feature in this account without a purchase.
         accounts_shopkeepers_count:
           type: integer
         accounts_invitations_count:
@@ -440,6 +444,10 @@ components:
           format: email
         time_zone:
           type: string
+        feature_access_state:
+          type: string
+          enum: [normal_feature_access, all_feature_access]
+          description: Admin-set override, changed only in `/madmin`. Sign-up and `PATCH /shopkeeper_auth` ignore it.
         locale:
           type: string
         token:
@@ -457,6 +465,10 @@ components:
         account_owner_id:
           type: string
           format: uuid
+        account_owner_feature_access_state:
+          type: string
+          enum: [normal_feature_access, all_feature_access]
+          description: The `feature_access_state` of the owner of the personal account (`account_owner_id`), the account the apps open after sign-in.
         account_name:
           type: string
 

@@ -56,6 +56,18 @@ class ShopkeeperSignInSerializerTest < ActiveSupport::TestCase
     assert_equal @shopkeeper.personal_account.owner_id, attributes[:account_owner_id]
   end
 
+  test "should serialize feature_access_state and account_owner_feature_access_state" do
+    attributes = ShopkeeperSignInSerializer.new(@shopkeeper).serializable_hash[:data][:attributes]
+    # Fixture one is normal_feature_access
+    assert_equal "normal_feature_access", attributes[:feature_access_state]
+    assert_equal "normal_feature_access", attributes[:account_owner_feature_access_state]
+
+    @shopkeeper.all_feature_access!
+    attributes = ShopkeeperSignInSerializer.new(@shopkeeper).serializable_hash[:data][:attributes]
+    assert_equal "all_feature_access", attributes[:feature_access_state]
+    assert_equal "all_feature_access", attributes[:account_owner_feature_access_state]
+  end
+
   test "should serialize account_name" do
     serializer = ShopkeeperSignInSerializer.new(@shopkeeper)
     serialized = serializer.serializable_hash

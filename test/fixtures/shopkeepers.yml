@@ -7,6 +7,7 @@ one:
   confirmed_terms_version: 1.0.0
   time_zone: Tokyo
   current_platform: ios
+  feature_access_state: normal_feature_access
   confirmed_at: <%= Time.current %>
 
 two:
@@ -18,4 +19,5 @@ two:
   confirmed_terms_version: 1.0.0
   time_zone: Tokyo
   current_platform: ios
+  feature_access_state: all_feature_access
   confirmed_at: <%= Time.current %>
