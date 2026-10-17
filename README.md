@@ -90,6 +90,12 @@ bin/setup
 
 Push notifications (used by the paid iOS/Android clients) need APNs and FCM credentials. Add them per environment with `bin/rails credentials:edit --environment <env>` under `action_push_native:apns` and `action_push_native:fcm`; see `config/push.yml` for the expected keys.
 
+## App name and store links
+
+`config/settings.yml` has two kinds of app name. `display_name` (`Native App Template`) is the name people read: mails (sender name, invitation text, footer) and the HTML pages use it. `site.name` and `business.name` (`NativeAppTemplate`) are the one-word identifier-like names; keep them for code that needs one.
+
+The invitation mail links the App Store and Google Play only when `mobile_app.app_store_url` / `mobile_app.play_store_url` are set. Both are blank by default, so no placeholder link is sent; fill them in once the apps are published.
+
 ## Running NativeAppTemplate API on your Wi-Fi
 
 Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATIVEAPPTEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
