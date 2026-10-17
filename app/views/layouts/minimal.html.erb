@@ -5,7 +5,7 @@
       <% if content_for?(:title) %>
         <%= yield :title %> |
       <% end %>
-      <%= ConfigSettings.site.name %>
+      <%= ConfigSettings.display_name %>
     </title>
 
     <%= csrf_meta_tags %>

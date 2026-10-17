@@ -22,4 +22,15 @@ class ShopkeeperAuth::ResetPasswordsControllerTest < ActionDispatch::Integration
     assert_response :success
     assert_match "tok-xyz", response.body
   end
+
+  # The page showed public/icon.svg, the template's logo, which an app built
+  # from the template kept. It names the app in text instead.
+  test "edit names the app in text instead of showing the template logo" do
+    get edit_shopkeeper_auth_reset_password_url(reset_password_token: "abc123")
+
+    assert_response :success
+    assert_select "p", text: ConfigSettings.display_name
+    assert_select "img", count: 0
+    assert_select "title", text: /#{Regexp.escape(ConfigSettings.display_name)}/
+  end
 end

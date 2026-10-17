@@ -96,6 +96,8 @@ Push notifications (used by the paid iOS/Android clients) need APNs and FCM cred
 
 The invitation mail links the App Store and Google Play only when `mobile_app.app_store_url` / `mobile_app.play_store_url` are set. Both are blank by default, so no placeholder link is sent; fill them in once the apps are published.
 
+The icons in `public/` (`favicon.ico`, `icon.svg`, `icon.png`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) are the template's and only appear as browser favicons; replace them with your app's icons. The HTML pages (password reset, email confirmation, error pages) name the app in text with `display_name` instead of showing a logo.
+
 ## Running NativeAppTemplate API on your Wi-Fi
 
 Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATIVEAPPTEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.
