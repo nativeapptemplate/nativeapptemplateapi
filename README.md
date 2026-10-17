@@ -133,7 +133,7 @@ Later deploys are `bin/kamal deploy`; `bin/kamal console`, `bin/kamal logs` and 
 
 ## Full feature access override
 
-The paid clients sell a subscription through RevenueCat and check the entitlement in the app; this API keeps no subscription state. To unlock every paid feature for a shopkeeper without a purchase, open the shopkeeper in `/madmin` and set **Feature access state** to `all_feature_access`. Every account that shopkeeper owns is unlocked, for its members too. The apps pick it up on the next sign-in or organization switch. Use it for:
+The paid clients sell a subscription through RevenueCat and check the entitlement in the app; this API keeps no subscription state. To unlock every paid feature for a shopkeeper without a purchase, open the shopkeeper in `/madmin` and set **Feature access state** to `all_feature_access`. Every account that shopkeeper owns is unlocked, for its members too. The apps pick it up when they next come to the foreground (they re-read the current account then), or at the next sign-in or organization switch. Use it for:
 
 - testing paid features on production without buying,
 - staff, partner and complimentary accounts,
