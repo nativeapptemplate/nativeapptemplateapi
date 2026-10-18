@@ -20,6 +20,12 @@ class ErrorsControllerTest < ActionController::TestCase
     assert_match(/text\/html/, response.media_type)
   end
 
+  test "HTML error page title names the app by its display name" do
+    get :not_found
+
+    assert_select "title", text: /#{Regexp.escape(ConfigSettings.display_name)}/
+  end
+
   test "internal_server_error responds with 500 JSON when content-type is JSON" do
     @request.headers["Content-Type"] = "application/json"
     get :internal_server_error

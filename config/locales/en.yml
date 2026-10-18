@@ -92,6 +92,8 @@ en:
         tap_join_button: "Tap Join button."
         enter_your_invitation_code: "Enter your invitation code below."
         if_you_accepted_invitation_switch_to_organization: "If you accepted the invitation, switch to the organization(Organizations > [Organization] > Switch)."
+        ios_app: "%{mobile_app} for iOS"
+        android_app: "%{mobile_app} for Android"
         expires_in: "This invitation will expire in %{expires_in} hours."
       reset_password_instructions:
         subject: "Reset password instructions"
@@ -123,7 +125,7 @@ en:
 
   layouts:
     mailer:
-      copyright_html: "&copy; %{year} %{business_name} All rights reserved."
+      copyright_html: "&copy; %{year} %{name} All rights reserved."
 
   activerecord:
     attributes:

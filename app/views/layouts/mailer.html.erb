@@ -115,7 +115,7 @@
                         <tr>
                           <td valign="top" class="addressContent">
                             <div>
-                              <em><%= t(".copyright_html", year: Date.current.year, business_name: ConfigSettings.business.name) %></em>
+                              <em><%= t(".copyright_html", year: Date.current.year, name: ConfigSettings.display_name) %></em>
                             </div>
                           </td>
                         </tr>
@@ -126,7 +126,7 @@
                     <td valign="middle" class="bodyContent">
                       <div>
                         &nbsp;
-                        <%= link_to ConfigSettings.site.name, ConfigSettings.site.url, target: :_blank %>
+                        <%= link_to ConfigSettings.display_name, ConfigSettings.site.url, target: :_blank %>
                         &nbsp;
                       </div>
                     </td>

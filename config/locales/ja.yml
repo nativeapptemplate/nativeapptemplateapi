@@ -68,6 +68,8 @@ ja:
         tap_join_button: "「参加」ボタンをタップします。"
         enter_your_invitation_code: "下記の招待コードを入力します。"
         if_you_accepted_invitation_switch_to_organization: "招待を承認したら、その組織に切り替えます（組織 > [組織名] > 切り替え）。"
+        ios_app: "%{mobile_app} iOS版"
+        android_app: "%{mobile_app} Android版"
         expires_in: "この招待の有効期限は%{expires_in}時間です。"
       reset_password_instructions:
         subject: "パスワード再設定のご案内"
@@ -114,7 +116,7 @@ ja:
 
   layouts:
     mailer:
-      copyright_html: "&copy; %{year} %{business_name} All rights reserved."
+      copyright_html: "&copy; %{year} %{name} All rights reserved."
 
   activerecord:
     models:

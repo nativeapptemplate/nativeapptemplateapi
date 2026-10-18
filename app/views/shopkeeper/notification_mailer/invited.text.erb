@@ -2,10 +2,10 @@
 
 <%= t(".you_can_accept_or_decline") %>
 
-<%= strip_tags t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
+<%= strip_tags t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.display_name) %>
 
 <%= t(".instructions_heading") %>
-1. <%= strip_tags t(".open_mobile_app_html", mobile_app: ConfigSettings.mobile_app.name) %>
+1. <%= strip_tags t(".open_mobile_app_html", mobile_app: ConfigSettings.display_name) %>
 2. <%= strip_tags t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %>
 3. <%= t(".select_organization_tab") %>
 4. <%= t(".tap_join_button") %>
@@ -14,7 +14,10 @@
 
 <%= @accounts_invitation.token %>
 
-<%= ConfigSettings.mobile_app.name_ios %>: <%= ConfigSettings.mobile_app.app_store_url %>
-<%= ConfigSettings.mobile_app.name_android %>: <%= ConfigSettings.mobile_app.play_store_url %>
+<% if @store_links.any? %>
+<% @store_links.each do |label, url| %>
+<%= label %>: <%= url %>
+<% end %>
 
+<% end %>
 <%= t(".expires_in", expires_in: ConfigSettings.accounts_invitation.expires_in_hours) %>
