@@ -84,7 +84,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
-    acts_as_tenant (2.0.2)
+    acts_as_tenant (2.2.1)
       rails (>= 6.0)
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
@@ -122,9 +122,9 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.7)
+    crass (1.0.8)
     csv (3.3.6)
-    date (3.5.1)
+    date (3.6.0)
     debug (1.11.1)
       irb (~> 1.10)
       reline (>= 0.3.8)
@@ -204,7 +204,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (3.0.2)
+    json (3.1.0)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.3.0)
@@ -226,7 +226,7 @@ GEM
     loofah (2.25.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    madmin (3.2.0)
+    madmin (3.3.0)
       importmap-rails
       rails (>= 7.0.0)
       stimulus-rails
@@ -263,7 +263,7 @@ GEM
       bigdecimal (>= 3.1, < 5)
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.6.7)
+    net-imap (0.6.8)
       date
       net-protocol
     net-pop (0.1.2)
@@ -311,7 +311,7 @@ GEM
     pg (1.7.0-x86_64-linux)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
+    prettyprint (0.2.1)
     prism (1.9.0)
     propshaft (1.3.2)
       actionpack (>= 7.0.0)
@@ -329,7 +329,7 @@ GEM
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
-    rack-test (2.2.0)
+    rack-test (2.3.0)
       rack (>= 1.3)
     rackup (2.3.1)
       rack (>= 3)
@@ -377,7 +377,7 @@ GEM
     regexp_parser (2.13.1)
     reline (0.7.0)
       io-console (~> 0.5)
-    resend (1.17.0)
+    resend (1.18.0)
       base64
       httparty (>= 0.22.0)
     responders (3.2.1)
@@ -481,7 +481,7 @@ GEM
     unicode-display_width (3.3.0)
       unicode-emoji (~> 4.3)
     unicode-emoji (4.3.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     valid_email2 (7.1.0)
       activemodel (>= 6.0)
@@ -492,7 +492,7 @@ GEM
       actionview (>= 8.0.0)
       bindex (>= 0.4.0)
       railties (>= 8.0.0)
-    webmock (3.26.4)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
@@ -527,7 +527,7 @@ DEPENDENCIES
   importmap-rails
   jsonapi-serializer
   kamal
-  madmin (~> 3.1)
+  madmin (~> 3.3)
   mailbin
   minitest-mock
   mission_control-jobs
