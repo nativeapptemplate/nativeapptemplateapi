@@ -1,27 +1,28 @@
-<h1 style="font-weight:400;line-height:1.25;">
-  <%= t(".header_html", inviter: @inviter_name, account: @account.name) %>
-</h1>
+<h1><%= t(".header_html", inviter: @inviter_name, account: @account.name) %></h1>
 
-<p style="margin-bottom:2rem;">
+<p>
   <%= t(".you_can_accept_or_decline") %>
   <br>
   <%= t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.display_name) %>
 </p>
 
-<p><%= t(".instructions_heading") %></p>
-<p>1. <%= t(".open_mobile_app_html", mobile_app: ConfigSettings.display_name) %></p>
-<p>2. <%= t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %></p>
-<p>3. <%= t(".select_organization_tab") %></p>
-<p>4. <%= t(".tap_join_button") %></p>
-<p>5. <%= t(".enter_your_invitation_code") %></p>
-<p>6. <%= t(".if_you_accepted_invitation_switch_to_organization") %></p>
-
-<h2 style="font-weight:400;letter-spacing:2px;">
+<%# The code is what the steps below ask for, so it stands out: a tinted box, large and monospaced %>
+<div class="code" style="margin:0 0 24px;padding:20px;background-color:#E3F8FF;border-radius:12px;text-align:center;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:28px;letter-spacing:4px;color:#1F2933;">
   <strong><%= @accounts_invitation.token %></strong>
-</h2>
+</div>
+
+<p style="margin-bottom:8px;"><strong><%= t(".instructions_heading") %></strong></p>
+<ol>
+  <li><%= t(".open_mobile_app_html", mobile_app: ConfigSettings.display_name) %></li>
+  <li><%= t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %></li>
+  <li><%= t(".select_organization_tab") %></li>
+  <li><%= t(".tap_join_button") %></li>
+  <li><%= t(".enter_your_invitation_code") %></li>
+  <li><%= t(".if_you_accepted_invitation_switch_to_organization") %></li>
+</ol>
 
 <% @store_links.each do |label, url| %>
   <p><%= link_to label, url, target: :_blank %></p>
 <% end %>
 
-<p><%= t(".expires_in", expires_in: ConfigSettings.accounts_invitation.expires_in_hours) %></p>
+<p class="divider" style="margin:0;padding-top:16px;border-top:1px solid #E4E7EB;font-size:13px;color:#616E7C;"><%= t(".expires_in", expires_in: ConfigSettings.accounts_invitation.expires_in_hours) %></p>

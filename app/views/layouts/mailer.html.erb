@@ -1,145 +1,140 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html lang="<%= I18n.locale %>">
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <%# Colors are the apps' palette (iOS Color+Extensions.swift, Android Color.kt):
+      Light Blue for the accent, Cool Grey for the rest. Mail clients ignore CSS
+      variables, so the light values are inline and the dark ones override them here %>
   <style type="text/css">
-  /* Client-specific Styles */
-  #outlook a {
-    padding: 0;
-  }
-
-  /* Force Outlook to provide a "view in browser" button. */
-  body {
-    width: 100% !important;
-  }
-
-  .ReadMsgBody {
-    width: 100%;
-  }
-
-  .ExternalClass {
-    width: 100%;
-  }
-
-  /* Force Hotmail to display emails at full width */
-  body {
-    -webkit-text-size-adjust: none;
-  }
-
-  /* Prevent Webkit platforms from changing default text sizes. */
-
-  /* Reset Styles */
   body {
     margin: 0;
     padding: 0;
-  }
-
-  img {
-    border: 0;
-    height: auto;
-    line-height: 100%;
-    outline: none;
-    text-decoration: none;
+    width: 100% !important;
+    -webkit-text-size-adjust: none;
   }
 
   table td {
     border-collapse: collapse;
   }
 
-  .bodyContent div {
-    color: #505050;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 150%;
-    text-align: left;
+  a {
+    color: #0B69A3;
   }
 
-  .addressContent div {
-    color: #505050;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    line-height: 140%;
-    text-align: left;
+  .content p {
+    margin: 0 0 16px;
   }
 
-  .bodyContent img {
-    display: inline;
-    height: auto;
+  .content h1 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #1F2933;
   }
 
-  .bodyContent div a:link,
-  .bodyContent div a:visited,
-  .bodyContent div a .yshortcuts
+  .content ol {
+    margin: 0 0 16px;
+    padding-left: 24px;
+  }
 
-  /* Yahoo! Mail Override */
-    {
-    color: #336699;
-    font-weight: normal;
-    text-decoration: underline;
+  .content li {
+    margin: 0 0 6px;
+  }
+
+  .footer a {
+    color: #616E7C;
+  }
+
+  @media (max-width: 600px) {
+    .card {
+      padding: 24px !important;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .ground {
+      background-color: #1F2933 !important;
+    }
+
+    .logo {
+      color: #5ED0FA !important;
+    }
+
+    .card {
+      background-color: #323F4B !important;
+    }
+
+    .content,
+    .content p,
+    .content li {
+      color: #E4E7EB !important;
+    }
+
+    .content h1,
+    .content strong {
+      color: #F5F7FA !important;
+    }
+
+    a,
+    .content a {
+      color: #5ED0FA !important;
+    }
+
+    .button-cell a {
+      color: #FFFFFF !important;
+    }
+
+    .code {
+      background-color: #035388 !important;
+      color: #FFFFFF !important;
+    }
+
+    .divider {
+      border-color: #3E4C59 !important;
+    }
+
+    .footer,
+    .footer a,
+    .content .divider {
+      color: #CBD2D9 !important;
+    }
   }
   </style>
 </head>
 
-<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
-  <center>
-    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-      <tr>
-        <td align="center" valign="top" style="padding-top:20px;">
-          <table border="0" cellpadding="0" cellspacing="0" width="600">
-            <tr>
-              <td align="center" valign="top">
-                <table border="0" cellpadding="0" cellspacing="0" width="600">
-                  <tr>
-                    <td valign="top" class="bodyContent">
-                      <table border="0" cellpadding="20" cellspacing="0" width="100%">
-                        <tr>
-                          <td valign="top">
-                            <div>
-                              <%= yield %>
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <tr>
-              <td align="center" valign="top">
-                <table border="0" cellpadding="10" cellspacing="0" width="600">
-                  <tr>
-                    <td valign="top">
-                      <table border="0" cellpadding="10" cellspacing="0" width="100%">
-                        <tr>
-                          <td valign="top" class="addressContent">
-                            <div>
-                              <em><%= t(".copyright_html", year: Date.current.year, name: ConfigSettings.display_name) %></em>
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td valign="middle" class="bodyContent">
-                      <div>
-                        &nbsp;
-                        <%= link_to ConfigSettings.display_name, ConfigSettings.site.url, target: :_blank %>
-                        &nbsp;
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-          <br>
-        </td>
-      </tr>
-    </table>
-  </center>
+<body class="ground" style="margin:0;padding:0;background-color:#F5F7FA;">
+  <table class="ground" role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#F5F7FA;">
+    <tr>
+      <td align="center" style="padding:32px 16px;font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN','Segoe UI',Meiryo,sans-serif;">
+        <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;">
+          <tr>
+            <td class="logo" style="padding:0 4px 20px;font-size:24px;font-weight:700;letter-spacing:-0.3px;color:#127FBF;">
+              <%= ConfigSettings.display_name %>
+            </td>
+          </tr>
+          <tr>
+            <%# overflow-wrap: an email address in a heading is one long word; unwrapped it
+                widens the mail and iOS Mail shrinks the whole message to fit %>
+            <td class="card content" style="padding:32px;background-color:#FFFFFF;border-radius:16px;font-size:15px;line-height:1.7;color:#3E4C59;overflow-wrap:anywhere;word-break:break-word;">
+              <%= yield %>
+            </td>
+          </tr>
+          <tr>
+            <td class="footer" style="padding:24px 4px 0;font-size:12px;line-height:1.6;color:#616E7C;">
+              <%= t(".copyright_html", year: Date.current.year, name: ConfigSettings.display_name) %>
+              <br>
+              <%= link_to ConfigSettings.display_name, ConfigSettings.site.url, target: :_blank %>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 
 </html>

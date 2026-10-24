@@ -74,6 +74,64 @@ class Shopkeeper::NotificationMailerTest < ActionMailer::TestCase
     assert_match @shopkeeper.email, mail.body.encoded
   end
 
+  # The confirmation mail's heading is the shopkeeper's email address, one word
+  # with no break opportunity. Wider than the card, it made iOS Mail shrink the
+  # whole message, so the ground no longer filled the screen (dark mode showed
+  # Mail's own gray around it). The card lets long words wrap
+  test "the card lets a long email address wrap instead of widening the mail" do
+    mail = Shopkeeper::NotificationMailer.with(
+      resource: @shopkeeper,
+      token: "tok",
+      opts: {redirect_url: "http://example.com/confirm", client_config: "default"}
+    ).confirmation_instructions
+
+    card = Nokogiri::HTML(mail.html_part.body.decoded).at_css("td.card")
+    assert_match(/overflow-wrap:\s*anywhere/, card["style"])
+    assert_match(/word-break:\s*break-word/, card["style"])
+  end
+
+  # The layout fits phones (viewport) and follows the reader's dark mode
+  test "the layout sets the viewport and has a dark color scheme" do
+    mail = Shopkeeper::NotificationMailer.with(accounts_invitation: @invitation).invited
+    html = Nokogiri::HTML(mail.html_part.body.decoded)
+
+    assert html.at_css('meta[name="viewport"]')
+    assert_includes html.at_css("style").text, "prefers-color-scheme: dark"
+  end
+
+  # The way into confirming and resetting is a filled button, not an underlined
+  # text link
+  test "confirmation and reset mails link through a filled button" do
+    confirmation = Shopkeeper::NotificationMailer.with(
+      resource: @shopkeeper,
+      token: "confirm-token-123",
+      opts: {redirect_url: "http://example.com/confirm", client_config: "default"}
+    ).confirmation_instructions
+    reset = Shopkeeper::NotificationMailer.with(
+      resource: @shopkeeper,
+      token: "reset-token-xyz",
+      opts: {redirect_url: "http://example.com/reset", client_config: "default"}
+    ).reset_password_instructions
+
+    {
+      confirmation => ["confirm-token-123", I18n.t("shopkeeper.notification_mailer.confirmation_instructions.confirm_account_link")],
+      reset => ["reset-token-xyz", I18n.t("shopkeeper.notification_mailer.reset_password_instructions.password_change_link")]
+    }.each do |mail, (token, label)|
+      button = Nokogiri::HTML(mail.html_part.body.decoded).at_css("td.button-cell a")
+      assert_equal label, button.text
+      assert_includes button["href"], token
+    end
+  end
+
+  # The invitation code stands out in a box, and the steps are a real list
+  test "invited puts the code in a box and the steps in an ordered list" do
+    mail = Shopkeeper::NotificationMailer.with(accounts_invitation: @invitation).invited
+    html = Nokogiri::HTML(mail.html_part.body.decoded)
+
+    assert_equal @invitation.token, html.at_css(".code").text.strip
+    assert_equal 6, html.css("ol li").size
+  end
+
   test "confirmation_instructions uses opts[:to] when provided" do
     mail = Shopkeeper::NotificationMailer.with(
       resource: @shopkeeper,

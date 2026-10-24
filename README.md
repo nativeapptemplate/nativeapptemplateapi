@@ -100,6 +100,8 @@ Push notifications (used by the paid iOS/Android clients) need APNs and FCM cred
 
 The invitation mail links the App Store and Google Play only when `mobile_app.app_store_url` / `mobile_app.play_store_url` are set. Both are blank by default, so no placeholder link is sent; fill them in once the apps are published.
 
+The mails use the apps' colors (Light Blue accent, Cool Grey text and ground) and follow the reader's dark mode. To use your app's colors, change the hex values in `app/views/layouts/mailer.html.erb`, `app/views/shopkeeper/notification_mailer/_button.html.erb` and the code box in `invited.html.erb`. Look at the three mails at `/rails/mailers` in development (`?locale=ja` for Japanese).
+
 The icons in `public/` (`favicon.ico`, `icon.svg`, `icon.png`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) are the template's and only appear as browser favicons; replace them with your app's icons. The HTML pages (password reset, email confirmation, error pages) name the app in text with `display_name` instead of showing a logo.
 
 ## Running NativeAppTemplate API on your Wi-Fi
