@@ -6,8 +6,14 @@ class ItemTag < ApplicationRecord
   belongs_to :shop
   belongs_to :created_by, class_name: "Shopkeeper", optional: true
   belongs_to :completed_by, class_name: "Shopkeeper", optional: true
+  # The completion notifications go with their item tag; a pending delivery
+  # whose event is gone is discarded (Noticed::ApplicationJob)
+  has_many :noticed_events, as: :record, dependent: :destroy, class_name: "Noticed::Event"
 
-  enum :state, {idled: 1, completed: 2}
+  # prefix: AASM defines idled?/completed? and the scopes; without it both
+  # define them and Rails warns "overriding method" at boot. AASM still maps
+  # the integer column through ItemTag.states
+  enum :state, {idled: 1, completed: 2}, prefix: true
 
   validates :name, presence: true
   validate :limit_count, on: :create

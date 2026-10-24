@@ -9,6 +9,7 @@ class AccountsInvitation < ApplicationRecord
 
   validates :name, :email, presence: true
   validates :email, uniqueness: {scope: :account_id, message: :invited}
+  validate :email_not_a_member, on: :create
 
   before_create :set_token
 
@@ -58,6 +59,14 @@ class AccountsInvitation < ApplicationRecord
   end
 
   private
+
+  # Accepting would fail anyway (accounts_shopkeepers is unique per shopkeeper), after the mail went out
+  def email_not_a_member
+    return if account.nil? || email.blank?
+
+    address = email.to_s.strip.downcase
+    errors.add(:email, :member) if account.shopkeepers.exists?(email: address)
+  end
 
   def set_token
     self.token = loop do

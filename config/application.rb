@@ -62,5 +62,8 @@ module Nativeapptemplateapi
     # because the engine copies config.mission_control.jobs into its settings
     # before the app's initializers run.
     config.mission_control.jobs.http_basic_auth_enabled = false
+    # Its default base, ::ApplicationController, is ActionController::API, which
+    # has no CSRF check for the dashboard's retry/discard forms
+    config.mission_control.jobs.base_controller_class = "Madmin::ApplicationController"
   end
 end

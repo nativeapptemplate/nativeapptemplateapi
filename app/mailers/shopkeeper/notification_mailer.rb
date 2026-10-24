@@ -10,9 +10,10 @@ class Shopkeeper::NotificationMailer < ShopkeeperMailer
     name = @accounts_invitation.name
     email = @accounts_invitation.email
 
+    # From stays the app (ApplicationMailer's default): the inviter's name is
+    # free text, so it goes in the subject and body only
     mail(
       to: email_address_with_name(email, name),
-      from: email_address_with_name(ConfigSettings.email.default_from, @inviter_name),
       subject: I18n.t("shopkeeper.notification_mailer.invited.subject", inviter: @inviter_name, account: @account.name)
     )
   end

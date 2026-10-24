@@ -1,6 +1,8 @@
 require "test_helper"
 
 class ItemTagTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
+
   def setup
     @shopkeeper = shopkeepers(:one)
     @shopkeeper.create_default_account
@@ -137,6 +139,23 @@ class ItemTagTest < ActiveSupport::TestCase
       notification = Noticed::Notification.last
       assert_equal other, notification.recipient
       assert_equal item_tag, notification.record
+    end
+  end
+
+  # Bug: the event outlived a deleted shop, and its pending delivery job
+  # raised NoMethodError on the missing record (ItemTagNotifier reads
+  # record.shop.name)
+  test "deleting the shop deletes its item tags' notifications and drops pending deliveries" do
+    ActsAsTenant.with_tenant(@account) do
+      other = shopkeepers(:two)
+      AccountsShopkeeper.create!(account: @account, shopkeeper: other, roles: {member: true})
+      @shop.item_tags.first.complete_by!(@shopkeeper)
+      assert_equal 1, Noticed::Event.where(record_type: "ItemTag").count
+
+      @shop.reload.destroy!
+
+      assert_equal 0, Noticed::Event.where(record_type: "ItemTag").count
+      assert_nothing_raised { perform_enqueued_jobs }
     end
   end
 

@@ -29,6 +29,19 @@ class Shopkeeper::NotificationMailerTest < ActionMailer::TestCase
     assert_match @account.name, mail.body.encoded
   end
 
+  # The display name in From is what mail clients show as the sender. The
+  # inviter's name is free text ("Apple Support"), so From names the app
+  # (config/settings.yml display_name); the subject and body still say who
+  # invited
+  test "invited sends from the app's name, not the inviter's" do
+    @shopkeeper.update!(name: "Apple Support")
+
+    mail = Shopkeeper::NotificationMailer.with(accounts_invitation: @invitation).invited
+
+    assert_equal ConfigSettings.display_name, mail[:from].display_names.first
+    assert_includes mail.subject, "Apple Support"
+  end
+
   # Bug: deleting the inviter nullifies invited_by, and resending such an
   # invitation raised NoMethodError on nil.name inside the mail job. The mail
   # now names the app instead (config/settings.yml display_name).
@@ -82,6 +95,21 @@ class Shopkeeper::NotificationMailerTest < ActionMailer::TestCase
     assert_equal I18n.t("shopkeeper.notification_mailer.reset_password_instructions.subject"), mail.subject
     assert_equal [@shopkeeper.email], mail.to
     assert_match "reset-token-xyz", mail.body.encoded
+  end
+
+  # Bug: the named route took @resource as its format, so the link ended in
+  # /password/edit.<shopkeeper id>, which put the shopkeeper's id in the URL
+  test "reset_password_instructions links to /password/edit without the shopkeeper's id" do
+    mail = Shopkeeper::NotificationMailer.with(
+      resource: @shopkeeper,
+      token: "reset-token-xyz",
+      opts: {redirect_url: "http://example.com/reset", client_config: "default"}
+    ).reset_password_instructions
+
+    [mail.html_part.body.decoded, mail.text_part.body.decoded].each do |body|
+      assert_match %r{/password/edit\?}, body
+      assert_no_match @shopkeeper.id.to_s, body
+    end
   end
 
   # Mails name the app by its display name ("Native App Template"), not the

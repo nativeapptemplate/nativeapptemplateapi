@@ -5,12 +5,36 @@ class ShopkeeperAuth::RegistrationsController < DeviseTokenAuth::RegistrationsCo
         status: :too_many_requests
     }
 
+  # A new email gets a reconfirmation mail at that address (devise
+  # reconfirmable), so changing it is throttled like ThrottleMailRequests.
+  # Declared after devise_token_auth's set_user_by_token, so @resource is set.
+  # The apps send the current email with every profile edit; that sends no
+  # mail and is not counted
+  rate_limit to: 5, within: 1.minute, only: :update,
+    name: "email_changes/ip",
+    if: -> { email_change_requested? },
+    with: ThrottleMailRequests::RENDER_MAIL_THROTTLED
+
+  rate_limit to: 3, within: 1.hour, only: :update,
+    name: "email_changes/email",
+    by: -> { requested_email },
+    if: -> { email_change_requested? },
+    with: ThrottleMailRequests::RENDER_MAIL_THROTTLED
+
   before_action :set_confirm_success_url, only: %i[create]
   prepend_before_action :configure_permitted_parameters
   # devise_token_auth's set_user_by_token runs first and sets @resource
   before_action -> { use_locale_of(@resource) }, only: %i[update destroy]
 
   protected
+
+  def requested_email
+    params[:email].to_s.downcase.gsub(/\s+/, "")
+  end
+
+  def email_change_requested?
+    params[:email].present? && requested_email != @resource&.email
+  end
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: %i[name email password time_zone current_platform])

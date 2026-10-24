@@ -46,6 +46,20 @@ class TenantAndAdminRoutesTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # Mission Control's buttons (retry, discard) are forms posted with the
+  # admin's session cookie, so they need the authenticity token check that
+  # ActionController::API leaves out
+  test "/madmin/jobs refuses a form post without the authenticity token" do
+    sign_in_admin
+    ActionController::Base.allow_forgery_protection = true
+
+    post "/madmin/jobs/applications/nativeapptemplateapi/jobs/bulk_discards"
+
+    assert_response :unprocessable_content
+  ensure
+    ActionController::Base.allow_forgery_protection = false
+  end
+
   private
 
   def sign_in_admin
