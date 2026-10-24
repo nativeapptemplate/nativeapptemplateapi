@@ -149,6 +149,7 @@ en:
           attributes:
             email:
               invited: "has already been invited"
+              member: "already belongs to a member of this organization"
         accounts_shopkeeper:
           attributes:
             admin:

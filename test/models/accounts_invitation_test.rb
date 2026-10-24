@@ -57,6 +57,30 @@ class AccountsInvitationTest < ActiveSupport::TestCase
     assert_includes duplicate.errors[:email], I18n.t("activerecord.errors.models.accounts_invitation.attributes.email.invited")
   end
 
+  # Bug: an invitation to someone already in the organization was created and
+  # mailed, and accepting it then failed with 422. Refused at once instead,
+  # whatever the case or surrounding spaces of the address
+  test "should reject an email that already belongs to a member of the account" do
+    invitation = AccountsInvitation.new(
+      account: @account,
+      name: "Me again",
+      email: "  #{@shopkeeper.email.upcase} ",
+      member: true
+    )
+
+    assert_not invitation.valid?
+    assert_includes invitation.errors[:email], I18n.t("activerecord.errors.models.accounts_invitation.attributes.email.member")
+  end
+
+  test "should allow a member of another account" do
+    other = shopkeepers(:two)
+    other.create_default_account
+
+    invitation = AccountsInvitation.new(account: @account, name: "Other", email: other.email, member: true)
+
+    assert invitation.valid?
+  end
+
   test "database rejects duplicate email within account when validation is skipped" do
     AccountsInvitation.create!(
       account: @account,

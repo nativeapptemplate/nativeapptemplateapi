@@ -24,6 +24,13 @@ class MailThrottleTest < ActionDispatch::IntegrationTest
       as: :json
   end
 
+  def patch_email(email, ip: nil)
+    patch shopkeeper_registration_url,
+      params: {email: email},
+      headers: @shopkeeper.create_new_auth_token.merge(ip ? {"REMOTE_ADDR" => ip} : {}),
+      as: :json
+  end
+
   def assert_throttled
     assert_response :too_many_requests
     assert_equal 429, response.parsed_body["code"]
@@ -93,5 +100,38 @@ class MailThrottleTest < ActionDispatch::IntegrationTest
       post resend_api_v1_shopkeeper_account_accounts_invitation_path(@account, invitation.token), headers: headers
     end
     assert_throttled
+  end
+
+  # RegistrationsController#update: a new email gets a reconfirmation mail
+  # (devise reconfirmable), so the same limits as the resends apply. 5 per
+  # minute per IP
+  test "the sixth email change from the same IP within a minute is rate-limited" do
+    5.times do |i|
+      patch_email("new#{i}@example.com")
+      assert_not_equal 429, response.status, "request #{i + 1} should not be throttled"
+    end
+
+    assert_no_enqueued_emails { patch_email("new5@example.com") }
+    assert_throttled
+  end
+
+  # RegistrationsController#update: 3 per hour per new address, whatever the IP
+  test "the fourth email change to one address within an hour is rate-limited" do
+    3.times do |i|
+      patch_email("victim@example.com", ip: "10.0.0.#{i + 1}")
+      assert_not_equal 429, response.status, "request #{i + 1} should not be throttled"
+    end
+
+    assert_no_enqueued_emails { patch_email(" VICTIM@example.com ", ip: "10.0.0.99") }
+    assert_throttled
+  end
+
+  # The apps send the current email with every profile edit; no mail goes out
+  # for it, so it is not counted
+  test "profile edits that keep the email are not rate-limited" do
+    6.times do |i|
+      patch_email(@shopkeeper.email)
+      assert_response :success, "request #{i + 1} should not be throttled"
+    end
   end
 end

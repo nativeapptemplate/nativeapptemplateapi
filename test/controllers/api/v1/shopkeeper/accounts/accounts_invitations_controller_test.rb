@@ -68,6 +68,26 @@ class Api::V1::Shopkeeper::Accounts::AccountsInvitationsControllerTest < ActionD
     assert_no_enqueued_emails
   end
 
+  # Inviting someone already in the organization made an invitation and a mail
+  # that could only fail when accepted.
+  # ja.yml activerecord...accounts_invitation.attributes.email.member
+  test "create refuses an address that already belongs to a member, in Japanese, without a mail" do
+    member = shopkeepers(:two)
+    AccountsShopkeeper.create!(account: @account, shopkeeper: member, member: true)
+    # A signed-in shopkeeper gets their stored locale (SetLocale)
+    @shopkeeper.update!(locale: "ja")
+
+    assert_no_difference "AccountsInvitation.count" do
+      post api_v1_shopkeeper_account_accounts_invitations_url(@account),
+        params: {accounts_invitation: {name: "Member", email: member.email, member: true}},
+        headers: @shopkeeper.create_new_auth_token
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "メールアドレスはすでにこの組織のメンバーです", response.parsed_body["error_message"]
+    assert_no_enqueued_emails
+  end
+
   test "update rejects removing every role from an invitation" do
     patch api_v1_shopkeeper_account_accounts_invitation_url(@account, @invitation.token),
       params: {accounts_invitation: {name: @invitation.name, admin: false, member: false}},

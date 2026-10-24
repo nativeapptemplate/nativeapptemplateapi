@@ -854,6 +854,15 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '422':
           $ref: '#/components/responses/UnprocessableEntity'
+        '429':
+          description: A new `email` was sent too often (5 per minute per IP, 3 per hour per address); keeping the current email is not counted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: 429
+                error_message: Too many requests. Please try again later.
 
     delete:
       operationId: deleteAuthAccount
@@ -1825,6 +1834,7 @@ paths:
     post:
       operationId: createInvitation
       summary: Create and send an invitation
+      description: 422 when the email is already invited to this organization, or already belongs to one of its members (nothing is mailed)
       tags: [Invitations]
       requestBody:
         required: true

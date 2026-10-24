@@ -182,6 +182,7 @@ ja:
           attributes:
             email:
               invited: "はすでに招待されています"
+              member: "はすでにこの組織のメンバーです"
             roles:
               blank: "を選択してください"
         accounts_shopkeeper:
