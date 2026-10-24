@@ -1,5 +1,5 @@
-<p><%= t(:welcome_email, email: @email) %></p>
+<h1><%= t(:welcome_email, email: @email) %></h1>
 
-<p><%= t ".confirm_link_msg" %> </p>
+<p><%= t ".confirm_link_msg" %></p>
 
-<p><%= link_to t(".confirm_account_link"), confirmation_url(@resource, {confirmation_token: @token, config: @client_config, redirect_url: @redirect_url}).html_safe %></p>
+<%= render "shopkeeper/notification_mailer/button", label: t(".confirm_account_link"), url: confirmation_url(@resource, {confirmation_token: @token, config: @client_config, redirect_url: @redirect_url}) %>

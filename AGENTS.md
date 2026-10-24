@@ -133,6 +133,7 @@ Cross-platform push via the `noticed` (v3) and `action_push_native` gems. APNs f
 ### Development Server Configuration
 - `HOST` (Wi-Fi IP) and `PORT` are required in `.env`; `Procfile.dev` uses `${HOST:?...}` so Rails fails loudly if unset, and `development.rb` uses `ENV.fetch("HOST")` for `action_mailer.default_url_options`. Must match `NATIVEAPPTEMPLATE_API_DOMAIN` in the iOS app's `API.local.xcconfig` (or `API.xcconfig`) and Android `gradle.properties`. Never `127.0.0.1`, `localhost`, or `0.0.0.0`.
 - Mailbin for email testing at `/mailbin`
+- Mail previews at `/rails/mailers` (`test/mailers/previews/`; add `?locale=ja` for Japanese). The layout (`app/views/layouts/mailer.html.erb`) uses the apps' palette with inline light colors and a `prefers-color-scheme: dark` override; buttons go through `shopkeeper/notification_mailer/_button`
 - Admin interface at `/madmin`
 - Tailwind CSS compiled by tailwindcss-rails gem
 

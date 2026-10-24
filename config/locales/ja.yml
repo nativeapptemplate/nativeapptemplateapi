@@ -67,7 +67,7 @@ ja:
         create_account_or_sign_in_with_html: "<strong>%{email}</strong>でアカウントを作成するか、サインインします。"
         select_organization_tab: "「組織」タブを選びます。"
         tap_join_button: "「参加」ボタンをタップします。"
-        enter_your_invitation_code: "下記の招待コードを入力します。"
+        enter_your_invitation_code: "招待コードを入力します。"
         if_you_accepted_invitation_switch_to_organization: "招待を承認したら、その組織に切り替えます（組織 > [組織名] > 切り替え）。"
         ios_app: "%{mobile_app} iOS版"
         android_app: "%{mobile_app} Android版"
