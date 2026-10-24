@@ -2,22 +2,22 @@ class Api::Shopkeeper::ShopPolicy < Api::Shopkeeper::BasePolicy
   include Api::Shopkeeper::Concerns::Authorization
 
   def index?
-    admin? || member?
+    permitted?(:read_data)
   end
 
   def show?
-    admin? || member?
+    permitted?(:read_data)
   end
 
   def create?
-    admin? || member?
+    permitted?(:create_shops)
   end
 
   def update?
-    admin? || member?
+    permitted?(:update_shops)
   end
 
   def destroy?
-    admin? || member?
+    permitted?(:delete_shops)
   end
 end

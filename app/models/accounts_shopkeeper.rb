@@ -22,6 +22,11 @@ class AccountsShopkeeper < ApplicationRecord
     role.permissions
   end
 
+  # Policies ask this once per request for every check
+  def permission_tags
+    @permission_tags ||= permissions.pluck(:tag)
+  end
+
   private
 
   def owner_must_be_admin

@@ -1,31 +1,32 @@
 class Api::Shopkeeper::ItemTagPolicy < Api::Shopkeeper::BasePolicy
   include Api::Shopkeeper::Concerns::Authorization
 
+  # Item tags belong to a shop, so the shop permissions cover them (as in the apps)
   def index?
-    admin? || member?
+    permitted?(:read_data)
   end
 
   def show?
-    admin? || member?
+    permitted?(:read_data)
   end
 
   def create?
-    admin? || member?
+    permitted?(:create_shops)
   end
 
   def update?
-    create?
+    permitted?(:update_shops)
   end
 
   def destroy?
-    create?
+    permitted?(:delete_shops)
   end
 
   def complete?
-    create?
+    update?
   end
 
   def idle?
-    create?
+    update?
   end
 end

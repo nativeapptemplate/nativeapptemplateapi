@@ -32,7 +32,6 @@ minimum_password_length: 8
 
 shop:
   limit_count: 99
-  default_name: "Sample Shop"
 
 account:
   limit_count: 99

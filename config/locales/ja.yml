@@ -20,6 +20,7 @@ ja:
   something_went_wrong: "問題が発生しました。"
   internal_server_error: "サーバーでエラーが発生しました。"
   unauthorized: "この操作を行う権限がありません。"
+  default_shop_name: "サンプル店舗"
   default_shop_description: "これはサンプルの店舗です。\n編集や削除ができます。"
 
   sample_item_tag:

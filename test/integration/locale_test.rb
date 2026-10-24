@@ -46,6 +46,25 @@ class LocaleTest < ActionDispatch::IntegrationTest
       headers: headers
   end
 
+  # The sample shop is the shopkeeper's, so it follows the language they chose,
+  # not the request's
+  test "sign-up creates the sample shop and item tag in the stored language" do
+    sign_up({locale: "ja"}, {"Accept-Language" => "en"})
+
+    shop = ActsAsTenant.without_tenant { Shopkeeper.find_by!(email: "new@example.com").created_shops.sole }
+    assert_equal I18n.t("default_shop_name", locale: :ja), shop.name
+    assert_equal I18n.t("default_shop_description", locale: :ja), shop.description
+    assert_equal I18n.t("sample_item_tag.name", locale: :ja), ActsAsTenant.without_tenant { shop.item_tags.sole.name }
+  end
+
+  test "sign-up in English creates the sample shop in English" do
+    sign_up({locale: "en"}, {"Accept-Language" => "ja"})
+
+    shop = ActsAsTenant.without_tenant { Shopkeeper.find_by!(email: "new@example.com").created_shops.sole }
+    assert_equal "Sample Shop", shop.name
+    assert_equal I18n.t("default_shop_description", locale: :en), shop.description
+  end
+
   test "the two locales really differ" do
     assert_not_equal bad_credentials(:en), bad_credentials(:ja)
   end

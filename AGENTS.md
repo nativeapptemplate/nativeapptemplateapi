@@ -65,7 +65,7 @@ bin/rails dbconsole           # Database console
 - **Authentication**: Devise Token Auth with headers-based token management
 - **Authorization**: Pundit policies for resource-level permissions
 - **Multi-tenancy**: acts_as_tenant for complete data isolation between accounts
-- **RBAC**: Role and Permission models for fine-grained access control
+- **RBAC**: what a role may do is the `roles_permissions` table (`db/fixtures/*/03_roles_permissions.rb`). Policies ask it with `permitted?(:delete_shops)` (`Api::Shopkeeper::Concerns::Authorization`), and `GET /permissions` sends the same list to the apps, which show or hide buttons by it, so the API and the apps cannot disagree. Don't check the role name (`admin?`) in a policy; to change what a role may do, change its rows in all three seed folders
 - **Organization errors**: an `/<account uuid>/api/...` request for a deleted account gets `404 {code, error_code: "account_not_found", error_message}` from `AccountMiddleware` (via `Api::V1::Shopkeeper::AccountNotFoundController`, JSON whatever the request headers); a signed-in shopkeeper who is not a member gets `403 {code, error_code: "not_account_member", error_message}` from `Api::V1::Shopkeeper::BaseController`. The apps switch to the personal organization on these instead of signing out. Pundit denials stay `401 {code, error_message}`; devise_token_auth's invalid-token 401 is `{errors: [...]}`. Non-API paths with an unknown account id still redirect to `/`.
 - **Mail throttling**: every endpoint that emails an address the caller names is rate-limited (429 `too_many_requests`). Password reset and confirmation resend: 5/minute per IP and 3/hour per address (`ThrottleMailRequests`); an email change (`PATCH /shopkeeper_auth` with a new `email`, which mails a reconfirmation there): the same two limits; invitation create + resend: 20/hour per shopkeeper; sign-up: 10 per 3 minutes per IP. A new mail-sending endpoint needs a limit too (`test/integration/mail_throttle_test.rb`).
 
@@ -76,6 +76,7 @@ bin/rails dbconsole           # Database console
 - `ItemTag` - Belongs to Shop; has name/description/position and a binary state (idled/completed)
 - `Role` & `Permission` - Authorization system
 - State machines implemented with AASM gem
+- Deleting a shopkeeper (`DELETE /shopkeeper_auth`) deletes every organization they own (`owned_accounts`, `dependent: :destroy`) with all its shops, item tags, members' memberships and invitations; the other members lose that organization. Say so in the apps' delete confirmation
 
 ### Background Processing
 - Solid Queue for background jobs (database-backed, no Redis needed)
@@ -199,13 +200,16 @@ bin/rails test
 - **Policy tests**: Test authorization for all roles (admin, managers, members, guest)
 - **Controller tests**: Test CRUD operations, authentication requirements, authorization checks
 - Use `ActsAsTenant.with_tenant(@account)` when testing multi-tenant models
-- Fixtures are loaded automatically from test/fixtures/*.yml
+- Fixtures are loaded automatically from test/fixtures/*.yml. They are inserted without callbacks, so a fixture shopkeeper has no personal organization until a request creates it (`SetCurrentRequestDetails`) or the test calls `create_default_account`. To test what sign-up creates (the personal organization, its sample shop and item tag), make the shopkeeper with `Shopkeeper.create!` or through `POST /shopkeeper_auth`
+- Send nested arrays as JSON (`as: :json`). Form-encoded params merge consecutive hashes in an array (`items: [{id: 1}, {name: "x"}]` arrives as one hash)
 - Test data seeds loaded from db/fixtures/test/*.rb in setup hook
 
 ### Working with Multi-tenancy
 - All models should include `acts_as_tenant :account`
 - Current account accessible via `current_account` in controllers
-- Tenant switching handled by `AccountMiddleware`
+- Tenant switching handled by `AccountMiddleware`, from the `/:account_id/` prefix of the URL
+- The organization endpoints name their organization in the path (`/accounts/:id/members`, `/accounts/:id/invitations`), which can differ from the prefix's. Wrap work on that organization's tenant-scoped records in `ActsAsTenant.with_tenant(@account)`, or the queries run under the prefix's tenant and find nothing
+- In `db/fixtures` seeds, create an organization with `account = Account.new(owner:, name:)` plus `account.accounts_shopkeepers.new(shopkeeper: owner, admin: true)` and save them together, as `Shopkeeper#create_default_account` does. `Account.seed` only sets attributes, so its owner would not be a member of it
 
 ### Adding Background Jobs
 1. Create job class in `app/jobs/`

@@ -24,7 +24,7 @@ class AccountTest < ActiveSupport::TestCase
   test "should create default shop after creation" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
     assert_equal 1, account.shops.count
-    assert_equal ConfigSettings.shop.default_name, account.shops.first.name
+    assert_equal "Sample Shop", account.shops.first.name
   end
 
   test "should destroy associated accounts_invitations" do
