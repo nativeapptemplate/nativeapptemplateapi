@@ -4,8 +4,6 @@ class ApplicationPushDevice < ActionPushNative::Device
 
   validates :token, presence: true, uniqueness: {scope: :platform}
 
-  scope :active, -> { where("last_active_at > ?", 90.days.ago) }
-
   before_validation :touch_last_active_at, on: :create
 
   # Customize TokenError handling (default: destroy!)

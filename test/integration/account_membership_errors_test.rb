@@ -119,7 +119,7 @@ class AccountMembershipErrorsTest < ActionDispatch::IntegrationTest
   end
 
   test "an invitation looked up under an organization the shopkeeper left answers 403 not_account_member" do
-    invitation = AccountsInvitation.create!(account: @owner.accounts.personal.first,
+    invitation = AccountsInvitation.create!(account: @owner.personal_account,
       name: "Invited", email: @shopkeeper.email, member: true)
 
     get "/#{@team.id}/api/v1/shopkeeper/accounts_invitations/#{invitation.token}",

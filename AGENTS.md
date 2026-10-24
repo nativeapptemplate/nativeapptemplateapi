@@ -37,6 +37,7 @@ bin/bundler-audit               # Audit gems for known security defects
 ```bash
 bin/ci  # Runs setup, rubocop, bundler-audit, brakeman, tests, and seeds
 ```
+GitHub Actions (`.github/workflows/ci.yml`) runs `bin/ci` too, so the steps live only in `config/ci.rb`: add a new check there.
 
 ### Database Operations
 ```bash

@@ -54,14 +54,6 @@ class ApplicationPushDeviceTest < ActiveSupport::TestCase
     assert_equal explicit, device.last_active_at
   end
 
-  test "active scope excludes devices stale > 90 days" do
-    fresh = ApplicationPushDevice.create!(owner: @shopkeeper, token: "fresh", platform: "apple", last_active_at: 1.day.ago)
-    stale = ApplicationPushDevice.create!(owner: @shopkeeper, token: "stale", platform: "apple", last_active_at: 100.days.ago)
-    active = ApplicationPushDevice.active
-    assert_includes active, fresh
-    assert_not_includes active, stale
-  end
-
   test "is destroyed when shopkeeper is destroyed" do
     ApplicationPushDevice.create!(owner: @shopkeeper, token: "abc123", platform: "apple")
     assert_difference -> { ApplicationPushDevice.count }, -1 do

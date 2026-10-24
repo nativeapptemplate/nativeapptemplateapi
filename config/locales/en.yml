@@ -141,10 +141,6 @@ en:
 
     errors:
       models:
-        account:
-          attributes:
-            organizations:
-              limit_count: "can be created up to %{limit_count}."
         accounts_invitation:
           attributes:
             email:

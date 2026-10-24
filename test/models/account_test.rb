@@ -27,53 +27,6 @@ class AccountTest < ActiveSupport::TestCase
     assert_equal ConfigSettings.shop.default_name, account.shops.first.name
   end
 
-  test "personal? scope returns personal accounts" do
-    personal_account = Account.create!(name: "Personal", owner: @shopkeeper, personal: true)
-    team_account = Account.create!(name: "Team", owner: @shopkeeper, personal: false)
-
-    assert_includes Account.personal, personal_account
-    assert_not_includes Account.personal, team_account
-  end
-
-  test "team scope returns team accounts" do
-    personal_account = Account.create!(name: "Personal", owner: @shopkeeper, personal: true)
-    team_account = Account.create!(name: "Team", owner: @shopkeeper, personal: false)
-
-    assert_includes Account.team, team_account
-    assert_not_includes Account.team, personal_account
-  end
-
-  test "admin? returns true when shopkeeper is admin" do
-    account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    AccountsShopkeeper.create!(
-      account: account,
-      shopkeeper: @shopkeeper,
-      admin: true
-    )
-
-    assert account.admin?(@shopkeeper)
-  end
-
-  test "admin? returns false when shopkeeper is not admin" do
-    other_shopkeeper = shopkeepers(:two)
-    account = Account.create!(name: "Test Account", owner: @shopkeeper)
-    AccountsShopkeeper.create!(
-      account: account,
-      shopkeeper: other_shopkeeper,
-      admin: false,
-      member: true
-    )
-
-    assert_not account.admin?(other_shopkeeper)
-  end
-
-  test "admin? returns false when shopkeeper is not a member" do
-    other_shopkeeper = shopkeepers(:two)
-    account = Account.create!(name: "Test Account", owner: @shopkeeper)
-
-    assert_not account.admin?(other_shopkeeper)
-  end
-
   test "should destroy associated accounts_invitations" do
     account = Account.create!(name: "Test Account", owner: @shopkeeper)
     AccountsInvitation.create!(
