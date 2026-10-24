@@ -10,19 +10,19 @@ class Api::Shopkeeper::AccountsInvitationPolicy < Api::Shopkeeper::BasePolicy
   end
 
   def create?
-    admin?
+    permitted?(:invitation)
   end
 
   def update?
-    admin?
+    permitted?(:invitation)
   end
 
   def destroy?
-    admin?
+    permitted?(:invitation)
   end
 
   def resend?
-    admin?
+    permitted?(:invitation)
   end
 
   # Token-based actions (any authenticated shopkeeper with the token)

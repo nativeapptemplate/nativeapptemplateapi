@@ -47,6 +47,10 @@ Want a customized backend generated for you? [nativeapptemplate-agent](https://g
 - Optional Error Monitoring with Sentry (no personal data sent)
 - And more!
 
+## Deleting a shopkeeper
+
+A shopkeeper who deletes their account (`DELETE /shopkeeper_auth`) also deletes every organization they own, with all its shops, item tags and invitations. The organization's other members stay signed up but lose that organization. Say so in the apps' delete confirmation.
+
 ## Related Repositories
 
 ### Paid Clients

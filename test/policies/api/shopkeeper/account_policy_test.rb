@@ -33,6 +33,15 @@ class Api::Shopkeeper::AccountPolicyTest < ActiveSupport::TestCase
     assert policy.update?
   end
 
+  test "update? follows roles_permissions: a member given update_organizations may update" do
+    RolesPermission.create!(role: Role.find_by!(tag: "member"), permission: Permission.find_by!(tag: "update_organizations"))
+    accounts_shopkeeper = AccountsShopkeeper.create!(account: @account, shopkeeper: shopkeepers(:two), member: true)
+
+    policy = Api::Shopkeeper::AccountPolicy.new(accounts_shopkeeper, @account)
+
+    assert policy.update?
+  end
+
   test "update? returns false for non-admin" do
     other_shopkeeper = shopkeepers(:two)
     accounts_shopkeeper = AccountsShopkeeper.create!(

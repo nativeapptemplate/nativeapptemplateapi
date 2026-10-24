@@ -14,16 +14,22 @@ class Account < ApplicationRecord
 
   private
 
+  # In the owner's language, not the request's: at sign-up the request's
+  # language comes from Accept-Language, which can differ from the one stored.
+  # Under this account as the tenant, so records the shop creates in turn
+  # (acts_as_tenant :account) get its account_id without passing it
   def create_default_shop!
     return if reached_limit_shop_count?
 
-    ActsAsTenant.without_tenant do
-      shop = shops.build
-      shop.name = ConfigSettings.shop.default_name
-      shop.time_zone = owner.time_zone
-      shop.created_by = owner
-      shop.description = I18n.t("default_shop_description")
-      shop.save!
+    I18n.with_locale(owner.locale) do
+      ActsAsTenant.with_tenant(self) do
+        shop = shops.build
+        shop.name = I18n.t("default_shop_name")
+        shop.time_zone = owner.time_zone
+        shop.created_by = owner
+        shop.description = I18n.t("default_shop_description")
+        shop.save!
+      end
     end
   end
 

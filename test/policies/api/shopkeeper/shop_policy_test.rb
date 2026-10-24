@@ -70,4 +70,16 @@ class Api::Shopkeeper::ShopPolicyTest < ActiveSupport::TestCase
     policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
     assert policy.destroy?
   end
+
+  # Bug: destroy? checked the role name, so taking delete_shops away from member
+  # in roles_permissions hid the button in the apps but the API still deleted
+  test "destroy? follows roles_permissions, not the role name" do
+    member_role = Role.find_by!(tag: "member")
+    member_role.roles_permissions.joins(:permission).where(permissions: {tag: "delete_shops"}).destroy_all
+
+    policy = Api::Shopkeeper::ShopPolicy.new(member_accounts_shopkeeper, @shop)
+
+    assert_not policy.destroy?
+    assert policy.update?
+  end
 end

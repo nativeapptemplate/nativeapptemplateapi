@@ -14,7 +14,7 @@ class Api::Shopkeeper::AccountPolicy < Api::Shopkeeper::BasePolicy
   end
 
   def update?
-    admin?
+    permitted?(:update_organizations)
   end
 
   def destroy?
