@@ -31,7 +31,7 @@ Rails.application.routes.draw do
     }
 
   namespace :shopkeeper_auth do
-    resource :reset_password, only: %i[new edit show]
+    resource :reset_password, only: %i[edit show]
     resource :confirmation_result, only: %i[show]
   end
 
@@ -51,8 +51,8 @@ Rails.application.routes.draw do
           resource :password, only: %i[update]
         end
 
-        resources :shops, shallow: true do
-          resources :item_tags do
+        resources :shops, shallow: true, only: %i[index show create update destroy] do
+          resources :item_tags, only: %i[index show create update destroy] do
             member do
               patch :idle
               patch :complete
@@ -60,15 +60,15 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :accounts do
+        resources :accounts, only: %i[index show create update destroy] do
           resources :accounts_shopkeepers, only: %i[index show update destroy], path: :members
-          resources :accounts_invitations, path: :invitations, module: :accounts do
+          resources :accounts_invitations, path: :invitations, module: :accounts, only: %i[index show create update destroy] do
             member do
               post :resend
             end
           end
         end
-        resources :accounts_invitations
+        resources :accounts_invitations, only: %i[show update destroy]
       end
     end
   end

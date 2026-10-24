@@ -173,11 +173,12 @@ ja:
         unconfirmed_email: "確認待ちのメールアドレス"
 
     errors:
+      # acts_as_tenant's own messages (its English is in the gem)
+      messages:
+        acts_as_tenant:
+          tenant_mismatch: "は今の組織のものではありません"
+          association_invalid: "の関連が正しくありません"
       models:
-        account:
-          attributes:
-            organizations:
-              limit_count: "は%{limit_count}件まで作成できます。"
         accounts_invitation:
           attributes:
             email:

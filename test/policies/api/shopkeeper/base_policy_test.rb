@@ -55,20 +55,4 @@ class Api::Shopkeeper::BasePolicyTest < ActiveSupport::TestCase
     policy = Api::Shopkeeper::BasePolicy.new(@accounts_shopkeeper, @record)
     assert_not policy.destroy?
   end
-
-  test "Scope raises error when accounts_shopkeeper is nil" do
-    assert_raises Pundit::NotAuthorizedError do
-      Api::Shopkeeper::BasePolicy::Scope.new(nil, Account)
-    end
-  end
-
-  test "Scope initialize succeeds when accounts_shopkeeper is present" do
-    scope = Api::Shopkeeper::BasePolicy::Scope.new(@accounts_shopkeeper, Account)
-    assert_not_nil scope
-  end
-
-  test "Scope resolve returns all records by default" do
-    scope = Api::Shopkeeper::BasePolicy::Scope.new(@accounts_shopkeeper, Account)
-    assert_equal Account.all, scope.resolve
-  end
 end

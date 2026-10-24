@@ -35,21 +35,4 @@ class Api::Shopkeeper::BasePolicy
   def destroy?
     false
   end
-
-  class Scope
-    def initialize(accounts_shopkeeper, scope)
-      raise Pundit::NotAuthorizedError, "must be signed in" unless accounts_shopkeeper
-
-      @accounts_shopkeeper = accounts_shopkeeper
-      @scope = scope
-    end
-
-    def resolve
-      scope.all
-    end
-
-    private
-
-    attr_reader :accounts_shopkeeper, :scope
-  end
 end

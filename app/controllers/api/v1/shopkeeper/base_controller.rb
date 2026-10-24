@@ -19,10 +19,6 @@ class Api::V1::Shopkeeper::BaseController < ApplicationController
     current_accounts_shopkeeper
   end
 
-  def policy_scope(scope)
-    super([:api, :shopkeeper, scope])
-  end
-
   def authorize(record, query = nil)
     super([:api, :shopkeeper, record], query)
   end

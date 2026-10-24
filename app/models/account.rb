@@ -5,21 +5,12 @@ class Account < ApplicationRecord
   has_many :shopkeepers, through: :accounts_shopkeepers
   has_many :shops, dependent: :destroy
 
-  scope :personal, -> { where(personal: true) }
-  scope :team, -> { where(personal: false) }
   scope :sorted, -> { order(personal: :desc, name: :asc) }
 
   validates :name, presence: true
   validate :limit_count, on: :create
 
   after_create :create_default_shop!
-
-  def admin?(shopkeeper)
-    accounts_shopkeeper = AccountsShopkeeper.find_by(account: self, shopkeeper: shopkeeper)
-    return false if accounts_shopkeeper.blank?
-
-    accounts_shopkeeper.admin?
-  end
 
   private
 

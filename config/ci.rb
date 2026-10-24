@@ -6,7 +6,8 @@ CI.run do
   step "Style: Ruby", "bin/rubocop"
   step "Style: ERB", "bundle exec erb_lint --lint-all"
 
-  step "Security: Gem audit", "bin/bundler-audit"
+  # --update: a stale local advisory database passes gems GitHub CI rejects
+  step "Security: Gem audit", "bin/bundler-audit check --update"
   step "Security: Brakeman code analysis", "bin/brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
 
   step "Tests: Rails", "bin/rails test"

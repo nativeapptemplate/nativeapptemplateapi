@@ -2,9 +2,6 @@ class ShopkeeperAuth::ResetPasswordsController < NonApiApplicationController
   before_action :set_minimum_password_length, only: %i[edit]
   layout "minimal"
 
-  def new
-  end
-
   def show
   end
 

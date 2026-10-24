@@ -9,7 +9,7 @@
       "file": "app/controllers/api/v1/shopkeeper/accounts_shopkeepers_controller.rb",
       "line": 67,
       "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
-      "code": "params.require(:accounts_shopkeeper).permit(:admin, :member)",
+      "code": "params.require(:accounts_shopkeeper).permit(*AccountsShopkeeper::ROLES)",
       "render_path": null,
       "location": {
         "type": "method",
@@ -21,9 +21,9 @@
       "cwe_id": [
         915
       ],
-      "note": "Intentional: role booleans are explicitly permitted for account admins to manage team member roles. Endpoint is protected by require_account_admin and require_non_personal_account! before_actions."
+      "note": "Intentional: role booleans are explicitly permitted for account admins to manage team member roles. AccountsShopkeeperPolicy#update? allows only admins, and require_non_personal_account! refuses the personal organization."
     }
   ],
-  "updated": "2026-04-24",
-  "brakeman_version": "8.0.4"
+  "updated": "2026-10-24",
+  "brakeman_version": "8.1.0"
 }
