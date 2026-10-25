@@ -4,6 +4,12 @@ Rails.application.routes.draw do
   # request logging in config/environments/production.rb.
   get "up", to: "rails/health#show", as: :rails_health_check
 
+  # The invitation mail's link and the files that let the apps open it
+  # (iOS Universal Links, Android App Links; config/settings.yml app_links)
+  get "/.well-known/apple-app-site-association", to: "well_known#apple_app_site_association", format: false
+  get "/.well-known/assetlinks.json", to: "well_known#assetlinks", format: false
+  get "/invitations/:token", to: "invitation_landings#show", as: :invitation_landing, format: false
+
   draw :madmin
 
   require "admin_constraint"

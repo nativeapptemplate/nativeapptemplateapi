@@ -61,6 +61,18 @@ class Shopkeeper::NotificationMailerTest < ActionMailer::TestCase
     assert_match "#{ConfigSettings.display_name} has invited you", mail.text_part.body.decoded
   end
 
+  # The link opens the invitation in the app (iOS Universal Links, Android App
+  # Links), served from this API's host (config/settings.yml app_links); the
+  # code and the steps stay for when it can't
+  test "invited links the invitation on the API's host in both parts" do
+    mail = Shopkeeper::NotificationMailer.with(accounts_invitation: @invitation).invited
+    link = "https://#{ConfigSettings.app.domain}/invitations/#{@invitation.token}"
+
+    assert_includes mail.html_part.body.decoded, %(href="#{link}")
+    assert_includes mail.text_part.body.decoded, link
+    assert_includes mail.text_part.body.decoded, I18n.t("shopkeeper.notification_mailer.invited.enter_your_invitation_code")
+  end
+
   test "confirmation_instructions renders the expected subject, recipient, and body" do
     mail = Shopkeeper::NotificationMailer.with(
       resource: @shopkeeper,

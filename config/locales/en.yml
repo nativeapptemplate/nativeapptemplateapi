@@ -30,6 +30,10 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  invitation_landings:
+    show:
+      title: "Open this invitation in the %{mobile_app} app"
+      body: "After installing the app, open this link again, or enter the code from the invitation email."
   hello_email: "Hello %{email}!"
   welcome_email: "Welcome %{email}!"
   change_my_password: "Change my password"
@@ -86,6 +90,7 @@ en:
         header_html: "%{inviter} has invited you to collaborate on <strong>%{account}</strong>."
         you_can_accept_or_decline: "You can accept or decline this invitation."
         enter_your_invitation_code_in_the_mobile_app_html: "Enter your invitation code in the mobile app <strong>%{mobile_app}</strong> below."
+        open_invitation_link_html: "If you already have the app, open this link to accept the invitation: %{link}"
         instructions_heading: "Instructions:"
         open_mobile_app_html: "Open <strong>%{mobile_app}</strong>."
         create_account_or_sign_in_with_html: "Create account or sign in with <strong>%{email}</strong>."

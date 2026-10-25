@@ -6,6 +6,10 @@ class Shopkeeper::NotificationMailer < ShopkeeperMailer
     # still be resent, so name the app instead
     @inviter_name = @accounts_invitation.invited_by&.name || ConfigSettings.display_name
     @store_links = store_links
+    # Opens the invitation in the app (Universal Links / App Links, served from
+    # this API's host: config/settings.yml app_links). The code and the steps
+    # stay for when it can't
+    @invitation_url = "https://#{ConfigSettings.app.domain}/invitations/#{@accounts_invitation.token}"
 
     name = @accounts_invitation.name
     email = @accounts_invitation.email

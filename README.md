@@ -104,6 +104,19 @@ The mails use the apps' colors (Light Blue accent, Cool Grey text and ground) an
 
 The icons in `public/` (`favicon.ico`, `icon.svg`, `icon.png`, `icon-192.png`, `icon-512.png`, `apple-touch-icon.png`) are the template's and only appear as browser favicons; replace them with your app's icons. The HTML pages (password reset, email confirmation, error pages) name the app in text with `display_name` instead of showing a logo.
 
+## Invitation links (Universal Links / App Links)
+
+The invitation mail links `https://<app.domain>/invitations/<code>` next to the code. The paid iOS and Android apps claim that link, so tapping it opens the invitation in the app (after sign-in, if needed); elsewhere it lands on a page asking to open it in the app, with the store links above. The code and the steps stay in the mail for when the link can't open the app. The page neither shows nor looks up the code.
+
+The apps can claim the link only when this API's host serves the two files below. They are built from `app_links` in `config/settings.yml`, and each is 404 while its values are blank:
+
+| File | Values |
+|---|---|
+| `/.well-known/apple-app-site-association` | `ios_app_ids`: `<Team ID>.<bundle ID>` of the iOS app |
+| `/.well-known/assetlinks.json` | `android_package` (the `applicationId`) and `android_sha256_cert_fingerprints` (the SHA-256 of the signing certificates: Play App Signing's from Play Console > Test and release > App integrity, and the debug keystore's for local builds, from `./gradlew signingReport`) |
+
+Set them in `config/settings.yml`, or comma-separated in the deploy's env (`APP_LINKS_IOS_APP_IDS`, `APP_LINKS_ANDROID_PACKAGE`, `APP_LINKS_ANDROID_SHA256_CERT_FINGERPRINTS` under `env.clear` in `config/deploy.yml`). The apps name the same host in their associated domains (iOS) and intent filter (Android). Apple and Google fetch the files over HTTPS from the deployed host, so the link opens the app only against a deployed API, not a development server.
+
 ## Running NativeAppTemplate API on your Wi-Fi
 
 Copy `.env.sample` to `.env` and set `HOST` to your current Wi-Fi IP. On macOS: `ipconfig getifaddr en0`. `bin/dev` binds Rails to that address so the dev server is reachable from both the host browser and from any phone on the same network at `http://<wifi-ip>:3000`. When your Wi-Fi IP changes, update `HOST` here and the matching `NATIVEAPPTEMPLATE_API_DOMAIN` in the mobile apps (Xcode scheme for iOS, `~/.gradle/gradle.properties` for Android) — Rails fails loudly if `HOST` is unset, which keeps the three sides honest. Never use `127.0.0.1`, `localhost`, or `0.0.0.0`.

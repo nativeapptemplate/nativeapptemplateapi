@@ -33,12 +33,14 @@ class ItemTagNotifierTest < ActiveSupport::TestCase
     assert_equal I18n.t("notifiers.item_tag.body", name: @item_tag.name), notification.body
   end
 
-  test "url resolves to the shallow item_tag path" do
+  # The apps open no screen for an item tag, so the push carries no url
+  # (the API path it used to carry led nowhere in the apps)
+  test "the push carries no url" do
     ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
     notification = @shopkeeper.notifications.last
 
-    expected = Rails.application.routes.url_helpers.api_v1_shopkeeper_item_tag_path(@item_tag.id)
-    assert_equal expected, notification.url
+    assert_not_respond_to notification, :url
+    assert_equal({}, notification.instance_exec(&ItemTagNotifier.delivery_methods[:action_push_native].config[:with_data]))
   end
 
   test "action_push_native delivery performs without raising" do
