@@ -24,8 +24,10 @@ module Nativeapptemplateapi
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
 
-    # Use ErrorsController for handling 404s and 500s.
-    config.exceptions_app = routes
+    # Use ErrorsController for handling 404s and 500s. Looked up at request time
+    # because calling `routes` here would build the route set before Rails can
+    # make it lazy, so routes would always load at boot in development.
+    config.exceptions_app = ->(env) { Rails.application.routes.call(env) }
 
     # Where the I18n library should search for translation files
     # Search nested folders in config/locales for better organization
