@@ -7,7 +7,8 @@ class ItemTagNotifier < ApplicationNotifier
         body: body
       }
     }
-    config.with_data = -> { {url: url} }
+    # No url: the apps open no screen for an item tag
+    config.with_data = -> { {} }
     config.with_apple = -> { {} }
     config.with_google = -> { {} }
   end
@@ -19,10 +20,6 @@ class ItemTagNotifier < ApplicationNotifier
 
     def body
       I18n.t("notifiers.item_tag.body", name: record.name)
-    end
-
-    def url
-      Rails.application.routes.url_helpers.api_v1_shopkeeper_item_tag_path(record.id)
     end
   end
 end

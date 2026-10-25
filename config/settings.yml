@@ -28,6 +28,24 @@ mobile_app:
   app_store_url: ""
   play_store_url: ""
 
+# The invitation mail's link, https://<app.domain>/invitations/<code>, opens
+# the app (iOS Universal Links, Android App Links). This API serves the files
+# that let the apps claim the link, /.well-known/apple-app-site-association
+# and /.well-known/assetlinks.json, from these values; each file is 404 while
+# its values are blank, and the link then opens a page in the browser. Set
+# them here, or comma-separated in the deploy's env (config/deploy.yml
+# env.clear), e.g.
+#   APP_LINKS_IOS_APP_IDS: ABCDE12345.com.example.MyApp.ios (Team ID.bundle ID)
+#   APP_LINKS_ANDROID_PACKAGE: com.example.myapp (applicationId)
+#   APP_LINKS_ANDROID_SHA256_CERT_FINGERPRINTS: AA:BB:...,CC:DD:... (the
+#     signing certificates' SHA-256: Play App Signing's from Play Console >
+#     Test and release > App integrity, and the debug keystore's for local
+#     builds, from ./gradlew signingReport)
+app_links:
+  ios_app_ids: <%= ENV.fetch("APP_LINKS_IOS_APP_IDS", "").split(",").map(&:strip).to_json %>
+  android_package: <%= ENV.fetch("APP_LINKS_ANDROID_PACKAGE", "").to_json %>
+  android_sha256_cert_fingerprints: <%= ENV.fetch("APP_LINKS_ANDROID_SHA256_CERT_FINGERPRINTS", "").split(",").map(&:strip).to_json %>
+
 minimum_password_length: 8
 
 shop:

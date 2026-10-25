@@ -6,6 +6,10 @@
 # en.yml overrides the English.
 
 ja:
+  invitation_landings:
+    show:
+      title: "%{mobile_app} のアプリで開いてください"
+      body: "アプリを入れたあと、もう一度このリンクを開くか、招待メールのコードを入力してください。"
   hello_email: "%{email} 様"
   welcome_email: "%{email} 様、ご登録ありがとうございます。"
   change_my_password: "パスワードを変更する"
@@ -62,6 +66,7 @@ ja:
         header_html: "%{inviter}さんが<strong>%{account}</strong>にあなたを招待しました。"
         you_can_accept_or_decline: "この招待は承認することも、辞退することもできます。"
         enter_your_invitation_code_in_the_mobile_app_html: "モバイルアプリ<strong>%{mobile_app}</strong>で、下記の招待コードを入力してください。"
+        open_invitation_link_html: "アプリをインストール済みなら、このリンクを開くと招待を受け取れます：%{link}"
         instructions_heading: "手順："
         open_mobile_app_html: "<strong>%{mobile_app}</strong>を開きます。"
         create_account_or_sign_in_with_html: "<strong>%{email}</strong>でアカウントを作成するか、サインインします。"

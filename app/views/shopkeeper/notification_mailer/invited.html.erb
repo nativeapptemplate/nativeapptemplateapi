@@ -11,6 +11,8 @@
   <strong><%= @accounts_invitation.token %></strong>
 </div>
 
+<p class="url"><%= t(".open_invitation_link_html", link: link_to(@invitation_url, @invitation_url)) %></p>
+
 <p style="margin-bottom:8px;"><strong><%= t(".instructions_heading") %></strong></p>
 <ol>
   <li><%= t(".open_mobile_app_html", mobile_app: ConfigSettings.display_name) %></li>

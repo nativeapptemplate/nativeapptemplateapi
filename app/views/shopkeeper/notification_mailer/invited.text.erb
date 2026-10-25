@@ -4,6 +4,8 @@
 
 <%= strip_tags t(".enter_your_invitation_code_in_the_mobile_app_html", mobile_app: ConfigSettings.display_name) %>
 
+<%= strip_tags t(".open_invitation_link_html", link: @invitation_url) %>
+
 <%= t(".instructions_heading") %>
 1. <%= strip_tags t(".open_mobile_app_html", mobile_app: ConfigSettings.display_name) %>
 2. <%= strip_tags t(".create_account_or_sign_in_with_html", email: @accounts_invitation.email) %>
