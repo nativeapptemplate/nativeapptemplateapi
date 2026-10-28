@@ -1,9 +1,7 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# bin/rails db:prepare (bin/docker-entrypoint) loads this file only when it has
+# just created the schema: the first deploy, or a demo database that was reset.
+# Production then gets the rows the app cannot run without (roles, permissions,
+# app/privacy/terms versions; no users). Later deploys don't load it, so values
+# an admin changed in /madmin stay. Development and test load their own
+# db/fixtures with bin/rails db:seed_fu and the test setup.
+SeedFu.seed([Rails.root.join("db/fixtures/production").to_s]) if Rails.env.production?
