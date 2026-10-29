@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Security: `PUT`/`PATCH /shopkeeper_auth/password` needs the reset link's `reset_password_token`. With `require_client_password_reset_token`, devise_token_auth's update never checks the current password, so a request signed in with just the access token changed the password without the old one; sent with a `current_password`, it failed with a 500. Without the token the request now gets 401; only the reset page's form posts here, and the apps change the password with `PATCH /api/v1/shopkeeper/account/password`, which asks for the current one. The check reads the value the gem reads, so a token sent as an array or a hash cannot slip past it. Ported from myturntagapi #231, where it was found
+
 ## 2026-10-29
 
 - The invitation mail links `https://<app.domain>/invitations/<code>` next to the code, for the paid apps to open the invitation (iOS Universal Links, Android App Links). The API serves `/.well-known/apple-app-site-association` and `/.well-known/assetlinks.json` from the new `app_links` settings (404 while blank; `APP_LINKS_*` env vars also set them) and a page at `/invitations/:code` for when the app does not open the link, with the store links that are set. The code and the steps stay in the mail. The item tag push no longer carries `url`, an API path the apps had no screen for. The README's "Invitation links" covers the settings. Found while building Orange Baton from the template (#169)

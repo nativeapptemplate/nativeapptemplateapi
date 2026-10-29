@@ -102,4 +102,34 @@ class ShopkeeperAuth::PasswordsControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert JSON.parse(response.body)["success"]
   end
+
+  # Found on 2026-10-29 in MyTurnTag's API: the access token alone changed the password
+  # here, without the current one (and with a current_password the request failed with a 500)
+  test "the access token alone cannot change the password" do
+    headers = @shopkeeper.create_new_auth_token
+
+    [
+      {password: "brandnewpass9", password_confirmation: "brandnewpass9"},
+      {current_password: "wrong", password: "brandnewpass9", password_confirmation: "brandnewpass9"},
+      # Not a string, so devise_token_auth's permitted params drop it and it would use the access token
+      {reset_password_token: ["x"], password: "brandnewpass9", password_confirmation: "brandnewpass9"},
+      {reset_password_token: {a: "x"}, password: "brandnewpass9", password_confirmation: "brandnewpass9"}
+    ].each do |body|
+      put shopkeeper_password_url, params: body.to_json, headers: headers.merge("Content-Type" => "application/json")
+
+      assert_response :unauthorized
+      assert_equal I18n.t("unauthorized"), response.parsed_body["error_message"]
+      assert_not @shopkeeper.reload.valid_password?("brandnewpass9")
+    end
+  end
+
+  test "the reset link's token changes the password" do
+    token = @shopkeeper.send(:set_reset_password_token)
+
+    patch shopkeeper_password_url,
+      params: {reset_password_token: token, password: "brandnewpass9", password_confirmation: "brandnewpass9"}
+
+    assert_redirected_to shopkeeper_auth_reset_password_path
+    assert @shopkeeper.reload.valid_password?("brandnewpass9")
+  end
 end

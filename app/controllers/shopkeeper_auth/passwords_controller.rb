@@ -4,7 +4,24 @@ class ShopkeeperAuth::PasswordsController < DeviseTokenAuth::PasswordsController
   include SameHostRedirect
   include ThrottleMailRequests
 
+  # Only the reset link's page (ShopkeeperAuth::ResetPasswordsController#edit) changes a
+  # password here. With require_client_password_reset_token, devise_token_auth's update
+  # never checks the current password, so a request signed in with just the access token
+  # could set a new one without knowing the old; and a current_password it was sent
+  # reached `update` and failed with a 500. The apps change the password with
+  # PATCH /api/v1/shopkeeper/account/password, which asks for the current one.
+  before_action :require_reset_password_token, only: :update
+
   protected
+
+  # The value devise_token_auth's update reads (resource_params permits only a string):
+  # a token sent as an array or a hash would pass a check of params here, yet be nil
+  # there, and update would fall back to the access token
+  def require_reset_password_token
+    return if resource_params[:reset_password_token].present?
+
+    render json: {code: 401, error_message: I18n.t("unauthorized")}, status: :unauthorized
+  end
 
   # Checked by devise_token_auth for both the reset request and the emailed link
   def blacklisted_redirect_url?(redirect_url)
