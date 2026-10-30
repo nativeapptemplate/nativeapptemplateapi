@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- The item tag push plays the default sound (`sound: "default"` in `ItemTagNotifier`): without `aps.sound` iOS showed it silently. FCM gets the same `sound`; Android 8+ still follows the `item_tag_completed` channel
 - Security: `PUT`/`PATCH /shopkeeper_auth/password` needs the reset link's `reset_password_token`. With `require_client_password_reset_token`, devise_token_auth's update never checks the current password, so a request signed in with just the access token changed the password without the old one; sent with a `current_password`, it failed with a 500. Without the token the request now gets 401; only the reset page's form posts here, and the apps change the password with `PATCH /api/v1/shopkeeper/account/password`, which asks for the current one. The check reads the value the gem reads, so a token sent as an array or a hash cannot slip past it. Ported from myturntagapi #231, where it was found
 
 ## 2026-10-29
