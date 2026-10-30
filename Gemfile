@@ -56,7 +56,7 @@ gem "seed-fu", "~> 2.3"
 gem "madmin", "~> 3.1"
 gem "valid_email2"
 gem "importmap-rails"
-gem "tailwindcss-rails", "~> 4.0"
+gem "tailwindcss-rails", "~> 4.7"
 gem "resend"
 # Error monitoring. Initialised only when SENTRY_DSN is set (config/initializers/sentry.rb)
 gem "sentry-ruby", "~> 7.1"
