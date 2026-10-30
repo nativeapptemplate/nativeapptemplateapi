@@ -104,7 +104,7 @@ GEM
       smart_properties
     bigdecimal (4.1.3)
     bindex (0.8.1)
-    bootsnap (1.26.0)
+    bootsnap (1.26.1)
       msgpack (~> 1.5)
     brakeman (8.1.0)
       racc
@@ -198,13 +198,13 @@ GEM
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     iniparse (1.5.0)
-    io-console (0.9.4)
+    io-console (0.9.5)
     irb (1.18.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (3.0.2)
+    json (3.1.0)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
     jwt (3.3.0)
@@ -258,7 +258,7 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
-    msgpack (1.8.5)
+    msgpack (1.8.6)
     multi_xml (0.9.1)
       bigdecimal (>= 3.1, < 5)
     net-http (0.9.1)
@@ -311,7 +311,7 @@ GEM
     pg (1.7.0-x86_64-linux)
     pp (0.6.4)
       prettyprint
-    prettyprint (0.2.0)
+    prettyprint (0.2.1)
     prism (1.9.0)
     propshaft (1.3.2)
       actionpack (>= 7.0.0)
@@ -325,11 +325,11 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.5.0)
     racc (1.8.1)
-    rack (3.2.7)
+    rack (3.2.8)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
-    rack-test (2.2.0)
+    rack-test (2.3.0)
       rack (>= 1.3)
     rackup (2.3.1)
       rack (>= 3)
@@ -457,7 +457,7 @@ GEM
       ostruct
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
-    tailwindcss-rails (4.6.0)
+    tailwindcss-rails (4.7.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.3.3)
@@ -481,7 +481,7 @@ GEM
     unicode-display_width (3.3.0)
       unicode-emoji (~> 4.3)
     unicode-emoji (4.3.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     valid_email2 (7.1.0)
       activemodel (>= 6.0)
@@ -548,7 +548,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   stimulus-rails (~> 1.0, >= 1.0.2)
-  tailwindcss-rails (~> 4.0)
+  tailwindcss-rails (~> 4.7)
   thruster
   turbo-rails (~> 2.0.3)
   tzinfo-data
