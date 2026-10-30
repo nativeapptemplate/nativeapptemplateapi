@@ -43,6 +43,18 @@ class ItemTagNotifierTest < ActiveSupport::TestCase
     assert_equal({}, notification.instance_exec(&ItemTagNotifier.delivery_methods[:action_push_native].config[:with_data]))
   end
 
+  # Without a sound APNs shows the alert silently: iOS plays no sound when the
+  # payload has no aps.sound, even with the .sound authorization. Found on an
+  # iPhone against the local development server (release checklist, record 21)
+  test "the push plays the default sound" do
+    ItemTagNotifier.with(record: @item_tag).deliver(@shopkeeper)
+    notification = @shopkeeper.notifications.last
+    format = notification.instance_exec(&ItemTagNotifier.delivery_methods[:action_push_native].config[:format])
+
+    assert_equal "default", format[:sound]
+    assert_equal "default", ApplicationPushNotification.new(**format).sound
+  end
+
   test "action_push_native delivery performs without raising" do
     ApplicationPushDevice.create!(owner: @shopkeeper, platform: "apple", token: "test-token")
 

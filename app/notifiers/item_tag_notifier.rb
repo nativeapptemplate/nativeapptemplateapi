@@ -4,7 +4,9 @@ class ItemTagNotifier < ApplicationNotifier
     config.format = -> {
       {
         title: title,
-        body: body
+        body: body,
+        # iOS plays no sound without aps.sound in the payload
+        sound: "default"
       }
     }
     # No url: the apps open no screen for an item tag
