@@ -12,7 +12,7 @@ gem "propshaft", "~> 1.0"
 gem "pg"
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 8.0"
+gem "puma", "~> 8.1"
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false
@@ -39,7 +39,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 gem "bootsnap", ">= 1.4.2", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 2.0"
+gem "image_processing", "~> 2.2"
 # image_processing 2.0 makes the image library a soft dependency; ruby-vips
 # is Active Storage's default variant processor, so require it explicitly.
 gem "ruby-vips"
@@ -59,13 +59,13 @@ gem "importmap-rails"
 gem "tailwindcss-rails", "~> 4.0"
 gem "resend"
 # Error monitoring. Initialised only when SENTRY_DSN is set (config/initializers/sentry.rb)
-gem "sentry-ruby", "~> 7.1"
+gem "sentry-ruby", "~> 7.3"
 gem "sentry-rails", "~> 7.1"
 
 # Push notifications via APNs (iOS) and FCM (Android). Provider integration
 # (apnotic + googleauth + initializer with credentials) lands in a follow-up
 # PR; this PR scaffolds the model + controller + base notifier only.
-gem "noticed", "~> 3.0"
+gem "noticed", "~> 3.2"
 # Fix LoadError: cannot load such file -- csv
 gem "csv", "~> 3.3"
 
